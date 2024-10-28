@@ -20,13 +20,11 @@ public class User extends BaseEntity{
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
      private int id;
-     private int username;
+     private String username;
      private String password;
      private String email;
      private String phone;
-
-
-     @OneToOne(cascade = CascadeType.ALL)
-     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
-     private Role role;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 }
