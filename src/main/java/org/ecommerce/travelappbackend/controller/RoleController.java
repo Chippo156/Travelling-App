@@ -1,28 +1,35 @@
 package org.ecommerce.travelappbackend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.ecommerce.travelappbackend.dtos.RoleRequest;
+import org.ecommerce.travelappbackend.dtos.request.RoleRequest;
 import org.ecommerce.travelappbackend.entity.Role;
-import org.ecommerce.travelappbackend.services.impl.RoleService;
-import org.springframework.http.ResponseEntity;
+import org.ecommerce.travelappbackend.dtos.response.ApiResponse;
+import org.ecommerce.travelappbackend.services.service.RoleService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/role")
+@RequestMapping("${api.prefix}/role")
 @RequiredArgsConstructor
 public class RoleController {
 
     private final RoleService roleService;
 
     @PostMapping
-    public ResponseEntity<Role> createRole(@RequestBody RoleRequest request){
-        return ResponseEntity.ok(roleService.createRole(request));
+    public ApiResponse<Role> createRole(@RequestBody RoleRequest request){
+        try{
+            return new ApiResponse<>(200,"success",roleService.createRole(request));
+
+        }catch (Exception ex){
+            return new ApiResponse<>(400,ex.getMessage(),null);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Role> getRole(@PathVariable int id){
-        return ResponseEntity.ok(roleService.getRole(id));
+    public ApiResponse<Role> getRole(@PathVariable Long id){
+        try{
+            return new ApiResponse<>(200,"success",roleService.getRole(id));
+        }catch (Exception ex){
+            return new ApiResponse<>(400,ex.getMessage(),null);
+        }
     }
-
-
 }

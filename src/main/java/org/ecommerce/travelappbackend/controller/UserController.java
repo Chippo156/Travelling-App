@@ -1,12 +1,11 @@
 package org.ecommerce.travelappbackend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.ecommerce.travelappbackend.dtos.UserRequest;
-import org.ecommerce.travelappbackend.entity.User;
+import org.ecommerce.travelappbackend.dtos.request.UserRequest;
 import org.ecommerce.travelappbackend.mapper.UserMapper;
-import org.ecommerce.travelappbackend.responses.UserResponse;
-import org.ecommerce.travelappbackend.services.impl.UserService;
-import org.springframework.http.ResponseEntity;
+import org.ecommerce.travelappbackend.dtos.response.ApiResponse;
+import org.ecommerce.travelappbackend.dtos.response.UserResponse;
+import org.ecommerce.travelappbackend.services.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,17 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("${api.prefix}/users")
 public class UserController {
 
     private final UserService userService;
     private final UserMapper mapper;
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest){
+    public ApiResponse<UserResponse> createUser(@RequestBody UserRequest userRequest){
         try{
-            return ResponseEntity.ok(mapper.toUserResponse(userService.createUser(userRequest)));
+            return new ApiResponse<>(200,"success",mapper.toUserResponse(userService.createUser(userRequest)));
         }catch (Exception ex){
-            return ResponseEntity.badRequest().build();
+            return new ApiResponse<>(400,ex.getMessage(),null);
         }
     }
+
+
 }

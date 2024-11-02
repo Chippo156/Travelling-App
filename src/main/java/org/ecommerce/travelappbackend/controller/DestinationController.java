@@ -1,47 +1,53 @@
 package org.ecommerce.travelappbackend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.ecommerce.travelappbackend.dtos.DestinationRequest;
-import org.ecommerce.travelappbackend.entity.Category;
-import org.ecommerce.travelappbackend.entity.Destination;
+import org.ecommerce.travelappbackend.dtos.request.DestinationRequest;
 import org.ecommerce.travelappbackend.mapper.DestinationMapper;
-import org.ecommerce.travelappbackend.responses.DestinationResponse;
-import org.ecommerce.travelappbackend.services.impl.CategoryService;
-import org.ecommerce.travelappbackend.services.impl.DestinationService;
-import org.springframework.http.ResponseEntity;
+import org.ecommerce.travelappbackend.dtos.response.ApiResponse;
+import org.ecommerce.travelappbackend.dtos.response.DestinationResponse;
+import org.ecommerce.travelappbackend.services.service.DestinationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/destinations")
+@RequestMapping("${api.prefix}/destinations")
 @RequiredArgsConstructor
 public class DestinationController {
     private final DestinationService destinationService;
     private final DestinationMapper mapper;
     @PostMapping
-    public ResponseEntity<DestinationResponse> createDestination(@RequestBody DestinationRequest destinationRequest){
-        try{
-            return ResponseEntity.ok(mapper.toDestinationResponse(destinationService.createDestination(destinationRequest)));
-        }catch (Exception ex){
-            return ResponseEntity.badRequest().build();
+    public ApiResponse<DestinationResponse> createDestination(@RequestBody DestinationRequest destinationRequest){
+        try
+        {
+            return new ApiResponse<>(200,"success",
+                    mapper.toDestinationResponse(
+                            destinationService.createDestination(destinationRequest))
+                    );
+        } catch (Exception e) {
+            return new ApiResponse<>(400,e.getMessage(),null);
         }
+
     }
     @GetMapping
-    public ResponseEntity<List<DestinationResponse>> getListDestination(){
-        try{
-            List<Destination> destinations = destinationService.getAllDestinations();
-            return ResponseEntity.ok(destinations.stream().map(mapper::toDestinationResponse).toList());
-          }catch (Exception ex){
-            return ResponseEntity.badRequest().build();
+    public ApiResponse<List<DestinationResponse>> getListDestination(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        try {
+            return new ApiResponse<>(200,"success",
+                    destinationService.getAllDestinations(page,size).stream().map(mapper::toDestinationResponse).toList());
+        }catch (Exception e){
+            return new ApiResponse<>(400,e.getMessage(),null);
         }
     }
     @GetMapping("/{id}")
-    public ResponseEntity<DestinationResponse> getDestination(@PathVariable int id){
-        try{
-            return ResponseEntity.ok(mapper.toDestinationResponse(destinationService.getDestination(id)));
-        }catch (Exception ex){
-            return ResponseEntity.badRequest().build();
+    public ApiResponse<DestinationResponse> getDestination(@PathVariable Long id){
+        try {
+            return new ApiResponse<>(200,"success",
+                    mapper.toDestinationResponse(destinationService.getDestination(id)));
+        }catch (Exception e){
+            return new ApiResponse<>(400,e.getMessage(),null);
         }
     }
 }

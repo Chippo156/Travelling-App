@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Entity
 @Table(name = "destinations")
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = false)
@@ -16,7 +18,7 @@ public class Destination {
     @Id
     @Column(name = "destination_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Long id;
     String name;
     String description;
     String location;
@@ -28,5 +30,7 @@ public class Destination {
     @Column(name = "image_url")
     String imageUrl;
     double price;
+    @OneToMany(mappedBy = "destination",cascade = CascadeType.ALL)
+    List<PopularAmenity> popularAmenities;
 
 }

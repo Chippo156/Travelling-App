@@ -1,4 +1,4 @@
-package org.ecommerce.travelappbackend.dtos;
+package org.ecommerce.travelappbackend.dtos.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

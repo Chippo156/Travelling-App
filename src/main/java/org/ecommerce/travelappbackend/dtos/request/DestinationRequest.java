@@ -1,4 +1,4 @@
-package org.ecommerce.travelappbackend.dtos;
+package org.ecommerce.travelappbackend.dtos.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -11,13 +11,14 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = false)
 public class DestinationRequest {
+
     String name;
     String description;
     String location;
     @JsonProperty("average_rating")
     double averageRating;
     @JsonProperty("category_id")
-    int categoryId;
+    Long categoryId;
     @JsonProperty("image_url")
     String imageUrl;
     double price;

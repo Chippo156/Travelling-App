@@ -1,12 +1,14 @@
 server:
   port: 8080
+api:
+  prefix: /api/v1
 spring:
   application:
     name: Travel-app
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/Travel?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    url: jdbc:mysql://localhost:3306/travel_app?useSSL=false&serverTimezone=UTC
     username: root
-    password: ${MYSQL_ROOT_PASSWORD:Abc123456789@}
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
@@ -16,6 +18,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
+
+jwt:
+  secretKey: 90c85b588e8d468d45cf5a70a5517dc6507a0655d7ea0664f6eb70dd4d76394e
+  valid-duration: 86400000
+  refresh-duration: 86400000
 
 
 

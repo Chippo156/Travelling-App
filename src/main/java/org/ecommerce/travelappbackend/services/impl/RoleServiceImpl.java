@@ -1,10 +1,10 @@
-package org.ecommerce.travelappbackend.services;
+package org.ecommerce.travelappbackend.services.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.ecommerce.travelappbackend.dtos.RoleRequest;
+import org.ecommerce.travelappbackend.dtos.request.RoleRequest;
 import org.ecommerce.travelappbackend.entity.Role;
 import org.ecommerce.travelappbackend.repository.RoleRepository;
-import org.ecommerce.travelappbackend.services.impl.RoleService;
+import org.ecommerce.travelappbackend.services.service.RoleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,23 +23,16 @@ public class   RoleServiceImpl implements RoleService {
         return repository.save(role);
     }
 
-    @Override
-    public Role updateRole(RoleRequest role) {
-        return null;
-    }
+
 
     @Override
-    public Role getRole(int id) {
+    public Role getRole(Long id) {
         return repository.findById(id).orElseThrow(()->new RuntimeException("Role not found"));
     }
 
-    @Override
-    public void deleteRole(int id) {
-
-    }
 
     @Override
     public List<Role> getAllRoles() {
-        return null;
+        return repository.findAll();
     }
 }

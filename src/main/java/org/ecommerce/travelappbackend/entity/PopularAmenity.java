@@ -2,24 +2,23 @@ package org.ecommerce.travelappbackend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "destination_images")
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = false)
+@Table(name = "popular_amenities")
 @Setter
 @Getter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DestinationImage {
+public class PopularAmenity {
     @Id
-    @Column(name = "image_id")
+    @Column(name = "amenity_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "image_url")
-    String imageUrl;
+    private String amenityName;
+    private String amenityIcon;
     @ManyToOne
     @JoinColumn(name = "destination_id")
-    Destination destination;
+    private Destination destination;
+
 }

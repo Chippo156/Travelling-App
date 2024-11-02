@@ -5,14 +5,14 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "destination_images")
+@Table(name = "room_images")
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = false)
 @Setter
 @Getter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DestinationImage {
+public class RoomImage {
     @Id
     @Column(name = "image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +20,6 @@ public class DestinationImage {
     @Column(name = "image_url")
     String imageUrl;
     @ManyToOne
-    @JoinColumn(name = "destination_id")
-    Destination destination;
+    @JoinColumn(name = "room_id")
+    Room room;
 }

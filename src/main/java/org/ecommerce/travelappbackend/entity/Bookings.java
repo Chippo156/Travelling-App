@@ -5,33 +5,37 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookings")
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = false)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = false)
 @Setter
 @Getter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bookings extends BaseEntity{
+public class Bookings extends BaseEntity {
     @Id
-@Column(name = "booking_id")
-@GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-     int id;
+    @Column(name = "booking_id")
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    Long id;
     @Column(name = "user_id")
-     int userId;
+    Long userId;
     @Column(name = "destination_id")
-     int destinationId;
+    Long destinationId;
+    @Column(name = "room_id")
+    Long roomId;
     @Column(name = "booking_time")
-     LocalDate bookingTime;
+    LocalDateTime bookingTime;
     @Column(name = "booking_status")
-     String bookingStatus;
+    String bookingStatus;
     @Column(name = "payment_status")
-     String paymentStatus;
+    String paymentStatus;
     @Column(name = "payment_method")
-     String paymentMethod;
+    String paymentMethod;
     @Column(name = "payment_date")
-     LocalDate paymentDate;
-
+    LocalDate paymentDate;
+    @Column(name = "amount")
+    double amount;
 }

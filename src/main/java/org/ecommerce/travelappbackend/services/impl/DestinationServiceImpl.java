@@ -1,0 +1,95 @@
+package org.ecommerce.travelappbackend.services.impl;
+
+import lombok.RequiredArgsConstructor;
+import org.ecommerce.travelappbackend.dtos.request.DestinationRequest;
+import org.ecommerce.travelappbackend.entity.Category;
+import org.ecommerce.travelappbackend.entity.Destination;
+import org.ecommerce.travelappbackend.mapper.DestinationMapper;
+import org.ecommerce.travelappbackend.repository.CategoryRepository;
+import org.ecommerce.travelappbackend.repository.DestinationRepository;
+import org.ecommerce.travelappbackend.services.service.DestinationService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class DestinationServiceImpl implements DestinationService {
+    private final DestinationRepository destinationRepository;
+    private final DestinationMapper mapper;
+    private final CategoryRepository categoryRepository;
+    @Override
+    public Destination createDestination(DestinationRequest destinationRequest) throws Exception {
+        try {
+            Category category = categoryRepository.findById(destinationRequest.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+            Destination destination = mapper.toDestination(destinationRequest);
+            destination.setCategory(category);
+            return destinationRepository.save(destination);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public Destination getDestination(Long id) {
+        return destinationRepository.findById(id).orElseThrow(() -> new RuntimeException("Destination not found"));
+    }
+
+    @Override
+    public Destination updateDestination(Long id, DestinationRequest destinationRequest) {
+        try{
+            Destination destination = destinationRepository.findById(id).orElseThrow(()->new RuntimeException("Destination not found"));
+            Category category = categoryRepository.findById(destinationRequest.getCategoryId())
+                    .orElseThrow(()->new RuntimeException("Category not found"));
+
+            if(destinationRequest.getName()!=null)
+                destination.setName(destinationRequest.getName());
+            if(destinationRequest.getDescription()!=null)
+                destination.setDescription(destinationRequest.getDescription());
+            if(destinationRequest.getAverageRating()!=0)
+                destination.setAverageRating(destinationRequest.getAverageRating());
+            if(destinationRequest.getLocation()!=null)
+                destination.setLocation(destinationRequest.getLocation());
+            if(destinationRequest.getCategoryId()!=0)
+                destination.setCategory(category);
+
+            return destinationRepository.save(destination);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Destination> getAllDestinations(int page, int size) {
+       try{
+           Sort sort = Sort.by(Sort.Order.asc("id"));
+           Pageable pageable = PageRequest.of(page-1,size,sort);
+           var destinations = destinationRepository.findAll(pageable);
+           return destinations.getContent();
+       }catch (Exception e){
+           throw new RuntimeException(e.getMessage());
+       }
+    }
+
+    @Override
+    public void deleteDestination(Long id) {
+        try{
+            destinationRepository.deleteById(id);
+        }catch (Exception e){
+            throw new RuntimeException("Destination not found");
+        }
+    }
+
+    @Override
+    public List<Destination> getDestinationByCategory(Long categoryId) {
+        try{
+            return destinationRepository.findByCategoryId(categoryId);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+}
