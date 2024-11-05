@@ -15,4 +15,6 @@ public interface RoomService {
      List<RoomResponse> getRoomsByDestinationId(Long destinationId);
      List<RoomResponse> getRoomsByRoomType(String roomType);
 
+     void updateImage(Long id, String imageUrl);
+
 }

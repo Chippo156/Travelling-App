@@ -22,6 +22,8 @@ public class RoomResponse {
      Double area; // Diện tích (m²)
      String beds; // Loại và số lượng giường (e.g., 1 King Bed, 1 Double Sofa Bed)
      double price;
+     @JsonProperty("image_url")
+     String imageUrl;
         @JsonProperty("destination_id")
      Long destinationId;
 }

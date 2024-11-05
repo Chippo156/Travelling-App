@@ -22,7 +22,6 @@ public class RoomServiceImpl implements RoomService {
     private final RoomMapper roomMapper;
     private final DestinationRepository destinationRepository;
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public List<RoomResponse> getAllRooms() {
         return roomRepository.findAll().stream().map(roomMapper::toRoomResponse).toList();
@@ -87,5 +86,17 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<RoomResponse> getRoomsByRoomType(String roomType) {
         return roomRepository.findByRoomType(roomType).stream().map(roomMapper::toRoomResponse).toList();
+    }
+
+    @Override
+    public void updateImage(Long id, String imageUrl) {
+        try{
+            Room room = roomRepository.findById(id).orElseThrow(()->new RuntimeException("Room not found"));
+            room.setImageUrl(imageUrl);
+            roomRepository.save(room);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 }

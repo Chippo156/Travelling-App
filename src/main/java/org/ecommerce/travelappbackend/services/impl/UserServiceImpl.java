@@ -8,6 +8,7 @@ import org.ecommerce.travelappbackend.mapper.UserMapper;
 import org.ecommerce.travelappbackend.repository.RoleRepository;
 import org.ecommerce.travelappbackend.repository.UserRepository;
 import org.ecommerce.travelappbackend.services.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,16 +21,16 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-
+   private final PasswordEncoder passwordEncoder;
     @Override
     public User createUser(UserRequest userRequest) {
         if(userRepository.existsByUsername(userRequest.getUsername())){
             throw new RuntimeException("Username already exists");
         }
         User user = mapper.toUser(userRequest);
-        user.setPassword(userRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         List<Role> getRoles = roleRepository.findAll();
-        user.setRole(getRoles.get(2));
+        user.setRole(getRoles.get(1));
         return userRepository.save(user);
     }
 

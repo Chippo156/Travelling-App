@@ -10,13 +10,17 @@ public interface DestinationService {
 
     Destination getDestination(Long id);
 
-    Destination updateDestination(Long id, DestinationRequest destinationRequest);
+    void updateDestination(Long id, DestinationRequest destinationRequest);
 
     List<Destination> getAllDestinations(int page, int size);
 
     void deleteDestination(Long id);
 
     List<Destination> getDestinationByCategory(Long categoryId);
+
+    void updateImage(Long id, String imageUrl);
+
+
 
 
 }

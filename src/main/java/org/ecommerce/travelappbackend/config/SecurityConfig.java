@@ -26,10 +26,19 @@ public class SecurityConfig {
                 endpoint + "/auth/token",
                 endpoint + "/auth/logout",
                 endpoint + "/auth/introspect",
-                endpoint + "/auth/refresh"
+                endpoint + "/auth/refresh",
+                endpoint + "/users/registration",
+                endpoint + "/**",
         };
     }
-
+    private String[] methodGet() {
+        return new String[]{
+                endpoint + "/destinations",
+                endpoint + "/destinations/*",
+                endpoint + "/amenities",
+                endpoint +"/**"
+        };
+    }
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
 
@@ -39,10 +48,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> {
-            request.requestMatchers(HttpMethod.POST, getPublicEndpoints())
+            request.requestMatchers(HttpMethod.POST, getPublicEndpoints()
+                    )
                     .permitAll()
+                    .requestMatchers(HttpMethod.GET, methodGet()).permitAll()
                     .anyRequest()
                     .authenticated();
+
         });
         http.oauth2ResourceServer(oauth2 -> {
             oauth2.jwt(jwtConfigurer -> jwtConfigurer

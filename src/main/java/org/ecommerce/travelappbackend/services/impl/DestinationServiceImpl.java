@@ -40,13 +40,14 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public Destination updateDestination(Long id, DestinationRequest destinationRequest) {
+    public void updateDestination(Long id, DestinationRequest destinationRequest) {
         try{
             Destination destination = destinationRepository.findById(id).orElseThrow(()->new RuntimeException("Destination not found"));
+            System.out.println(destination);
             Category category = categoryRepository.findById(destinationRequest.getCategoryId())
                     .orElseThrow(()->new RuntimeException("Category not found"));
 
-            if(destinationRequest.getName()!=null)
+            if(destinationRequest.getName()!=null )
                 destination.setName(destinationRequest.getName());
             if(destinationRequest.getDescription()!=null)
                 destination.setDescription(destinationRequest.getDescription());
@@ -56,12 +57,17 @@ public class DestinationServiceImpl implements DestinationService {
                 destination.setLocation(destinationRequest.getLocation());
             if(destinationRequest.getCategoryId()!=0)
                 destination.setCategory(category);
+              if(destinationRequest.getImageUrl()!=null)
+                destination.setImageUrl(destinationRequest.getImageUrl());
 
-            return destinationRepository.save(destination);
+
+
+            destinationRepository.save(destination);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
     }
+
 
     @Override
     public List<Destination> getAllDestinations(int page, int size) {
@@ -92,4 +98,18 @@ public class DestinationServiceImpl implements DestinationService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    @Override
+    public void updateImage(Long id, String imageUrl) {
+        try{
+            Destination destination = destinationRepository.findById(id).orElseThrow(()->new RuntimeException("Destination not found"));
+            destination.setImageUrl(imageUrl);
+            destinationRepository.save(destination);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+
+
 }

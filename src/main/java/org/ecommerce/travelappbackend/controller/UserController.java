@@ -18,7 +18,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper mapper;
-    @PostMapping
+    @PostMapping("/registration")
     public ApiResponse<UserResponse> createUser(@RequestBody UserRequest userRequest){
         try{
             return new ApiResponse<>(200,"success",mapper.toUserResponse(userService.createUser(userRequest)));
