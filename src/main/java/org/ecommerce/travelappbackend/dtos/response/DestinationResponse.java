@@ -23,5 +23,6 @@ public class DestinationResponse {
     String location;
     @JsonProperty("average_rating")
     double averageRating;
+    @JsonProperty("image_url")
     String imageUrl;
 }
