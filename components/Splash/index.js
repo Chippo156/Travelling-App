@@ -5,7 +5,7 @@ export default Splash = ({ navigation }) => {
   useEffect(() => {
     // Điều hướng đến trang 2 sau 2 giây
     const timer = setTimeout(() => {
-      navigation.navigate("Page2");
+      navigation.navigate("Home");
     }, 2000);
 
     // Xóa timer khi component unmount
