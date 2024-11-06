@@ -18,9 +18,4 @@ public class PopularAmenity {
     private Long id;
     private String amenityName;
     private String amenityIcon;
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "destination_id")
-    private Destination destination;
-
 }

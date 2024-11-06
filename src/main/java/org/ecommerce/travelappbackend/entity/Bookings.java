@@ -20,12 +20,15 @@ public class Bookings extends BaseEntity {
     @Column(name = "booking_id")
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     Long id;
-    @Column(name = "user_id")
-    Long userId;
-    @Column(name = "destination_id")
-    Long destinationId;
-    @Column(name = "room_id")
-    Long roomId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
+    @ManyToOne
+    @JoinColumn(name = "destination_id")
+    Destination destination;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    Room room;
     @Column(name = "booking_time")
     LocalDateTime bookingTime;
     @Column(name = "booking_status")

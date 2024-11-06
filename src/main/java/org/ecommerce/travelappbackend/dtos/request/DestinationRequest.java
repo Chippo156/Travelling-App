@@ -22,5 +22,4 @@ public class DestinationRequest {
     Long categoryId;
     @JsonProperty("image_url")
     String imageUrl;
-    double price;
 }

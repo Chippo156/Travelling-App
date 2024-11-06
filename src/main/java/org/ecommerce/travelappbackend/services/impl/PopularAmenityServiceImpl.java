@@ -20,16 +20,11 @@ public class PopularAmenityServiceImpl implements PopularAmenityService {
 
     private final PopularAmenityRepository popularAmenityRepository;
     private final PopularAmenityMapper popularAmenityMapper;
-    private final DestinationRepository destinationRepository;
     @Override
     public PopularAmenityResponse createPopularAmenity(PopularAmenityRequest popularAmenityRequest) {
         try{
-           Destination destination= destinationRepository.findById(popularAmenityRequest.getDestinationId())
-                    .orElseThrow(()->new RuntimeException("Destination not found"));
             PopularAmenity popularAmenity = popularAmenityMapper.popularAmenityRequestToPopularAmenity(popularAmenityRequest);
-            popularAmenity.setDestination(destination);
             return popularAmenityMapper.popularAmenityToPopularAmenityResponse(popularAmenityRepository.save(popularAmenity));
-
         }catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

@@ -4,8 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.ecommerce.travelappbackend.dtos.request.BookingRequest;
 import org.ecommerce.travelappbackend.dtos.response.BookingResponse;
 import org.ecommerce.travelappbackend.entity.Bookings;
+import org.ecommerce.travelappbackend.entity.Destination;
+import org.ecommerce.travelappbackend.entity.Room;
+import org.ecommerce.travelappbackend.entity.User;
 import org.ecommerce.travelappbackend.mapper.BookingMapper;
 import org.ecommerce.travelappbackend.repository.BookingRepository;
+import org.ecommerce.travelappbackend.repository.DestinationRepository;
+import org.ecommerce.travelappbackend.repository.RoomRepository;
+import org.ecommerce.travelappbackend.repository.UserRepository;
 import org.ecommerce.travelappbackend.services.service.BookingService;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +23,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
-
     private final BookingMapper bookingMapper;
-
+    private  final DestinationRepository destinationRepository;
+    private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
     @Override
     public BookingResponse createBooking(BookingRequest bookingRequest) throws Exception {
         try{
+            User user = userRepository.findById(bookingRequest.getUserId()).orElseThrow(()->new RuntimeException("User not found"));
+            Destination destination = destinationRepository.findById(bookingRequest.getDestinationId()).orElseThrow(()->new RuntimeException("Destination not found"));
+            Room room = roomRepository.findById(bookingRequest.getRoomId()).orElseThrow(()->new RuntimeException("Room not found"));
             Bookings bookings = bookingMapper.toBooking(bookingRequest);
+            bookings.setDestination(destination);
+            bookings.setRoom(room);
+            bookings.setUser(user);
             bookings.setBookingTime(LocalDateTime.now());
             if(bookingRequest.getPaymentStatus().equals("NO_PAID")){
                 bookings.setPaymentDate(null);
             }else if(bookingRequest.getPaymentStatus().equals("PAID")){
                 bookings.setPaymentDate(LocalDate.now());
             }
+            bookings.setBookingStatus("BOOKED");
             bookings = bookingRepository.save(bookings);
             return bookingMapper.toBookingResponse(bookings);
         }catch (Exception ex){

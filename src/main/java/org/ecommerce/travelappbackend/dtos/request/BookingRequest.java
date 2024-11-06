@@ -17,9 +17,11 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = false)
 public class BookingRequest {
     @JsonProperty("user_id")
-    int userId;
+    Long userId;
     @JsonProperty("destination_id")
-    int destinationId;
+    Long destinationId;
+    @JsonProperty("room_id")
+    Long roomId;
     @JsonProperty("payment_status")
     String paymentStatus;
     @JsonProperty("payment_method")

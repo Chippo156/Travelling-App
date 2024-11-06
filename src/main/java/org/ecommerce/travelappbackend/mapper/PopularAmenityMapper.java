@@ -10,7 +10,6 @@ import org.mapstruct.Mapping;
 public interface PopularAmenityMapper {
 
     PopularAmenity popularAmenityRequestToPopularAmenity(PopularAmenityRequest popularAmenityRequest);
-    @Mapping(target = "destinationId", source = "popularAmenity.destination.id")
     PopularAmenityResponse popularAmenityToPopularAmenityResponse(PopularAmenity popularAmenity);
 
 }

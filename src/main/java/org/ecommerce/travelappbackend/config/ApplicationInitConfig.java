@@ -23,23 +23,23 @@ public class ApplicationInitConfig {
 
 
      PasswordEncoder passwordEncoder;
-     @Bean
-    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository){
-        return args -> {
-            if (userRepository.findByUsername("admin").isEmpty()) {
-                Role role = roleRepository.findById(1L).orElseThrow(()->new RuntimeException("Role not found"));
-
-                User user = User.builder()
-                        .username("admin")
-                        .password(passwordEncoder.encode("admin"))
-                        .role(role)
-                        .build();
-                userRepository.save(user);
-
-                log.warn("Admin user created with default password: admin");
-            }
-        };
-    }
+//     @Bean
+//    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository){
+//        return args -> {
+//            if (userRepository.findByUsername("admin").isEmpty()) {
+//                Role role = roleRepository.findById(1L).orElseThrow(()->new RuntimeException("Role not found"));
+//
+//                User user = User.builder()
+//                        .username("admin")
+//                        .password(passwordEncoder.encode("admin"))
+//                        .role(role)
+//                        .build();
+//                userRepository.save(user);
+//
+//                log.warn("Admin user created with default password: admin");
+//            }
+//        };
+//    }
 
 
 }

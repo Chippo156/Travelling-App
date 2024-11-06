@@ -18,7 +18,7 @@ public class DestinationImageServiceImpl implements DestinationImageService {
      private final DestinationImageRepository destinationImageRepository;
      @Override
      public DestinationImage uploadImage(Long destinationId, DestinationImageRequest request) {
-          Destination destination = destinationRepository.findById(destinationId).orElseThrow(()->new RuntimeException("Destination not found"));
+            Destination destination = destinationRepository.findById(destinationId).orElseThrow(()->new RuntimeException("Destination not found"));
             DestinationImage destinationImage = new DestinationImage();
             destinationImage.setDestination(destination);
             destinationImage.setImageUrl(request.getImageUrl());

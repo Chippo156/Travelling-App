@@ -22,6 +22,8 @@ public class BookingResponse {
     Long userId;
     @JsonProperty("destination_id")
     Long destinationId;
+    @JsonProperty("room_id")
+    Long roomId;
     @JsonProperty("booking_time")
     LocalDateTime bookingTime;
     @JsonProperty("booking_status")

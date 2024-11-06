@@ -18,7 +18,4 @@ public class PopularAmenityRequest {
     private String amenityName;
     @JsonProperty("amenity_icon")
     private String amenityIcon;
-    @JsonProperty("destination_id")
-    private Long destinationId;
-
 }

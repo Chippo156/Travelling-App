@@ -1,5 +1,6 @@
 package org.ecommerce.travelappbackend.dtos.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.ecommerce.travelappbackend.entity.PopularAmenity;
@@ -15,12 +16,12 @@ import java.util.List;
 @Builder
 
 public class DestinationResponse {
+    @JsonProperty("destination_id")
     Long id;
     String name;
     String description;
     String location;
+    @JsonProperty("average_rating")
     double averageRating;
     String imageUrl;
-    double price;
-    List<PopularAmenity> popularAmenities;
 }

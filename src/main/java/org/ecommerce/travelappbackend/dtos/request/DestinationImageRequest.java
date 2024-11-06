@@ -16,6 +16,5 @@ public class DestinationImageRequest {
     @JsonProperty("destination_id")
     Long destinationId;
     @JsonProperty("image_url")
-    @Size(min = 5,max = 200,message = "Image URL must be between 5 and 200 characters")
     String imageUrl;
 }
