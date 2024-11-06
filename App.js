@@ -9,6 +9,8 @@ import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
 import store from "./components/Redux/store";
 import Home from "./components/Home";
+import TravelDetail from "./components/TravelDetails";
+
 const Stack = createStackNavigator();
 const App = () => {
   return (
@@ -29,6 +31,7 @@ const App = () => {
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="TravelDetail" component={TravelDetail} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

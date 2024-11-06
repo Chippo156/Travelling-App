@@ -7,6 +7,9 @@ import { TouchableOpacity, View } from "react-native";
 import { Text, TextInput } from "react-native";
 function Register({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
+
+  
+
   return (
     <View
       style={{
