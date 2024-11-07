@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaFacebook, FaTwitter } from "react-icons/fa";
 import { FaSquareInstagram } from "react-icons/fa6";
@@ -6,6 +6,8 @@ import { TouchableOpacity, View, Text, TextInput } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../Redux/userSlice";
 import TravelDetail from "../TravelDetails";
+import { loginUser } from "../controller/loginController";
+
 
 function Login({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
@@ -21,7 +23,13 @@ function Login({ navigation }) {
     dispatch(login(userInfo)); // Dispatch action login
     navigation.navigate("TravelDetail"); // Điều hướng sang trang Home sau khi đăng nhập
   };
-
+  useEffect(() => {
+    console.log(1);
+    if (isLoggedIn) {
+      navigation.navigate("TravelDetail");
+    }
+  }
+  , [isLoggedIn]);
   return (
     <View
       style={{
