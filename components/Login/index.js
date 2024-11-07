@@ -17,16 +17,24 @@ function Login({ navigation }) {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
-  const handleLogin = () => {
+  const handleLogin = async() => {
+
     // Giả lập thông tin người dùng sau khi đăng nhập thành công
     const userInfo = { email, password };
-    dispatch(login(userInfo)); // Dispatch action login
-    navigation.navigate("TravelDetail"); // Điều hướng sang trang Home sau khi đăng nhập
+    let res =await loginUser(email, password);
+    console.log(res);
+    if(res && res.code===1000){
+      localStorage.setItem('token', res.result.token);
+      dispatch(login({user:userInfo, token:res.result.token}));
+      navigation.navigate("Home"); // Điều hướng sang trang Home sau khi đăng nhập
+    }else{
+      alert("Đăng nhập thất bại");
+    }
+    // dispatch(login(userInfo)); // Dispatch action login
   };
   useEffect(() => {
-    console.log(1);
     if (isLoggedIn) {
-      navigation.navigate("TravelDetail");
+      navigation.navigate("Home");
     }
   }
   , [isLoggedIn]);
