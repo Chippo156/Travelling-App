@@ -1,11 +1,10 @@
-
-import axios from 'axios';
+import axios from "axios";
 
 // Khởi tạo instance axios
 const axiosInstance = axios.create({
-  baseURL: 'https://travelling-app.onrender.com/api/v1', // URL mặc định cho tất cả các yêu cầu
+  baseURL: "https://travelling-app.onrender.com/api/v1", // URL mặc định cho tất cả các yêu cầu
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   timeout: 10000, // Thời gian chờ tối đa (10 giây)
 });
@@ -14,7 +13,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     // Có thể thêm token vào headers nếu cần
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       console.log(1);
       config.headers.Authorization = `Bearer ${token}`;
@@ -31,7 +30,7 @@ axiosInstance.interceptors.response.use(
     // Xử lý lỗi chung (VD: thông báo, xử lý lỗi 401,...)
     if (error.response && error.response.status === 401) {
       // Ví dụ: logout hoặc refresh token
-      console.log('Unauthorized - Redirecting to login');
+      console.log("Unauthorized - Redirecting to login");
     }
     return Promise.reject(error);
   }

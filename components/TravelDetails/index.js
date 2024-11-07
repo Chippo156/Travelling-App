@@ -1,33 +1,35 @@
-import { FlatList, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Destination } from "../../model/Destination";
 import { useEffect, useState } from "react";
 import { environtment } from "../../environtment/environtment";
+import { getDestinationById } from "../controller/DetailsController";
 export default function TravelDetail({ navigation }) {
-  
-  
-  const [destination, setDestinations] = useState<Destination>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [destination, setDestinations] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const getDestinationDetails = async () => {
-    try {
-      const response = await fetch(`${environtment.apiBaseUrl}/destinations/1`);
-      const data = await response.json();
-      console.log(data);
-      setDestinations(data.result);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+    let res = await getDestinationById(1);
+    setDestinations(res);
+    setLoading(false);
+  };
   useEffect(() => {
     getDestinationDetails();
-  },[]);
-
+  }, []);
 
   return (
     <View style={styles.container}>
       <View>
-        <Image source={{ uri: destination?.image_url?.toString() }} style={{ width: "100%", height: 200 }} />
+        <Image
+          source={{ uri: destination?.image_url?.toString() }}
+          style={{ width: "100%", height: 200 }}
+        />
       </View>
       <View
         style={{
@@ -56,7 +58,7 @@ export default function TravelDetail({ navigation }) {
             fontSize: 22,
           }}
         >
-          {destination?.name}
+          {destination.name}
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <Text>Sao</Text>
@@ -83,7 +85,7 @@ export default function TravelDetail({ navigation }) {
         <View
           style={{ padding: 7, borderRadius: 10, backgroundColor: "green" }}
         >
-          <Text style={{ color: "white" }}>{destination?.average_rating.toString()}</Text>
+          <Text style={{ color: "white" }}>{destination?.average_rating}</Text>
         </View>
         <Text style={{ color: "#000", fontSize: 18, fontWeight: "bold" }}>
           Exceptional
@@ -95,8 +97,8 @@ export default function TravelDetail({ navigation }) {
       <Text style={{ color: "#000", fontSize: 18, fontWeight: "bold" }}>
         About this property
       </Text>
-      <Text>{destination?.description}</Text>
-     
+      <Text>{destination.description}</Text>
+
       <Text>See all about this property</Text>
       <View>
         <Text style={{ color: "#000", fontSize: 18, fontWeight: "bold" }}>

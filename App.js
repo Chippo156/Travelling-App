@@ -18,10 +18,9 @@ import Main from "./components/Main";
 
 const Stack = createStackNavigator();
 const App = () => {
-  
   return (
     <Provider store={store}>
-        <Main />
+      <Main />
     </Provider>
   );
 };

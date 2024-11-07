@@ -28,10 +28,12 @@ function Main() {
       );
     }
   };
-  useEffect(() => {handleReloadUser()}, []);
+  useEffect(() => {
+    handleReloadUser();
+  }, []);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="TravelDetail">
         <Stack.Screen
           name="Splash"
           component={Splash}

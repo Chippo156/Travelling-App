@@ -6,44 +6,23 @@ import { FaSquareInstagram } from "react-icons/fa6";
 import { TouchableOpacity, View } from "react-native";
 import { Text, TextInput } from "react-native";
 import { User } from "../../model/User";
-import { environtment } from "../../environtment/environtment";
+import { registerUser } from "../controller/registerController";
 function Register({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-
-
-  const user : User = {
-    username: userName,
-    email: email,
-    password: password,
-    phone: phoneNumber
-  };
-  console.log(user);
   const register = async () => {
-  
-    try {
-      const response = await fetch(`${environtment.apiBaseUrl}/users/registration`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(user),
-      });
-      const data = await response.json();
-      console.log(data);
-      if(data.code === 200) {
-        alert("Registration Success");
-        navigation.navigate("Login");
-      }else{
-        alert(data.message);
-      }
-    } catch (error) {
-      console.error(error);
+    let res = await registerUser(userName, email, password, phoneNumber);
+    console.log(res);
+    if (res && res.code === 200) {
+      alert("Register success");
+      navigation.navigate("Login");
+    } else {
+      alert("Register fail");
     }
-  }
+  };
 
   return (
     <View
