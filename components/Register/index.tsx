@@ -5,10 +5,45 @@ import { FaTwitter } from "react-icons/fa";
 import { FaSquareInstagram } from "react-icons/fa6";
 import { TouchableOpacity, View } from "react-native";
 import { Text, TextInput } from "react-native";
+import { User } from "../../model/User";
+import { environtment } from "../../environtment/environtment";
 function Register({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
+
+  const user : User = {
+    username: userName,
+    email: email,
+    password: password,
+    phone: phoneNumber
+  };
+  console.log(user);
+  const register = async () => {
   
+    try {
+      const response = await fetch(`${environtment.apiBaseUrl}/users/registration`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+      const data = await response.json();
+      console.log(data);
+      if(data.code === 200) {
+        alert("Registration Success");
+        navigation.navigate("Login");
+      }else{
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <View
@@ -41,7 +76,7 @@ function Register({ navigation }) {
           Sign up now
         </Text>
         <Text style={{ color: "#7D848D", fontSize: 16, lineHeight: 20 }}>
-        Please fill the details and create account
+          Please fill the details and create account
         </Text>
         <View
           style={{
@@ -56,6 +91,8 @@ function Register({ navigation }) {
           <TextInput
             placeholder="User Name"
             style={{ fontSize: 16, lineHeight: 58 }}
+            value={userName}
+            onChangeText={setUserName}
           />
         </View>
         <View
@@ -71,6 +108,25 @@ function Register({ navigation }) {
           <TextInput
             placeholder="Email"
             style={{ fontSize: 16, lineHeight: 58 }}
+            value={email}
+            onChangeText={setEmail}
+          />
+        </View>
+        <View
+          style={{
+            width: "100%",
+            height: 58,
+            backgroundColor: "#F7F7F9",
+            paddingLeft: 8,
+            paddingRight: 8,
+            marginTop: 30,
+          }}
+        >
+          <TextInput
+            placeholder="Phone Number"
+            style={{ fontSize: 16, lineHeight: 58 }}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
           />
         </View>
         <View
@@ -89,6 +145,8 @@ function Register({ navigation }) {
             placeholder="Password"
             secureTextEntry={true}
             style={{ fontSize: 16, lineHeight: 58, width: "100%" }}
+            value={password}
+            onChangeText={setPassword}
           />
           <FaRegEyeSlash style={{ position: "absolute", top: 20, right: 8 }} />
         </View>
@@ -112,6 +170,7 @@ function Register({ navigation }) {
             cursor: "pointer",
             marginTop: 30,
           }}
+          onPress={register}
         >
           <Text
             style={{
@@ -136,7 +195,10 @@ function Register({ navigation }) {
           <Text style={{ fontSize: 14, lineHeight: 16, color: "#707B81" }}>
             Already have an account?
           </Text>
-          <TouchableOpacity style={{ cursor: "pointer" }} onPress={()=>navigation.navigate("Login")}>
+          <TouchableOpacity
+            style={{ cursor: "pointer" }}
+            onPress={() => navigation.navigate("Login")}
+          >
             <Text style={{ fontSize: 14, lineHeight: 16, color: "#FF6421" }}>
               Sign in
             </Text>
@@ -151,9 +213,36 @@ function Register({ navigation }) {
           gap: 20,
         }}
       >
-        <FaFacebook style={{padding:12,width:30,height:30,borderRadius:"50%",backgroundColor:"#1877f2",color:"#fff"}} />
-        <FaSquareInstagram style={{padding:12,width:30,height:30,borderRadius:"50%",backgroundColor:"#d94dac",color:"#fff"}}/>
-        <FaTwitter style={{padding:12,width:30,height:30,borderRadius:"50%",backgroundColor:"#03a9f4",color:"#fff"}} />
+        <FaFacebook
+          style={{
+            padding: 12,
+            width: 30,
+            height: 30,
+            borderRadius: "50%",
+            backgroundColor: "#1877f2",
+            color: "#fff",
+          }}
+        />
+        <FaSquareInstagram
+          style={{
+            padding: 12,
+            width: 30,
+            height: 30,
+            borderRadius: "50%",
+            backgroundColor: "#d94dac",
+            color: "#fff",
+          }}
+        />
+        <FaTwitter
+          style={{
+            padding: 12,
+            width: 30,
+            height: 30,
+            borderRadius: "50%",
+            backgroundColor: "#03a9f4",
+            color: "#fff",
+          }}
+        />
       </View>
     </View>
   );

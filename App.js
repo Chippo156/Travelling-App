@@ -17,7 +17,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName="Register">
           <Stack.Screen
             name="Splash"
             component={Splash}
