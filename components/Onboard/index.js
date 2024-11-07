@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { TouchableOpacity, ImageBackground, StyleSheet, Text, View } from "react-native";
 
-function Onboard() {
+function Onboard({navigation}) {
   const [index, setIndex] = useState(0);
 
   // This function will handle changing the index, can be adjusted for navigation
   const handleGetStarted = () => {
+    if (index === 2) {
+      navigation.navigate("Home");
+    }
     if (index < 2) {
       setIndex(index + 1); // Change to the next index
     } else {
@@ -46,7 +49,7 @@ function Onboard() {
           <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={{position:"absolute",top:30,right:20,cursor:"pointer"}}><Text style={{fontSize:24,color:"#CAEAFF"}}>Skip</Text></TouchableOpacity>
+      <TouchableOpacity style={{position:"absolute",top:30,right:20,cursor:"pointer"}} onPress={()=>navigation.navigate("Home")}><Text style={{fontSize:24,color:"#CAEAFF"}}>Skip</Text></TouchableOpacity>
     </ImageBackground>
   );
 }

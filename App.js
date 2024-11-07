@@ -10,13 +10,14 @@ import ForgotPassword from "./components/ForgotPassword";
 import store from "./components/Redux/store";
 import Home from "./components/Home";
 import TravelDetail from "./components/TravelDetails";
+import { Image } from "react-native";
 
 const Stack = createStackNavigator();
 const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
             name="Splash"
             component={Splash}
@@ -30,7 +31,22 @@ const App = () => {
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              headerShown: true,
+              headerTitle: () => (
+                <Image
+                  source={require("./assets/logo.png")} // Đường dẫn đến logo của bạn
+                  style={{ width: 100, height: 40 }} // Điều chỉnh kích thước logo theo ý muốn
+                  resizeMode="contain"
+                />
+              ),
+              headerTitleAlign: "center", // Căn giữa logo
+            }}
+          />
+
           <Stack.Screen name="TravelDetail" component={TravelDetail} />
         </Stack.Navigator>
       </NavigationContainer>
