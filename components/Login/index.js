@@ -6,7 +6,7 @@ import { TouchableOpacity, View, Text, TextInput } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../Redux/userSlice";
 import TravelDetail from "../TravelDetails";
-import { loginUser } from "../controller/loginController";
+import { loginUser, reloadUser } from "../controller/loginController";
 
 
 function Login({ navigation }) {
@@ -16,7 +16,6 @@ function Login({ navigation }) {
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-
   const handleLogin = async() => {
 
     // Giả lập thông tin người dùng sau khi đăng nhập thành công
@@ -25,14 +24,20 @@ function Login({ navigation }) {
     console.log(res);
     if(res && res.code===1000){
       localStorage.setItem('token', res.result.token);
-      dispatch(login({user:userInfo, token:res.result.token}));
-      navigation.navigate("Home"); // Điều hướng sang trang Home sau khi đăng nhập
+      let res_token = await reloadUser(localStorage.getItem('token'));
+      if(res_token && res_token.code===200){
+        dispatch(login({user:res_token.result.user,isLoggedIn:res_token.result.valid}));
+        navigation.navigate("Home"); // Điều hướng sang trang Home sau khi đăng nhập
+      }else{
+        alert("Đăng nhập thất bại");
+      }
     }else{
       alert("Đăng nhập thất bại");
     }
     // dispatch(login(userInfo)); // Dispatch action login
   };
   useEffect(() => {
+    console.log(isLoggedIn);
     if (isLoggedIn) {
       navigation.navigate("Home");
     }

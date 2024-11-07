@@ -11,45 +11,17 @@ import store from "./components/Redux/store";
 import Home from "./components/Home";
 import TravelDetail from "./components/TravelDetails";
 import { Image } from "react-native";
+import { reloadUser } from "./components/controller/loginController";
+import { login, logout } from "./components/Redux/userSlice";
+import { useSelector, useDispatch } from "react-redux";
+import Main from "./components/Main";
 
 const Stack = createStackNavigator();
 const App = () => {
+  
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
-          <Stack.Screen
-            name="Splash"
-            component={Splash}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Onboard"
-            component={Onboard}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{
-              headerShown: true,
-              headerTitle: () => (
-                <Image
-                  source={require("./assets/logo.png")} // Đường dẫn đến logo của bạn
-                  style={{ width: 100, height: 40 }} // Điều chỉnh kích thước logo theo ý muốn
-                  resizeMode="contain"
-                />
-              ),
-              headerTitleAlign: "center", // Căn giữa logo
-            }}
-          />
-
-          <Stack.Screen name="TravelDetail" component={TravelDetail} />
-        </Stack.Navigator>
-      </NavigationContainer>
+        <Main />
     </Provider>
   );
 };
