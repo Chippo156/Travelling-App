@@ -102,7 +102,7 @@ function Home() {
       <TouchableOpacity
         style={{
           width: 250,
-          height: 220,
+          height: 250,
           borderRadius: 8,
           margin: 4,
           borderColor: "gray",
@@ -135,13 +135,15 @@ function Home() {
     <View style={styles.container}>
       <Text style={styles.title}>Hello!</Text>
       <Text style={styles.title}>Explore stays in trending destinations</Text>
-      <FlatList
-        data={data} // Dữ liệu để hiển thị
-        renderItem={renderCity} // Hàm render cho từng item
-        keyExtractor={(item, index) => index.toString()}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-      />
+      <View>
+        <FlatList
+          data={data} // Dữ liệu để hiển thị
+          renderItem={renderCity} // Hàm render cho từng item
+          keyExtractor={(item, index) => index.toString()}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
       <View style={styles.containerr}>
         <View style={styles.contentContainer}>
           <Text style={styles.title}>Last-minute weekend deals</Text>
@@ -198,10 +200,9 @@ function Home() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    padding: 16,
     backgroundColor: "#fff",
-    paddingBottom: 70, // Để tạo không gian cho footer
-    paddingHorizontal: 16,
-    flex: 1, // Làm cho View chiếm toàn bộ chiều cao màn hình
   },
   title: {
     fontSize: 18,
