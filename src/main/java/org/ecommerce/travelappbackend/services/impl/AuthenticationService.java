@@ -14,7 +14,9 @@ import org.ecommerce.travelappbackend.dtos.request.IntrospectRequest;
 import org.ecommerce.travelappbackend.dtos.request.LogoutRequest;
 import org.ecommerce.travelappbackend.dtos.response.AuthenticationResponse;
 import org.ecommerce.travelappbackend.dtos.response.IntrospectResponse;
+import org.ecommerce.travelappbackend.dtos.response.UserResponse;
 import org.ecommerce.travelappbackend.entity.User;
+import org.ecommerce.travelappbackend.mapper.UserMapper;
 import org.ecommerce.travelappbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,6 +35,7 @@ import java.util.UUID;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
     UserRepository userRepository;
+    UserMapper userMapper;
 
     @NonFinal
     @Value("${jwt.secretKey}")
@@ -47,8 +50,16 @@ public class AuthenticationService {
 
     public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
         var token = request.getToken();
-        verifyToken(token, false);
-        return IntrospectResponse.builder().valid(true).build();
+       SignedJWT signedJWT =  verifyToken(token, false);
+
+
+       User user = userRepository.findById(Long.parseLong(signedJWT.getJWTClaimsSet().getSubject()))
+               .orElseThrow(() -> new RuntimeException("User not found"));
+        UserResponse userResponse = userMapper.toUserResponse(user);
+
+        return IntrospectResponse.builder().userResponse(userResponse).valid(true).build();
+
+
     }
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -59,8 +70,7 @@ public class AuthenticationService {
             throw new RuntimeException("Password is incorrect");
         }
         var token = generateToken(user);
-        return AuthenticationResponse.builder().token(token).authenticated(false).build();
-
+        return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
 //    public void logout(LogoutRequest request) throws ParseException, JOSEException {
 //        var token = request.getToken();

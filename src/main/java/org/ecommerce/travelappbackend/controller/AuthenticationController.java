@@ -27,13 +27,34 @@ public class AuthenticationController {
 
     @PostMapping("/token")
     public ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
-        AuthenticationResponse result = authenticationService.authenticate(authenticationRequest);
-        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+        try{
+            AuthenticationResponse result = authenticationService.authenticate(authenticationRequest);
+            return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+        }
+        catch (Exception e){
+            return ApiResponse.<AuthenticationResponse>builder()
+                    .code(400)
+                    .message(e.getMessage())
+                    .result(null)
+                    .build();
+        }
     }
     @PostMapping("/introspect")
     public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest introspectRequest) throws ParseException, JOSEException {
-        IntrospectResponse result = authenticationService.introspect(introspectRequest);
-        return ApiResponse.<IntrospectResponse>builder().result(result).build();
+        try {
+            IntrospectResponse result = authenticationService.introspect(introspectRequest);
+            return ApiResponse.<IntrospectResponse>builder()
+                    .code(200)
+                    .message("success")
+                    .result(result).build();
+        } catch (Exception e) {
+            IntrospectResponse result = IntrospectResponse.builder().valid(false).build();
+            return ApiResponse.<IntrospectResponse>builder()
+                    .code(400)
+                    .message(e.getMessage())
+                    .result(result)
+                    .build();
+        }
     }
 
 //    @PostMapping("/logout")
