@@ -94,5 +94,20 @@ public class DestinationController {
             return ResponseEntity.status(500).build();
         }
     }
+    @GetMapping("/filter")
+    public ApiResponse<List<DestinationResponse>> filterDestination(
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Double averageRating,
+                        @RequestParam(required = false) Double price
+
+    ){
+        try {
+            return new ApiResponse<>(200,"success",
+                    destinationService.filterDestination(location,categoryId,averageRating,price).stream().map(mapper::toDestinationResponse).toList());
+        }catch (Exception e){
+            return new ApiResponse<>(400,e.getMessage(),null);
+        }
+    }
 
 }

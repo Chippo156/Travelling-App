@@ -20,6 +20,8 @@ public interface DestinationService {
 
     void updateImage(Long id, String imageUrl);
 
+    List<Destination> filterDestination(String location, Long categoryId, Double averageRating,Double price);
+
 
 
 

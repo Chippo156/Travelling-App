@@ -6,9 +6,9 @@ spring:
   application:
     name: Travel-app
   datasource:
-    url: jdbc:mysql://localhost:3306/travel_app?useSSL=false&serverTimezone=UTC
-    username: root
-    password:
+    url: jdbc:mysql://sql12.freesqldatabase.com:3306/sql12743230?useSSL=false&serverTimezone=UTC
+    username: sql12743230
+    password: DAfar8MD8G
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true

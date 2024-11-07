@@ -95,5 +95,12 @@ public class RoomController {
             return new ApiResponse<>(500, e.getMessage(), null);
     }
     }
-
+    @GetMapping("/destination/{id}")
+    public ApiResponse<List<RoomResponse>> getRoomsByDestination(@PathVariable Long id) {
+        try {
+            return new ApiResponse<>(200, "success", roomService.getRoomsByDestinationId(id));
+        } catch (Exception ex) {
+            return new ApiResponse<>(400, ex.getMessage(), null);
+        }
+    }
 }
