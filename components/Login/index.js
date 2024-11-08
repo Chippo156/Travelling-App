@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaFacebook, FaTwitter } from "react-icons/fa";
-import { FaSquareInstagram } from "react-icons/fa6";
+// import { FaSquareInstagram } from "react-icons/fa6";
 import { TouchableOpacity, View, Text, TextInput } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../Redux/userSlice";
 import TravelDetail from "../TravelDetails";
 import { loginUser, reloadUser } from "../controller/loginController";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Icon from "react-native-vector-icons/Ionicons";
 
 function Login({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
@@ -16,33 +17,38 @@ function Login({ navigation }) {
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
-  const handleLogin = async() => {
 
-    // Giả lập thông tin người dùng sau khi đăng nhập thành công
+  const handleLogin = async () => {
     const userInfo = { email, password };
-    let res =await loginUser(email, password);
+    let res = await loginUser(email, password);
     console.log(res);
-    if(res && res.code===1000){
-      localStorage.setItem('token', res.result.token);
-      let res_token = await reloadUser(localStorage.getItem('token'));
-      if(res_token && res_token.code===200){
-        dispatch(login({user:res_token.result.user,isLoggedIn:res_token.result.valid}));
+    if (res && res.code === 1000) {
+      await AsyncStorage.setItem("token", res.result.token);
+      const token = await AsyncStorage.getItem("token");
+      let res_token = await reloadUser(token);
+      if (res_token && res_token.code === 200) {
+        dispatch(
+          login({
+            user: res_token.result.user,
+            isLoggedIn: res_token.result.valid,
+          })
+        );
         navigation.navigate("Home"); // Điều hướng sang trang Home sau khi đăng nhập
-      }else{
+      } else {
         alert("Đăng nhập thất bại");
       }
-    }else{
+    } else {
       alert("Đăng nhập thất bại");
     }
-    // dispatch(login(userInfo)); // Dispatch action login
   };
+
   useEffect(() => {
     console.log(isLoggedIn);
     if (isLoggedIn) {
       navigation.navigate("Home");
     }
-  }
-  , [isLoggedIn]);
+  }, [isLoggedIn]);
+
   return (
     <View
       style={{
@@ -112,7 +118,11 @@ function Login({ navigation }) {
             value={password}
             onChangeText={setPassword}
           />
-          <FaRegEyeSlash style={{ position: "absolute", top: 20, right: 8 }} />
+          <Icon
+            name="eye-off"
+            size={24}
+            style={{ position: "absolute", top: 20, right: 8 }}
+          />
         </View>
         <Text
           style={{
@@ -177,32 +187,32 @@ function Login({ navigation }) {
           gap: 20,
         }}
       >
-        <FaFacebook
+        <Icon
+          name="logo-facebook"
+          size={30}
           style={{
             padding: 12,
-            width: 30,
-            height: 30,
-            borderRadius: "50%",
+            borderRadius: 50,
             backgroundColor: "#1877f2",
             color: "#fff",
           }}
         />
-        <FaSquareInstagram
+        <Icon
+          name="logo-instagram"
+          size={30}
           style={{
             padding: 12,
-            width: 30,
-            height: 30,
-            borderRadius: "50%",
+            borderRadius: 50,
             backgroundColor: "#d94dac",
             color: "#fff",
           }}
         />
-        <FaTwitter
+        <Icon
+          name="logo-twitter"
+          size={30}
           style={{
             padding: 12,
-            width: 30,
-            height: 30,
-            borderRadius: "50%",
+            borderRadius: 50,
             backgroundColor: "#03a9f4",
             color: "#fff",
           }}

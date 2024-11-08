@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -10,65 +10,85 @@ import {
   View,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { handleGetDestination } from "../controller/homeController";
 
-function Home() {
+function Home({ navigation }) {
   const [activeTab, setActiveTab] = useState("home"); // Trạng thái theo dõi tab đang active
   const data = [
     {
-      city: "Vũng Tàu",
+      city: "Hồ Chí Minh",
       country: "Việt Nam",
-      uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
+      uri: require("../../assets/anh-hcm.png"),
     },
     {
-      city: "Vũng Tàu",
+      city: "Hà Nội",
       country: "Việt Nam",
-      uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
+      uri: require("../../assets/anh-ha-noi.png"),
     },
     {
-      city: "Vũng Tàu",
+      city: "Đà Nẵng",
       country: "Việt Nam",
-      uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
+      uri: require("../../assets/anh-da=nang.png"),
     },
     {
-      city: "Vũng Tàu",
+      city: "Khu Vực Khác",
       country: "Việt Nam",
-      uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
+      uri: require("../../assets/anh-khac.png"),
     },
   ];
-  const dataLastWeekend = [
-    {
-      uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
-      title: "Cam Ranh",
-      description: "Resort",
-      rating: 4.5,
-      review: 100,
-    },
-    {
-      uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
-      title: "Cam Ranh",
-      description: "Resort",
-      rating: 4.5,
-      review: 100,
-    },
-    {
-      uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
-      title: "Cam Ranh",
-      description: "Resort",
-      rating: 4.5,
-      review: 100,
-    },
-  ];
-
+  // const dataLastWeekend = [
+  //   {
+  //     uri: require("../../assets/anh-hcm.png"),
+  //     title: "Cam Ranh",
+  //     description: "Resort",
+  //     rating: 4.5,
+  //     review: 100,
+  //   },
+  //   {
+  //     uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
+  //     title: "Cam Ranh",
+  //     description: "Resort",
+  //     rating: 4.5,
+  //     review: 100,
+  //   },
+  //   {
+  //     uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
+  //     title: "Cam Ranh",
+  //     description: "Resort",
+  //     rating: 4.5,
+  //     review: 100,
+  //   },
+  // ];
+  const [dataLastWeekend, setDataLastWeekend] = useState([]);
+  const handleGetData = async () => {
+    let res = await handleGetDestination();
+    if (res && res.code === 200) {
+      setDataLastWeekend(res.result);
+    }
+  };
+  useEffect(() => {
+    handleGetData();
+  }, []);
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity style={{ margin: 4 }}>
         <Image
-          source={{ uri: item.uri }}
+          source={{ uri: item.image_url }}
           style={{ width: 240, height: 135, borderRadius: 8 }}
         />
         <View style={{ width: "100%", padding: 12, display: "flex", gap: 10 }}>
-          <Text style={{ fontSize: 18 }}>{item.title}</Text>
-          <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              width: 240,
+              lineHeight: 18,
+              height: 36,
+            }}
+          >
+            {item.name}
+          </Text>
+          <Text numberOfLines={2} style={{ fontSize: 16, width: 240 }}>
             {item.description}
           </Text>
           <View
@@ -88,9 +108,9 @@ function Home() {
                 padding: 8,
               }}
             >
-              {item.rating}
+              {item.average_rating}
             </Text>
-            <Text style={{ paddingLeft: 12 }}>({item.review} reviews)</Text>
+            <Text style={{ paddingLeft: 12 }}>(400 reviews)</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -110,7 +130,7 @@ function Home() {
           borderStyle: "solid",
         }}
       >
-        <Image source={{ uri: item.uri }} style={styles.image} />
+        <Image source={item.uri} style={styles.image} />
         <Text
           style={{
             paddingLeft: 12,
@@ -188,7 +208,7 @@ function Home() {
             styles.footerButton,
             activeTab === "user" && styles.activeTab,
           ]}
-          onPress={() => handleTabChange("user")}
+          onPress={() => navigation.navigate("Login")}
         >
           <Icon name="person" style={{ fontSize: 20 }} />
           <Text style={styles.footerText}>Tài Khoản</Text>
