@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Image } from "react-native";
+import { ActivityIndicator, Image } from "react-native";
 import { reloadUser } from "../controller/loginController";
-import { login, logout } from "../Redux/userSlice";
+import { login, logout,loadingTrue,loadingFalse } from "../Redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -14,13 +14,16 @@ import ForgotPassword from "../ForgotPassword";
 import Register from "../Register";
 import Home from "../Home";
 import TravelDetail from "../TravelDetails";
+import { View } from "react-native";
+import FilterPage from "../Filter";
 
 const Stack = createStackNavigator();
 
 function Main() {
   const dispatch = useDispatch();
-
+  const isLoading = useSelector((state) => state.user.isLoading);
   const handleReloadUser = async () => {
+    dispatch(loadingTrue());
     const token = await AsyncStorage.getItem("token");
     let res_token = await reloadUser(token);
     if (res_token && res_token.code === 200) {
@@ -31,15 +34,22 @@ function Main() {
         })
       );
     }
+    dispatch(loadingFalse());
   };
 
   useEffect(() => {
     handleReloadUser();
   }, []);
-
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="TravelDetail">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Splash"
           component={Splash}
@@ -69,6 +79,7 @@ function Main() {
           }}
         />
         <Stack.Screen name="TravelDetail" component={TravelDetail} />
+        <Stack.Screen name="Filter" component={FilterPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

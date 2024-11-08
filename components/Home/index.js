@@ -19,56 +19,42 @@ function Home({ navigation }) {
       city: "Hồ Chí Minh",
       country: "Việt Nam",
       uri: require("../../assets/anh-hcm.png"),
+      value:"Ho Chi Minh"
     },
     {
       city: "Hà Nội",
       country: "Việt Nam",
       uri: require("../../assets/anh-ha-noi.png"),
+      value:"Hanoi"
     },
     {
       city: "Đà Nẵng",
       country: "Việt Nam",
       uri: require("../../assets/anh-da=nang.png"),
+      value:"Da nang"
     },
     {
       city: "Khu Vực Khác",
       country: "Việt Nam",
       uri: require("../../assets/anh-khac.png"),
+      value:"Other"
     },
   ];
-  // const dataLastWeekend = [
-  //   {
-  //     uri: require("../../assets/anh-hcm.png"),
-  //     title: "Cam Ranh",
-  //     description: "Resort",
-  //     rating: 4.5,
-  //     review: 100,
-  //   },
-  //   {
-  //     uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
-  //     title: "Cam Ranh",
-  //     description: "Resort",
-  //     rating: 4.5,
-  //     review: 100,
-  //   },
-  //   {
-  //     uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1730812408/UUID.randomUUID%28%29.toString%28%29.webp",
-  //     title: "Cam Ranh",
-  //     description: "Resort",
-  //     rating: 4.5,
-  //     review: 100,
-  //   },
-  // ];
+ 
   const [dataLastWeekend, setDataLastWeekend] = useState([]);
   const handleGetData = async () => {
     let res = await handleGetDestination();
     if (res && res.code === 200) {
+      console.log(res.result);
       setDataLastWeekend(res.result);
     }
   };
   useEffect(() => {
     handleGetData();
   }, []);
+  const handleCityDetail = (value) => {
+    navigation.navigate("Filter", { city: value });
+  };
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity style={{ margin: 4 }}>
@@ -129,6 +115,7 @@ function Home({ navigation }) {
           borderWidth: 1,
           borderStyle: "solid",
         }}
+        onPress={() => handleCityDetail(item.value)}
       >
         <Image source={item.uri} style={styles.image} />
         <Text

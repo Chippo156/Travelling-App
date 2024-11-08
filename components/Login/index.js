@@ -4,7 +4,7 @@ import { FaFacebook, FaTwitter } from "react-icons/fa";
 // import { FaSquareInstagram } from "react-icons/fa6";
 import { TouchableOpacity, View, Text, TextInput } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { login, logout } from "../Redux/userSlice";
+import { login, logout,loadingTrue,loadingFalse } from "../Redux/userSlice";
 import TravelDetail from "../TravelDetails";
 import { loginUser, reloadUser } from "../controller/loginController";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,9 +19,9 @@ function Login({ navigation }) {
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
 
   const handleLogin = async () => {
+    dispatch(loadingTrue());
     const userInfo = { email, password };
     let res = await loginUser(email, password);
-    console.log(res);
     if (res && res.code === 1000) {
       await AsyncStorage.setItem("token", res.result.token);
       const token = await AsyncStorage.getItem("token");
@@ -40,6 +40,7 @@ function Login({ navigation }) {
     } else {
       alert("Đăng nhập thất bại");
     }
+    dispatch(loadingFalse());
   };
 
   useEffect(() => {
