@@ -60,8 +60,10 @@ public class SecurityConfig {
                     )
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, methodGet()).permitAll()
+                    .requestMatchers("/api/v1/cloudinary/upload").permitAll()
                     .anyRequest()
                     .authenticated();
+
 
         });
         http.oauth2ResourceServer(oauth2 -> {
@@ -70,6 +72,7 @@ public class SecurityConfig {
                     .jwtAuthenticationConverter(jwtAuthenticationConverter()));
         });
         http.csrf(AbstractHttpConfigurer::disable);
+
         http.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {
             @Override
             public void customize(CorsConfigurer<HttpSecurity> httpSecurityCorsConfigurer) {

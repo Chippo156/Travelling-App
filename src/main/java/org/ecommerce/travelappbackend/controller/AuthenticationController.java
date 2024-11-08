@@ -56,7 +56,6 @@ public class AuthenticationController {
                     .build();
         }
     }
-
 //    @PostMapping("/logout")
 //    public ApiResponse<Void> logout(@RequestBody AuthenticationRequest authenticationRequest) {
 //        authenticationService.(authenticationRequest);

@@ -2,6 +2,7 @@ package org.ecommerce.travelappbackend.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.ecommerce.travelappbackend.dtos.request.DestinationImageRequest;
 import org.ecommerce.travelappbackend.dtos.request.DestinationRequest;
 import org.ecommerce.travelappbackend.entity.Destination;
@@ -31,43 +32,47 @@ public class DestinationController {
     private final DestinationImageService destinationImageService;
     private final CloudinaryService cloudinaryService;
     private final Logger logger = Logger.getLogger(DestinationController.class.getName());
+
     @PostMapping
-    public ApiResponse<DestinationResponse> createDestination(@RequestBody DestinationRequest destinationRequest){
-        try
-        {
-            return new ApiResponse<>(200,"success",
+    public ApiResponse<DestinationResponse> createDestination(@RequestBody DestinationRequest destinationRequest) {
+        try {
+            return new ApiResponse<>(200, "success",
                     mapper.toDestinationResponse(
                             destinationService.createDestination(destinationRequest))
-                    );
+            );
         } catch (Exception e) {
-            return new ApiResponse<>(400,e.getMessage(),null);
+            return new ApiResponse<>(400, e.getMessage(), null);
         }
 
     }
+
     @GetMapping
     public ApiResponse<List<DestinationResponse>> getListDestination(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
-    ){
+    ) {
         try {
-            return new ApiResponse<>(200,"success",
-                    destinationService.getAllDestinations(page,size).stream().map(mapper::toDestinationResponse).toList());
-        }catch (Exception e){
-            return new ApiResponse<>(400,e.getMessage(),null);
+            return new ApiResponse<>(200, "success",
+                    destinationService.getAllDestinations(page, size).stream().map(mapper::toDestinationResponse).toList());
+        } catch (Exception e) {
+            return new ApiResponse<>(400, e.getMessage(), null);
         }
     }
+
     @GetMapping("/{id}")
-    public ApiResponse<DestinationResponse> getDestination(@PathVariable Long id){
+    public ApiResponse<DestinationResponse> getDestination(@PathVariable Long id) {
         try {
-            return new ApiResponse<>(200,"success",
+            return new ApiResponse<>(200, "success",
                     mapper.toDestinationResponse(destinationService.getDestination(id)));
-        }catch (Exception e){
-            return new ApiResponse<>(400,e.getMessage(),null);
+        } catch (Exception e) {
+            return new ApiResponse<>(400, e.getMessage(), null);
         }
     }
+
     @PostMapping(value = "/uploadImages/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Destination> uploadImage(@PathVariable Long id, @RequestParam("files") List<MultipartFile> files) {
+    public ApiResponse<DestinationResponse> uploadImage(@PathVariable Long id, @RequestParam("files") List<MultipartFile> files) {
         try {
+            System.out.println(files);
             if (id == null || files == null || files.isEmpty()) {
                 throw new IllegalArgumentException("Invalid input parameters");
             }
@@ -80,33 +85,47 @@ public class DestinationController {
                                 .imageUrl(url)
                                 .build()
                 );
-                if(destination.getImageUrl().isEmpty()){
-                    destinationService.updateImage(destination.getId(),url);
+                if (destination.getImageUrl().isEmpty()) {
+                    destinationService.updateImage(destination.getId(), url);
                 }
             }
-            return ResponseEntity.ok().body(destination);
+            return new ApiResponse<>(200, "success",
+                    mapper.toDestinationResponse(destination));
 
         } catch (IllegalArgumentException e) {
             logger.severe("Invalid input parameters");
-            return ResponseEntity.badRequest().build();
+            return new ApiResponse<>(400, e.getMessage(), null);
         } catch (Exception e) {
             logger.severe(e.getMessage());
-            return ResponseEntity.status(500).build();
+            return new ApiResponse<>(500, e.getMessage(), null);
         }
     }
+
+
     @GetMapping("/filter")
     public ApiResponse<List<DestinationResponse>> filterDestination(
             @RequestParam(required = false) String location,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Double averageRating,
-                        @RequestParam(required = false) Double price
+            @RequestParam(required = false) Double price
 
-    ){
+    ) {
         try {
-            return new ApiResponse<>(200,"success",
-                    destinationService.filterDestination(location,categoryId,averageRating,price).stream().map(mapper::toDestinationResponse).toList());
-        }catch (Exception e){
-            return new ApiResponse<>(400,e.getMessage(),null);
+            String locationParam = location != null ? StringUtils.stripAccents(location.toLowerCase().replaceAll("[\\s,]", "")) : null;
+            System.out.println(locationParam);
+            return new ApiResponse<>(200, "success",
+                    destinationService.filterDestination(locationParam, categoryId, averageRating, price).stream().map(mapper::toDestinationResponse).toList());
+        } catch (Exception e) {
+            return new ApiResponse<>(400, e.getMessage(), null);
+        }
+    }
+    @GetMapping("/location")
+    public ApiResponse<List<DestinationResponse>> getLocation(@RequestParam(required = false) String location){
+        try {
+            return new ApiResponse<>(200, "success",
+                    destinationService.getDestinationByLocation(location).stream().map(mapper::toDestinationResponse).toList());
+        } catch (Exception e) {
+            return new ApiResponse<>(400, e.getMessage(), null);
         }
     }
 

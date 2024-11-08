@@ -17,7 +17,7 @@ import org.ecommerce.travelappbackend.services.service.RoomImageService;
 import org.ecommerce.travelappbackend.services.service.RoomService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -81,7 +81,7 @@ public class RoomController {
                 RoomImage roomImage = roomImageService.uploadImage(id,
                         RoomImageRequest.builder().imageUrl(url).build());
 
-                if(roomResponse.getImageUrl() == null){
+                if(roomResponse.getImageUrl().isEmpty()){
                     roomService.updateImage(id, url);
                 }
             }

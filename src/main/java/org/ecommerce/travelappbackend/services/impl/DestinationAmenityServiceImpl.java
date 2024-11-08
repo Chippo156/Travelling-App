@@ -11,6 +11,8 @@ import org.ecommerce.travelappbackend.repository.PopularAmenityRepository;
 import org.ecommerce.travelappbackend.services.service.DestinationAmenityService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 
@@ -38,5 +40,14 @@ public class DestinationAmenityServiceImpl implements DestinationAmenityService 
     @Override
     public DestinationAmenity getDestinationAmenity(Long destinationId, Long amenityId) {
         return null;
+    }
+
+    @Override
+    public List<DestinationAmenity> getDestinationAmenities(Long destinationId) {
+        try{
+            return destinationAmenityRepository.findByDestinationId(destinationId);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

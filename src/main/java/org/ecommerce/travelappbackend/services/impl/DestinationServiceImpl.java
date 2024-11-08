@@ -120,5 +120,15 @@ public class DestinationServiceImpl implements DestinationService {
         }
     }
 
+    @Override
+    public List<Destination> getDestinationByLocation(String location) {
+        try {
+            return destinationRepository.findByLocationContaining(location);
+        }
+        catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
 
 }

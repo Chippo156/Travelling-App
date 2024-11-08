@@ -77,7 +77,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public boolean deleteBooking(Long id) {
         try{
-            bookingRepository.deleteById(id);
+            Bookings bookings = bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found"));
+            bookings.setBookingStatus("CANCELLED");
+            bookingRepository.save(bookings);
             return true;
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());

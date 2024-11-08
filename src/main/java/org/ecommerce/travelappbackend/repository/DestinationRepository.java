@@ -15,18 +15,17 @@ public interface DestinationRepository extends JpaRepository<Destination, Long>{
     List<Destination> findByCategoryId(Long category_id);
 
 
-    @Query("SELECT d FROM Destination d JOIN Room r ON r.destination.id=d.id WHERE "
-            + "(:location IS NULL OR d.location LIKE CONCAT('%', :location, '%')) "
+    @Query("SELECT d FROM Destination d JOIN Room r ON r.destination.id = d.id WHERE "
+            + "(:location IS NULL OR REPLACE(LOWER(REPLACE(d.location, ' ', '')), ' ', '') LIKE CONCAT('%', REPLACE(LOWER(:location), ' ', ''), '%')) "
             + "AND (:categoryId IS NULL OR d.category.id = :categoryId) "
-            + "AND (:averageRating IS NULL OR d.averageRating >= :averageRating)"
+            + "AND (:averageRating IS NULL OR d.averageRating >= :averageRating) "
             + "AND (:price IS NULL OR r.price <= :price)")
-
     List<Destination> filterDestination(@Param("location") String location,
                                         @Param("categoryId") Long categoryId,
                                         @Param("averageRating") Double averageRating,
                                         @Param("price") Double price);
 
-
+    List<Destination> findByLocationContaining(String location);
 
 
 }

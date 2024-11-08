@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.ecommerce.travelappbackend.dtos.request.DestinationAmenityRequest;
 import org.ecommerce.travelappbackend.dtos.response.ApiResponse;
 import org.ecommerce.travelappbackend.entity.DestinationAmenity;
+import org.ecommerce.travelappbackend.entity.PopularAmenity;
 import org.ecommerce.travelappbackend.services.service.DestinationAmenityService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("${api.prefix}/destination-amenity")
@@ -29,6 +29,18 @@ public class DestinationAmenityController {
             return new ApiResponse<>(500,e.getMessage(),null);
         }
     }
+    @GetMapping("destination/{id}")
+    public ApiResponse<List<PopularAmenity>> getDestinationAmenity(@PathVariable Long id) {
+        try{
+            List<DestinationAmenity> destinationAmenity= destinationAmenityService.getDestinationAmenities(id);
+            List<PopularAmenity> amenities = destinationAmenity.stream().map(DestinationAmenity::getAmenity).toList();
+            return new ApiResponse<>(200,"Destination Amenities fetched successfully",amenities);
+
+        }catch (Exception e ){
+            return new ApiResponse<>(500,e.getMessage(),null);
+        }
+    }
+
 
 
 
