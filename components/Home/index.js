@@ -19,7 +19,7 @@ function Home({ navigation }) {
       city: "Hồ Chí Minh",
       country: "Việt Nam",
       uri: require("../../assets/anh-hcm.png"),
-      value:"Ho Chi Minh"
+      value:"Hồ Chí Minh"
     },
     {
       city: "Hà Nội",

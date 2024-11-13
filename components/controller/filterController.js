@@ -4,15 +4,16 @@ export const getFilterDestination = async (city) => {
   try {
     if (city === "Other") {
       const res = await axios(
-        `https://travelling-app.onrender.com/api/v1/destinations`
+        `/destinations?page=1&size=10`
       );
       return res;
     }
     const res = await axios(
-      `https://travelling-app.onrender.com/api/v1/destinations/filter?location=${city}`
+      `destinations/location?location=${city}`
     );
     return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };

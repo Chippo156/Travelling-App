@@ -20,6 +20,7 @@ import FilterPage from "../Filter";
 const Stack = createStackNavigator();
 
 function Main() {
+  
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.user.isLoading);
   const handleReloadUser = async () => {
@@ -49,7 +50,7 @@ function Main() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Filter">
         <Stack.Screen
           name="Splash"
           component={Splash}
