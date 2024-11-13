@@ -140,5 +140,17 @@ public class DestinationController {
             return new ApiResponse<>(400, e.getMessage(), null);
         }
     }
+    @GetMapping("/search")
+    public ApiResponse<List<DestinationResponse>> searchDestination(
+            @RequestParam(required = false) String search
+
+    ) {
+        try {
+            return new ApiResponse<>(200, "success",
+                    destinationService.searchDestination(search).stream().map(mapper::toDestinationResponse).toList());
+        } catch (Exception e) {
+            return new ApiResponse<>(400, e.getMessage(), null);
+        }
+    }
 
 }

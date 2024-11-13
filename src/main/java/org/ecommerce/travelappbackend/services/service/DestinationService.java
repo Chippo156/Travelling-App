@@ -2,6 +2,8 @@ package org.ecommerce.travelappbackend.services.service;
 
 import org.ecommerce.travelappbackend.dtos.request.DestinationRequest;
 import org.ecommerce.travelappbackend.entity.Destination;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -23,4 +25,6 @@ public interface DestinationService {
     List<Destination> filterDestination(String location, Long categoryId, Double averageRating,Double price);
     List<Destination> getDestinationByLocation(String location);
     List<Destination> findAvailableDestinations(String startDate, String endDate);
+
+    List<Destination> searchDestination(String search);
 }

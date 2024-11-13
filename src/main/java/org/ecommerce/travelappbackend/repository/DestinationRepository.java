@@ -30,4 +30,9 @@ public interface DestinationRepository extends JpaRepository<Destination, Long>{
                                                 @Param("endDate") LocalDate endDate);
 
 
+    @Query("SELECT d FROM Destination d WHERE d.location LIKE %:search% OR d.name LIKE %:search% OR d.description LIKE %:search%")
+    List<Destination> searchDestination(@Param("search") String search);
+
+
+
 }

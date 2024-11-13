@@ -142,5 +142,15 @@ public class DestinationServiceImpl implements DestinationService {
         }
     }
 
+    @Override
+    public List<Destination> searchDestination(String search) {
+
+        try{
+            return destinationRepository.searchDestination(search);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
 
 }
