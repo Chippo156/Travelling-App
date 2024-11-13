@@ -213,56 +213,68 @@ function FilterPage({ route, navigation }) {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              gap: 10,
             }}
           >
-            <Text
-              style={[
-                {
-                  flex: 5,
-                  textAlign: "center",
-                  fontSize: 20,
-                  fontWeight: "bold",
-                },
-                selectDay && { color: "blue" },
-              ]}
+            <TouchableOpacity
+              onPress={() => setSelectDay(true)}
+              style={{ flex: 4 }}
             >
-              {getDayOfWeek(new Date(selectedSecondLastDay))},
-              {selectedSecondLastDay}
-            </Text>
+              <Text
+                style={[
+                  {
+                    textAlign: "center",
+                    fontSize: 20,
+                    fontWeight: "bold",
+                  },
+                  selectDay && { color: "blue" },
+                ]}
+              >
+                {getDayOfWeek(new Date(selectedSecondLastDay))},
+                {selectedSecondLastDay}
+              </Text>
+            </TouchableOpacity>
             <Icon
               name="arrow-forward"
               size={20}
               color="blue"
               style={{ flex: 1, textAlign: "center" }}
             />
-            <Text
-              style={[
-                {
-                  flex: 5,
-                  textAlign: "center",
-                  fontSize: 20,
-                  fontWeight: "bold",
-                },
-                !selectDay && { color: "blue" },
-              ]}
+            <TouchableOpacity
+              onPress={() => setSelectDay(false)}
+              style={{ flex: 4 }}
             >
-              {getDayOfWeek(new Date(selectedLastDayOfMonth))},
-              {selectedLastDayOfMonth}
-            </Text>
+              <Text
+                style={[
+                  {
+                    textAlign: "center",
+                    fontSize: 20,
+                    fontWeight: "bold",
+                  },
+                  !selectDay && { color: "blue" },
+                ]}
+              >
+                {getDayOfWeek(new Date(selectedLastDayOfMonth))},
+                {selectedLastDayOfMonth}
+              </Text>
+            </TouchableOpacity>
           </View>
           <Calendar
             monthFormat={"MM-yyyy"}
             onDayPress={(day) => {
               // Cập nhật ngày đã chọn khi người dùng chọn trên calendar
-              if (selectDay && new Date(day.dateString) < new Date(selectedLastDayOfMonth)) {
-                setSelectedSecondLastDay(day.dateString);
-                setSelectDay(false);
-              } else if(!selectDay && new Date(day.dateString) > new Date(selectedSecondLastDay)) {
-                setSelectedLastDayOfMonth(day.dateString);
-                setSelectDay(true);
-              }else{
-                setSelectedSecondLastDay(day.dateString);
-                setSelectDay(true);
+              if (selectDay) {
+                if (
+                  new Date(day.dateString) < new Date(selectedLastDayOfMonth)
+                ) {
+                  setSelectedSecondLastDay(day.dateString);
+                }
+              } else {
+                if (
+                  new Date(day.dateString) > new Date(selectedSecondLastDay)
+                ) {
+                  setSelectedLastDayOfMonth(day.dateString);
+                }
               }
               //   if (new Date(day.dateString) < new Date(selectedLastDayOfMonth)) {
               //     setSelectedSecondLastDay(day.dateString);
