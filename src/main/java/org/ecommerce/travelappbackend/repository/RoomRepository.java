@@ -9,4 +9,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
        List<Room> findByDestinationId(Long destinationId);
         List<Room> findByRoomType(String roomType);
 
+       Room findDistinctFirstByDestinationId(Long destinationId);
+
 }

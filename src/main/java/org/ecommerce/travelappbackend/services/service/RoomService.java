@@ -16,5 +16,6 @@ public interface RoomService {
      List<RoomResponse> getRoomsByRoomType(String roomType);
 
      void updateImage(Long id, String imageUrl);
+     RoomResponse findDistinctFirstByDestinationId(Long destinationId);
 
 }

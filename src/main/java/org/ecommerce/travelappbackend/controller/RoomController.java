@@ -103,4 +103,12 @@ public class RoomController {
             return new ApiResponse<>(400, ex.getMessage(), null);
         }
     }
+    @GetMapping("/roomFirst/{id}")
+    public ApiResponse<RoomResponse> getRoomFirst(@PathVariable Long id) {
+        try {
+            return new ApiResponse<>(200, "success", roomService.findDistinctFirstByDestinationId(id));
+        } catch (Exception ex) {
+            return new ApiResponse<>(400, ex.getMessage(), null);
+        }
+    }
 }

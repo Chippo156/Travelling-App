@@ -99,4 +99,13 @@ public class RoomServiceImpl implements RoomService {
         }
 
     }
+
+    @Override
+    public RoomResponse findDistinctFirstByDestinationId(Long destinationId) {
+       try{
+              return roomMapper.toRoomResponse(roomRepository.findDistinctFirstByDestinationId(destinationId));
+       }catch (Exception e){
+           throw new RuntimeException(e.getMessage());
+       }
+    }
 }

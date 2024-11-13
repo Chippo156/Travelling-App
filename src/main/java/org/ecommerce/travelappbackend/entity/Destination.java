@@ -29,4 +29,6 @@ public class Destination {
     Category category;
     @Column(name = "image_url")
     String imageUrl;
+    @OneToMany(mappedBy = "destination",cascade = CascadeType.ALL)
+    List<Room> rooms;
 }
