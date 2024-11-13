@@ -24,8 +24,12 @@ public class BookingResponse {
     Long destinationId;
     @JsonProperty("room_id")
     Long roomId;
-    @JsonProperty("booking_time")
-    LocalDateTime bookingTime;
+
+    @JsonProperty("check_in_date")
+    LocalDate checkInDate;
+    @JsonProperty("check_out_date")
+    LocalDate checkOutDate;
+
     @JsonProperty("booking_status")
     String bookingStatus;
     @JsonProperty("payment_status")

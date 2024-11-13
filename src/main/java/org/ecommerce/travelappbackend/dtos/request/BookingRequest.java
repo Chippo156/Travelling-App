@@ -22,6 +22,10 @@ public class BookingRequest {
     Long destinationId;
     @JsonProperty("room_id")
     Long roomId;
+    @JsonProperty("check_in_date")
+    LocalDate checkInDate;
+    @JsonProperty("check_out_date")
+    LocalDate checkOutDate;
     @JsonProperty("payment_status")
     String paymentStatus;
     @JsonProperty("payment_method")

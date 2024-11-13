@@ -4,6 +4,7 @@ import org.ecommerce.travelappbackend.dtos.request.RoomRequest;
 import org.ecommerce.travelappbackend.dtos.response.RoomResponse;
 import org.ecommerce.travelappbackend.entity.Room;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface RoomService {
@@ -14,8 +15,8 @@ public interface RoomService {
      void deleteRoom(Long id);
      List<RoomResponse> getRoomsByDestinationId(Long destinationId);
      List<RoomResponse> getRoomsByRoomType(String roomType);
-
      void updateImage(Long id, String imageUrl);
      RoomResponse findDistinctFirstByDestinationId(Long destinationId);
+        List<RoomResponse> filterRoomsIsNotBooked(Long destinationId, LocalDate startDate, LocalDate endDate);
 
 }

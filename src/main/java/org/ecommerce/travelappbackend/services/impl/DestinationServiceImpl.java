@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -126,6 +127,17 @@ public class DestinationServiceImpl implements DestinationService {
             return destinationRepository.findByLocationContaining(location);
         }
         catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Destination> findAvailableDestinations(String startDate, String endDate) {
+        try{
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
+            return destinationRepository.findAvailableDestinations(start,end);
+        }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
     }

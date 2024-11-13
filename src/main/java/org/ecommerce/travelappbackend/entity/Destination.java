@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -29,6 +30,4 @@ public class Destination {
     Category category;
     @Column(name = "image_url")
     String imageUrl;
-    @OneToMany(mappedBy = "destination",cascade = CascadeType.ALL)
-    List<Room> rooms;
 }

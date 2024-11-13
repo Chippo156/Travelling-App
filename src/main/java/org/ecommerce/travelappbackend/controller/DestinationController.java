@@ -128,5 +128,17 @@ public class DestinationController {
             return new ApiResponse<>(400, e.getMessage(), null);
         }
     }
+    @GetMapping("/available")
+    public ApiResponse<List<DestinationResponse>> getAvailableDestinations(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
+    ) {
+        try {
+            return new ApiResponse<>(200, "success",
+                    destinationService.findAvailableDestinations(startDate, endDate).stream().map(mapper::toDestinationResponse).toList());
+        } catch (Exception e) {
+            return new ApiResponse<>(400, e.getMessage(), null);
+        }
+    }
 
 }

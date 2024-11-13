@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -107,6 +108,18 @@ public class RoomController {
     public ApiResponse<RoomResponse> getRoomFirst(@PathVariable Long id) {
         try {
             return new ApiResponse<>(200, "success", roomService.findDistinctFirstByDestinationId(id));
+        } catch (Exception ex) {
+            return new ApiResponse<>(400, ex.getMessage(), null);
+        }
+    }
+    @GetMapping("/destination/{id}/notBooked")
+    public ApiResponse<List<RoomResponse>> getRoomsNotBooked(@PathVariable Long id,
+                                                             @RequestParam String startDate,
+                                                             @RequestParam String endDate) {
+        try {
+            LocalDate start = LocalDate.parse(startDate);
+            LocalDate end = LocalDate.parse(endDate);
+            return new ApiResponse<>(200, "success", roomService.filterRoomsIsNotBooked(id, start, end));
         } catch (Exception ex) {
             return new ApiResponse<>(400, ex.getMessage(), null);
         }

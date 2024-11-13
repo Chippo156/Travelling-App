@@ -12,6 +12,7 @@ import org.ecommerce.travelappbackend.services.service.RoomService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -99,7 +100,6 @@ public class RoomServiceImpl implements RoomService {
         }
 
     }
-
     @Override
     public RoomResponse findDistinctFirstByDestinationId(Long destinationId) {
        try{
@@ -107,5 +107,10 @@ public class RoomServiceImpl implements RoomService {
        }catch (Exception e){
            throw new RuntimeException(e.getMessage());
        }
+    }
+
+    @Override
+    public List<RoomResponse> filterRoomsIsNotBooked(Long destinationId, LocalDate startDate, LocalDate endDate) {
+        return roomRepository.filterRoomsIsNotBooked(destinationId,startDate,endDate).stream().map(roomMapper::toRoomResponse).toList();
     }
 }

@@ -22,4 +22,5 @@ public interface DestinationService {
 
     List<Destination> filterDestination(String location, Long categoryId, Double averageRating,Double price);
     List<Destination> getDestinationByLocation(String location);
+    List<Destination> findAvailableDestinations(String startDate, String endDate);
 }

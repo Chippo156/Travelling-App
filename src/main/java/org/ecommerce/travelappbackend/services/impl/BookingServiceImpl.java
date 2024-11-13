@@ -37,7 +37,7 @@ public class BookingServiceImpl implements BookingService {
             bookings.setDestination(destination);
             bookings.setRoom(room);
             bookings.setUser(user);
-            bookings.setBookingTime(LocalDateTime.now());
+
             if(bookingRequest.getPaymentStatus().equals("NO_PAID")){
                 bookings.setPaymentDate(null);
             }else if(bookingRequest.getPaymentStatus().equals("PAID")){
