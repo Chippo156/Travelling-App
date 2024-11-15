@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { ActivityIndicator, Image } from "react-native";
 import { reloadUser } from "../controller/loginController";
-import { login, logout,loadingTrue,loadingFalse } from "../Redux/userSlice";
+import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -20,7 +20,6 @@ import FilterPage from "../Filter";
 const Stack = createStackNavigator();
 
 function Main() {
-  
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.user.isLoading);
   const handleReloadUser = async () => {
@@ -50,7 +49,7 @@ function Main() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Filter">
+      <Stack.Navigator initialRouteName="TravelDetail">
         <Stack.Screen
           name="Splash"
           component={Splash}
