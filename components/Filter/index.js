@@ -12,7 +12,10 @@ import { getFilterDestination } from "../controller/filterController";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Overlay, SearchBar } from "@rneui/themed";
+import OverlayDate from "./OverlayDate";
+import OverlayFilter from "./OverLayFilter";
 function FilterPage({ route, navigation }) {
+  const [visibleFilter, setVisibleFilter] = useState(false); // Overlay cho địa điểm
   const [visibleDestination, setVisibleDestination] = useState(false); // Overlay cho địa điểm
   const [visibleDate, setVisibleDate] = useState(false); // Overlay cho ngày
   const [visibleGuest, setVisibleGuest] = useState(false); // Overlay cho khách
@@ -22,16 +25,19 @@ function FilterPage({ route, navigation }) {
   const [loading, setLoading] = useState(true); // Trạng thái loading
   const [search, setSearch] = useState("");
   const [selectDay, setSelectDay] = useState(true);
+  const [selectedSecondLastDay, setSelectedSecondLastDay] = useState("");
+  const [selectedLastDayOfMonth, setSelectedLastDayOfMonth] = useState("");
+  const [numberGuest, setNumberGuest] = useState(1);
   const updateSearch = (search) => {
     setSearch(search);
   };
   // Hàm gọi API để lấy các địa điểm theo thành phố
   const handleGetFilterDestination = async (city) => {
-    console.log("Fetching destinations for:", city);
-    let res = await getFilterDestination(city);
-    if (res && res.code === 200) {
-      console.log("Fetched destinations:", res.result);
-      setFilteredDestinations(res.result); // Cập nhật dữ liệu sau khi nhận được
+    let res = await getFilterDestination(city || "Ho Chi Minh");
+    console.log("res", res);
+    if (res && res.data.code === 200) {
+      console.log("Fetched destinations:", res.data);
+      setFilteredDestinations(res.data.result); // Cập nhật dữ liệu sau khi nhận được
     }
     setLoading(false); // Thay đổi trạng thái khi đã nhận được dữ liệu
   };
@@ -39,7 +45,7 @@ function FilterPage({ route, navigation }) {
   useEffect(() => {
     handleGetFilterDestination(city); // Gọi API khi component mount
     navigation.setOptions({
-      headerTitle: `${city}, Việt Nam`, // Cập nhật header với tên thành phố
+      headerTitle: `${city || "Hồ Chí Minh"}, Việt Nam`, // Cập nhật header với tên thành phố
       headerRight: () => (
         <Image
           source={require("../../assets/logo.png")} // Đường dẫn đến logo của bạn
@@ -55,7 +61,11 @@ function FilterPage({ route, navigation }) {
     const year = date.getFullYear();
     return `${year}-${month}-${day}`;
   };
-
+  const getMonthDay = (date) => {
+    const day = date.split("-")[2];
+    const month = date.split("-")[1];
+    return `${day}/${month}`;
+  };
   // Hàm lấy ngày thứ
   const getDayOfWeek = (date) => {
     const daysOfWeek = [
@@ -81,32 +91,75 @@ function FilterPage({ route, navigation }) {
     const secondLastDay = new Date(lastDayOfMonth);
     secondLastDay.setDate(lastDayOfMonth.getDate() - 1); // Ngày trước đó một ngày
 
-    setSecondLastDay(formatDate(secondLastDay));
-    setLastDayOfMonth(formatDate(lastDayOfMonth));
     setSelectedSecondLastDay(formatDate(secondLastDay)); // Thiết lập ngày đã chọn ban đầu
     setSelectedLastDayOfMonth(formatDate(lastDayOfMonth)); // Thiết lập ngày đã chọn ban đầu
   };
 
-  const [secondLastDay, setSecondLastDay] = useState("");
-  const [lastDayOfMonth, setLastDayOfMonth] = useState("");
-  const [selectedSecondLastDay, setSelectedSecondLastDay] = useState("");
-  const [selectedLastDayOfMonth, setSelectedLastDayOfMonth] = useState("");
   useEffect(() => {
     getLastTwoDaysOfMonth();
   }, []);
-  const renderItem = ({ item }) => (
-    <View style={styles.destinationItem}>
-      <Image source={{ uri: item.image_url }} style={styles.destinationImage} />
-      <Text style={styles.destinationName}>{item.name}</Text>
-      <Text style={styles.destinationDescription} numberOfLines={2}>
-        {item.description}
-      </Text>
-    </View>
-  );
+  const renderItem = ({ item }) => {
+    return (
+      <TouchableOpacity
+        style={{
+          width: "100%",
+          marginTop: 20,
+          paddingTop: 10,
+          paddingBottom: 10,
+          borderColor: "#f0f0f0",
+          borderStyle: "solid",
+          borderWidth: 1,
+        }}
+        onPress={() =>
+          navigation.navigate("TravelDetail", {
+            destination: item,
+            selectedSecondLastDay,
+            selectedLastDayOfMonth,
+            numberGuest,
+          })
+        }
+      >
+        <View style={styles.destinationItem}>
+          <Image
+            source={{ uri: item.image_url }}
+            style={styles.destinationImage}
+          />
+          <View style={{ flex: 3,gap:10 }}>
+            <Text style={styles.destinationName}>{item.name}</Text>
+            <Text style={styles.destinationDescription}>
+              {city || item.location}
+            </Text>
+            <Text
+              style={{
+                 borderRadius: "12px",
+                color: "#fff",
+                backgroundColor: "#00bbf2",
+                height: 30,
+                width: 30,
+                lineHeight:30,
+                textAlign: "center",
+              }}
+            >
+              {item.average_rating}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
   const toggleDestinationOverlay = () =>
     setVisibleDestination(!visibleDestination);
   const toggleDateOverlay = () => setVisibleDate(!visibleDate);
   const toggleGuestOverlay = () => setVisibleGuest(!visibleGuest);
+  const toggleFilterOverlay = () => setVisibleFilter(!visibleFilter);
+  const handleAddGuest = () => {
+    setNumberGuest(numberGuest + 1);
+  };
+  const handleRemoveGuest = () => {
+    if (numberGuest > 1) {
+      setNumberGuest(numberGuest - 1);
+    }
+  };
   return (
     <View style={styles.container}>
       {isButtonVisible && (
@@ -120,10 +173,11 @@ function FilterPage({ route, navigation }) {
                 {city || "Hồ Chí Minh"}
               </Text>
               <View style={{ flexDirection: "row", gap: 30 }}>
-                <Text style={{ fontSize: "20px" }}>
-                  {secondLastDay} - {lastDayOfMonth}
+                <Text style={{ fontSize: 20 }}>
+                  {getMonthDay(selectedSecondLastDay)} -{" "}
+                  {getMonthDay(selectedLastDayOfMonth)}
                 </Text>
-                <Text style={{ fontSize: "20px" }}>2 Khách, 1 phòng</Text>
+                <Text style={{ fontSize: 20 }}>{numberGuest} Khách</Text>
               </View>
             </View>
             <Icon name="pencil" size={30} color="#000" />
@@ -139,7 +193,7 @@ function FilterPage({ route, navigation }) {
             <Icon name="location-sharp" size={30} color="blue" />
             <View>
               <Text>Điểm đến</Text>
-              <Text style={{ fontSize: "20px" }}>
+              <Text style={{ fontSize: 20 }}>
                 {city || "Hồ Chí Minh"},Việt Nam
               </Text>
             </View>
@@ -151,8 +205,9 @@ function FilterPage({ route, navigation }) {
             <Icon name="calendar" size={30} color="green" />
             <View>
               <Text>Ngày</Text>
-              <Text style={{ fontSize: "20px" }}>
-                {secondLastDay} - {lastDayOfMonth}
+              <Text style={{ fontSize: 20 }}>
+                {getMonthDay(selectedSecondLastDay)} -{" "}
+                {getMonthDay(selectedLastDayOfMonth)}
               </Text>
             </View>
           </TouchableOpacity>
@@ -163,7 +218,7 @@ function FilterPage({ route, navigation }) {
             <Icon name="person" size={30} color="orange" />
             <View>
               <Text>Khách</Text>
-              <Text style={{ fontSize: "20px" }}>2 khách, 1 phòng</Text>
+              <Text style={{ fontSize: 20 }}>{numberGuest} khách</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
@@ -174,10 +229,35 @@ function FilterPage({ route, navigation }) {
           </TouchableOpacity>
         </View>
       )}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+          Danh sách khách sạn
+        </Text>
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#f0f0f0",
+            padding: 10,
+            borderRadius: 10,
+          }}
+          onPress={toggleFilterOverlay}
+        >
+          <Icon name="filter" size={20} color="#000" />
+          <Text style={{ marginLeft: 8, fontSize: 20 }}>Bộ lọc</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={filteredDestinations} // Dữ liệu lọc được
         renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => item.destination_id.toString()}
+        contentContainerStyle={{ marginVertical: 10 }}
       />
       {/* Overlay cho Điểm đến */}
       <Overlay
@@ -207,95 +287,17 @@ function FilterPage({ route, navigation }) {
         onBackdropPress={() => {}}
         overlayStyle={styles.overlay}
       >
-        <View style={styles.overlayContent}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => setSelectDay(true)}
-              style={{ flex: 4 }}
-            >
-              <Text
-                style={[
-                  {
-                    textAlign: "center",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                  },
-                  selectDay && { color: "blue" },
-                ]}
-              >
-                {getDayOfWeek(new Date(selectedSecondLastDay))},
-                {selectedSecondLastDay}
-              </Text>
-            </TouchableOpacity>
-            <Icon
-              name="arrow-forward"
-              size={20}
-              color="blue"
-              style={{ flex: 1, textAlign: "center" }}
-            />
-            <TouchableOpacity
-              onPress={() => setSelectDay(false)}
-              style={{ flex: 4 }}
-            >
-              <Text
-                style={[
-                  {
-                    textAlign: "center",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                  },
-                  !selectDay && { color: "blue" },
-                ]}
-              >
-                {getDayOfWeek(new Date(selectedLastDayOfMonth))},
-                {selectedLastDayOfMonth}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <Calendar
-            monthFormat={"MM-yyyy"}
-            onDayPress={(day) => {
-              // Cập nhật ngày đã chọn khi người dùng chọn trên calendar
-              if (selectDay) {
-                if (
-                  new Date(day.dateString) < new Date(selectedLastDayOfMonth)
-                ) {
-                  setSelectedSecondLastDay(day.dateString);
-                }
-              } else {
-                if (
-                  new Date(day.dateString) > new Date(selectedSecondLastDay)
-                ) {
-                  setSelectedLastDayOfMonth(day.dateString);
-                }
-              }
-              //   if (new Date(day.dateString) < new Date(selectedLastDayOfMonth)) {
-              //     setSelectedSecondLastDay(day.dateString);
-              //   } else {
-              //     setSelectedLastDayOfMonth(day.dateString);
-              //   }
-            }}
-            markedDates={{
-              [selectedSecondLastDay]: {
-                selected: true,
-                selectedColor: "blue",
-                selectedTextColor: "white",
-              },
-              [selectedLastDayOfMonth]: {
-                selected: true,
-                selectedColor: "blue",
-                selectedTextColor: "white",
-              },
-            }}
-          />
-        </View>
+        <OverlayDate
+          toggleDateOverlay={toggleDateOverlay}
+          selectedSecondLastDay={selectedSecondLastDay}
+          selectedLastDayOfMonth={selectedLastDayOfMonth}
+          setSelectedSecondLastDay={setSelectedSecondLastDay}
+          setSelectedLastDayOfMonth={setSelectedLastDayOfMonth}
+          selectDay={selectDay}
+          setSelectDay={setSelectDay}
+          getDayOfWeek={getDayOfWeek}
+          getMonthDay={getMonthDay}
+        />
       </Overlay>
 
       {/* Overlay cho Khách */}
@@ -305,15 +307,59 @@ function FilterPage({ route, navigation }) {
         overlayStyle={styles.overlay}
       >
         <View style={styles.overlayContent}>
-          <Text>Khách Overlay</Text>
-          <Text>Chọn số khách ở đây</Text>
+          <Text style={{ fontSize: 30 }}>Khách</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 20 }}>Số Khách </Text>
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <TouchableOpacity
+                style={{
+                  padding: 6,
+                  borderRadius: "50%",
+                  borderColor: "gray",
+                  borderStyle: "solid",
+                  borderWidth: 1,
+                }}
+                onPress={() => handleRemoveGuest()}
+              >
+                <Icon name="remove" size={20} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 20 }}>{numberGuest}</Text>
+              <TouchableOpacity
+                style={{
+                  padding: 6,
+                  borderRadius: "50%",
+                  borderColor: "gray",
+                  borderStyle: "solid",
+                  borderWidth: 1,
+                }}
+                onPress={() => handleAddGuest()}
+              >
+                <Icon name="add" size={20} />
+              </TouchableOpacity>
+            </View>
+          </View>
           <TouchableOpacity
             onPress={toggleGuestOverlay}
             style={styles.closeButton}
           >
-            <Text>Đóng</Text>
+            <Text style={{ fontSize: 20, color: "#000" }}>Đóng</Text>
           </TouchableOpacity>
         </View>
+      </Overlay>
+      <Overlay
+        isVisible={visibleFilter}
+        onBackdropPress={() => {}}
+        overlayStyle={styles.overlay}
+      >
+        <OverlayFilter />
       </Overlay>
     </View>
   );
@@ -326,28 +372,29 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   destinationItem: {
-    marginBottom: 16,
+    gap: 10,
+
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    width: "100%",
   },
   destinationImage: {
-    width: "100%",
-    height: 200,
-    borderRadius: 8,
-    marginBottom: 8,
+    resizeMode: "contain",
+    flex: 2,
   },
   destinationName: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 4,
+    width: "100%",
+    flexShrink: 1,
+    flexWrap: "wrap",
   },
   destinationDescription: {
     fontSize: 16,
     color: "#777",
-  },
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    width: "100%",
+    flexShrink: 1,
+    flexWrap: "wrap",
   },
   buttonContainer: {
     backgroundColor: "#f0f0f0",
@@ -374,14 +421,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   overlayContent: {
-    // padding: 20,
     width: "100%",
   },
   closeButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: "gray",
+    backgroundColor: "#00bbf2",
     borderRadius: 5,
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   overlay: {
     position: "absolute",
@@ -392,7 +441,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     paddingTop: 50,
-    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
   },
