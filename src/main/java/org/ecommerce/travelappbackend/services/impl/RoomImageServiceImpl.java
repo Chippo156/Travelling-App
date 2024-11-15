@@ -15,6 +15,8 @@ import org.ecommerce.travelappbackend.services.service.DestinationImageService;
 import org.ecommerce.travelappbackend.services.service.RoomImageService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -44,5 +46,14 @@ public class RoomImageServiceImpl implements RoomImageService {
         }
 
 
+    }
+
+    @Override
+    public List<RoomImage> get(Long roomId) {
+        try {
+            return roomImageRepository.findAllByRoomId(roomId);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

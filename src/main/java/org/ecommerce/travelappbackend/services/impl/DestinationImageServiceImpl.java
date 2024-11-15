@@ -9,6 +9,8 @@ import org.ecommerce.travelappbackend.repository.DestinationRepository;
 import org.ecommerce.travelappbackend.services.service.DestinationImageService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,4 +32,14 @@ public class DestinationImageServiceImpl implements DestinationImageService {
           }
 
      }
+
+    @Override
+    public List<DestinationImage> get(Long destinationId) {
+        try{
+            return destinationImageRepository.findAllByDestinationId(destinationId);
+        }
+        catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

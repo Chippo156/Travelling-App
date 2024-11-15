@@ -1,12 +1,13 @@
 package org.ecommerce.travelappbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "room_images")
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = false)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = false)
 @Setter
 @Getter
 @Data
@@ -21,5 +22,6 @@ public class RoomImage {
     String imageUrl;
     @ManyToOne
     @JoinColumn(name = "room_id")
+    @JsonIgnore
     Room room;
 }
