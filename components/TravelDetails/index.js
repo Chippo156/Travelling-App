@@ -13,12 +13,14 @@ import { environtment } from "../../environtment/environtment";
 import {
   getAmenities,
   getDestinationById,
+  getImageRoom,
+  getImagesDestination,
   getRoomsByDestinationId,
 } from "../controller/DetailsController";
 import Icon from "react-native-vector-icons/Ionicons";
 import { RadioButton } from "react-native-paper";
 import Svg, { Path } from "react-native-svg";
-
+import ImageSlider from "./ImageSlide";
 export default function TravelDetail({ navigation }) {
   const [destination, setDestinations] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,8 +29,22 @@ export default function TravelDetail({ navigation }) {
   const [checked, setChecked] = useState("first"); // State for radio button
   const [checkedExtra, setCheckedExtra] = useState("first"); // State for radio button
 
-  const [images, setImages] = useState([]);
-  
+  const [imagesDes, setImagesDes] = useState([]);
+  const [roomImages, setRoomImages] = useState({});
+
+  const fetchImagesDestination = async () => {
+    let res = await getImagesDestination(1);
+    setImagesDes(res);
+    console.log(res);
+  };
+
+  const fetchImageRoom = async (id) => {
+    if (roomImages[id]) {
+      return; // Nếu đã có ảnh trong state, không cần gọi lại API
+    }
+    let res = await getImageRoom(id);
+    setRoomImages((prev) => ({ ...prev, [id]: res })); // Lưu ảnh với ID tương ứng
+  };
   const getDestinationDetails = async () => {
     let res = await getDestinationById(1);
     setDestinations(res);
@@ -46,6 +62,14 @@ export default function TravelDetail({ navigation }) {
       setAmenities(res);
     }
   };
+  useEffect(() => {
+    rooms.forEach((room) => {
+      fetchImageRoom(room.id);
+    });
+  }, [rooms]);
+  useEffect(() => {
+    fetchImagesDestination();
+  }, []);
 
   useEffect(() => {
     getDestinationDetails();
@@ -86,10 +110,7 @@ export default function TravelDetail({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View>
-        <Image
-          source={{ uri: destination?.image_url?.toString() }}
-          style={{ width: "100%", height: 200, borderRadius: 10 }}
-        />
+        <ImageSlider images={imagesDes} />
       </View>
       <View
         style={{
@@ -143,10 +164,10 @@ export default function TravelDetail({ navigation }) {
           data={rooms}
           renderItem={({ item }) => (
             <View style={styles.roomItem}>
-              <Image
-                source={{ uri: item.image_url }}
-                style={styles.roomImage}
-              />
+              <View>
+                {/* Sử dụng ảnh từ roomImages */}
+                <ImageSlider images={roomImages[item.id] || []} />
+              </View>
               <Text style={styles.roomType}>
                 {item.room_type + " " + item.description}
               </Text>
