@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { ActivityIndicator, Image } from "react-native";
 import { reloadUser } from "../controller/loginController";
-import { login, logout,loadingTrue,loadingFalse } from "../Redux/userSlice";
+import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -16,11 +16,11 @@ import Home from "../Home";
 import TravelDetail from "../TravelDetails";
 import { View } from "react-native";
 import FilterPage from "../Filter";
+import Deserve from "../Order/Deserve";
 
 const Stack = createStackNavigator();
 
 function Main() {
-  
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.user.isLoading);
   const handleReloadUser = async () => {
@@ -50,7 +50,7 @@ function Main() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Filter">
+      <Stack.Navigator initialRouteName="TravelDetail">
         <Stack.Screen
           name="Splash"
           component={Splash}
@@ -79,8 +79,17 @@ function Main() {
             headerTitleAlign: "center", // Căn giữa logo
           }}
         />
-        <Stack.Screen name="TravelDetail" component={TravelDetail} />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="TravelDetail"
+          component={TravelDetail}
+        />
         <Stack.Screen name="Filter" component={FilterPage} />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Deserve"
+          component={Deserve}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
