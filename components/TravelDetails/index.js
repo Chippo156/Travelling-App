@@ -13,6 +13,7 @@ import { environtment } from "../../environtment/environtment";
 import {
   getAmenities,
   getDestinationById,
+  getFilterRoom,
   getImageRoom,
   getImagesDestination,
   getRoomsByDestinationId,
@@ -208,6 +209,25 @@ export default function TravelDetail({ route, navigation }) {
       roomId: roomid,
     });
   };
+
+  const fetchFilterRoom = async () => {
+    try {
+      let res = await getFilterRoom(
+        numberGuest,
+        selectedSecondLastDay,
+        selectedLastDayOfMonth,
+        numberRoom,
+        destination.destination_id
+      );
+      setRooms(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFilterRoom();
+  }, [numberGuest, numberRoom, selectedSecondLastDay, selectedLastDayOfMonth]);
 
   const renderItem = ({ item }) => {
     return (
@@ -680,26 +700,38 @@ export default function TravelDetail({ route, navigation }) {
                   <Text style={{ fontWeight: "bold", fontSize: 20 }}>
                     {formatCurrency(item.price)}
                   </Text>
-                  <TouchableOpacity
-                    style={{
-                      padding: 12,
-                      borderRadius: 20,
-                      backgroundColor: "blue",
-                    }}
-                    onPress={() =>
-                      handleDeserve(destination.destination_id, item.id)
-                    }
-                  >
-                    <Text
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: 14,
-                        color: "white",
-                      }}
-                    >
-                      Reserve
-                    </Text>
-                  </TouchableOpacity>
+                  <View>
+                    {item.quantity < 1 ? (
+                      <Text style={{ color: "red" }}>Full room</Text>
+                    ) : (
+                      <>
+                        <Text style={{ color: "green" }}>
+                          {item.quantity} room left
+                        </Text>
+                        <TouchableOpacity
+                          style={{
+                            padding: 12,
+                            borderRadius: 20,
+                            backgroundColor: "blue",
+                            marginVertical: 10,
+                          }}
+                          onPress={() =>
+                            handleDeserve(destination.destination_id, item.id)
+                          }
+                        >
+                          <Text
+                            style={{
+                              fontWeight: "bold",
+                              fontSize: 14,
+                              color: "white",
+                            }}
+                          >
+                            Reserve {numberRoom} room
+                          </Text>
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
                 </View>
                 <View>
                   <Text></Text>

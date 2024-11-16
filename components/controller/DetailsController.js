@@ -63,4 +63,27 @@ export const getFullAmenities = async () => {
     console.error(error);
     return error;
   }
-}
+};
+export const getFilterRoom = async (
+  sleeps,
+  startDate,
+  endDate,
+  quantity,
+  destinationId
+) => {
+  try {
+    const response = await axios.get(`/rooms/available`, {
+      params: {
+        sleeps: sleeps,
+        startDate: startDate,
+        endDate: endDate,
+        quantity: quantity,
+        destinationId: destinationId,
+      },
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};
