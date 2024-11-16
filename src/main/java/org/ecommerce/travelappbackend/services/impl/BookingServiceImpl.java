@@ -44,7 +44,13 @@ public class BookingServiceImpl implements BookingService {
                 bookings.setPaymentDate(LocalDate.now());
             }
             bookings.setBookingStatus("BOOKED");
+            System.out.println("room quantity: "+room.getQuantity());
+            room.setQuantity(room.getQuantity()-1);
+            System.out.println("room quantity: "+room.getQuantity());
+
+            roomRepository.save(room);
             bookings = bookingRepository.save(bookings);
+
             return bookingMapper.toBookingResponse(bookings);
         }catch (Exception ex){
             throw new Exception(ex.getMessage());
