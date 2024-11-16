@@ -46,3 +46,12 @@ export let getRoomsByDestinationId = async (id) => {
     return error;
   }
 };
+export let getRoomById = async (id) => {
+  try {
+    const response = await axios.get(`/rooms/${id}`);
+    return response.data.result;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};

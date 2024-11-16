@@ -21,7 +21,9 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { RadioButton } from "react-native-paper";
 import Svg, { Path } from "react-native-svg";
 import ImageSlider from "./ImageSlide";
-export default function TravelDetail({ navigation }) {
+import Header from "../Header/Header";
+import { handleGetDestination } from "../controller/homeController";
+export default function TravelDetail({ route, navigation }) {
   const [destination, setDestinations] = useState(null);
   const [loading, setLoading] = useState(true);
   const [amenities, setAmenities] = useState([]);
@@ -31,11 +33,28 @@ export default function TravelDetail({ navigation }) {
 
   const [imagesDes, setImagesDes] = useState([]);
   const [roomImages, setRoomImages] = useState({});
+  const [destinations, setListDestination] = useState([]);
+
+  const fetchListDestination = async () => {
+    try {
+      let res = await handleGetDestination();
+      setListDestination(res.result);
+      console.log("====================================");
+      console.log(res.result);
+      console.log("====================================");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchImagesDestination = async () => {
-    let res = await getImagesDestination(1);
-    setImagesDes(res);
-    console.log(res);
+    if (route.params && route.params.id) {
+      let res = await getImagesDestination(route.params.id);
+      setImagesDes(res);
+    } else {
+      let res = await getImagesDestination(1);
+      setImagesDes(res);
+    }
   };
 
   const fetchImageRoom = async (id) => {
@@ -46,9 +65,13 @@ export default function TravelDetail({ navigation }) {
     setRoomImages((prev) => ({ ...prev, [id]: res })); // Lưu ảnh với ID tương ứng
   };
   const getDestinationDetails = async () => {
-    let res = await getDestinationById(1);
-    setDestinations(res);
-    setLoading(false);
+    if (route.params && route.params.id) {
+      let res = await getDestinationById(route.params.id);
+      setDestinations(res);
+    } else {
+      let res = await getDestinationById(1);
+      setDestinations(res);
+    }
   };
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -69,10 +92,8 @@ export default function TravelDetail({ navigation }) {
   }, [rooms]);
   useEffect(() => {
     fetchImagesDestination();
-  }, []);
-
-  useEffect(() => {
     getDestinationDetails();
+    fetchListDestination();
   }, []);
 
   useEffect(() => {
@@ -107,11 +128,86 @@ export default function TravelDetail({ navigation }) {
     );
   };
 
+  const handleNavigate = (id) => {
+    navigation.push("TravelDetail", { id });
+  };
+  const handleDeserve = (desid, roomid) => {
+    navigation.navigate("Deserve", {
+      desId: desid,
+      roomId: roomid,
+    });
+  };
+
+  const renderItem = ({ item }) => {
+    return (
+      <TouchableOpacity
+        style={[styles.roomItem, { margin: 4 }]}
+        onPress={() => handleNavigate(item.destination_id)}
+      >
+        <Image
+          source={{ uri: item.image_url }}
+          style={{ width: "100%", height: 135, borderRadius: 8 }}
+        />
+        <View style={{ width: "100%", padding: 12, display: "flex", gap: 10 }}>
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              width: 240,
+              lineHeight: 18,
+              height: 36,
+            }}
+          >
+            {item.name}
+          </Text>
+          <Text numberOfLines={2} style={{ fontSize: 16, width: 240 }}>
+            {item.description}
+          </Text>
+          <View>
+            <FlatList
+              data={amenities.slice(0, 4)}
+              renderItem={({ item }) => (
+                <View style={styles.flexRow}>
+                  <Icon name={item.amenityIcon} size={24} color="#333" />
+                  <Text style={styles.amenityText}>{item?.amenityName}</Text>
+                </View>
+              )}
+              keyExtractor={(item) => item.id.toString()}
+              numColumns={1}
+            />
+          </View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 8,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                backgroundColor: "#57ca61",
+                borderRadius: 12,
+                textAlign: "center",
+                padding: 8,
+              }}
+            >
+              {item.average_rating.toFixed(1)}
+            </Text>
+            <Text style={{ paddingLeft: 12 }}>(400 reviews)</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View>
         <ImageSlider images={imagesDes} />
       </View>
+
       <View
         style={{
           flexDirection: "row",
@@ -133,7 +229,9 @@ export default function TravelDetail({ navigation }) {
       </View>
       <View style={styles.ratingRow}>
         <View style={styles.ratingBox}>
-          <Text style={styles.ratingNumber}>{destination?.average_rating}</Text>
+          <Text style={styles.ratingNumber}>
+            {destination?.average_rating.toFixed(1)}
+          </Text>
         </View>
         <Text style={styles.excellentText}>Exceptional</Text>
       </View>
@@ -147,6 +245,7 @@ export default function TravelDetail({ navigation }) {
           data={amenities}
           renderItem={({ item }) => (
             <View style={styles.amenityItem}>
+              <Icon name={item.amenityIcon} size={24} color="#333" />
               <Text style={styles.amenityText}>{item?.amenityName}</Text>
             </View>
           )}
@@ -159,6 +258,7 @@ export default function TravelDetail({ navigation }) {
         <Text style={styles.description}>{destination?.location}</Text>
       </View>
       <Text style={styles.sectionTitle}>Choose your room</Text>
+
       <View style={{ marginVertical: 20 }}>
         <FlatList
           data={rooms}
@@ -378,6 +478,9 @@ export default function TravelDetail({ navigation }) {
                       borderRadius: 20,
                       backgroundColor: "blue",
                     }}
+                    onPress={() =>
+                      handleDeserve(destination.destination_id, item.id)
+                    }
                   >
                     <Text
                       style={{
@@ -399,6 +502,18 @@ export default function TravelDetail({ navigation }) {
           numColumns={1}
         />
       </View>
+      <Text>
+        <Text style={styles.sectionTitle}>Explore other options</Text>
+      </Text>
+      <View style={{ marginTop: 10 }}>
+        <FlatList
+          data={destinations}
+          renderItem={renderItem}
+          horizontal={true}
+          keyExtractor={(item, index) => index.toString()}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
     </ScrollView>
   );
 }
@@ -406,135 +521,124 @@ export default function TravelDetail({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    margin: 10,
-    backgroundColor: "white",
-    padding: 16,
-    height: 300,
-  },
-  flexRow: {
-    flexDirection: "row",
-    gap: 10,
+    backgroundColor: "#f9f9f9",
+    paddingHorizontal: 20,
+    marginTop: 20,
   },
   vipText: {
-    padding: 3,
+    backgroundColor: "#FFD700",
+    color: "#fff",
     fontWeight: "bold",
-    fontSize: 14,
-    backgroundColor: "black",
-    color: "white",
-    marginVertical: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 5,
   },
   title: {
+    fontSize: 24,
     fontWeight: "bold",
-    fontSize: 22,
-    marginVertical: 10,
+    marginBottom: 10,
   },
   refundRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    gap: 10,
     marginVertical: 10,
   },
   refundText: {
-    color: "green",
-    fontSize: 18,
-    marginVertical: 10,
+    color: "#007BFF",
+    fontWeight: "600",
   },
   ratingRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
     marginVertical: 10,
   },
   ratingBox: {
-    padding: 7,
-    borderRadius: 10,
-    backgroundColor: "green",
-    marginVertical: 10,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#FFD700",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
   },
   ratingNumber: {
-    color: "white",
-    marginVertical: 10,
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
   },
   excellentText: {
-    color: "#000",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
-    marginVertical: 10,
   },
   reviewsText: {
-    color: "blue",
+    color: "#007BFF",
+    textDecorationLine: "underline",
     marginVertical: 10,
   },
   sectionTitle: {
-    color: "#000",
     fontSize: 20,
     fontWeight: "bold",
-    marginVertical: 10,
+    marginTop: 20,
+    marginBottom: 20,
   },
   description: {
-    fontSize: 18,
-    marginVertical: 10,
+    fontSize: 16,
+    lineHeight: 24,
+    color: "#555",
+    marginBottom: 10,
   },
   amenityItem: {
-    width: 200,
-    marginVertical: 10,
+    flex: 1,
+    padding: 10,
+    backgroundColor: "#f2f2f2",
+    margin: 5,
+    borderRadius: 8,
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 5,
   },
   amenityText: {
-    fontSize: 18,
+    fontSize: 14,
+    color: "#333",
   },
   roomItem: {
-    flexGrow: 1,
-    marginTop: 20,
-    padding: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 10,
-    backgroundColor: "white",
+    padding: 15,
+    backgroundColor: "#fff",
+    // Shadow for iOS
     shadowColor: "#000",
     shadowOffset: {
-      width: 1,
-      height: 3,
+      width: 0,
+      height: 2,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 7.84,
-    elevation: 5,
-  },
-  roomImage: {
-    width: "100%",
-    height: 200,
-    borderRadius: 10,
-    marginVertical: 10,
-  },
-  roomType: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  titleRoom: {
-    fontWeight: "bold",
-    fontSize: 16,
-    marginVertical: 5,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    // Shadow for Android
+    elevation: 4,
   },
 
-  roomDescription: {
+  roomType: {
     fontSize: 18,
+    fontWeight: "bold",
+    marginVertical: 10,
+  },
+  flexRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
   },
   row: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    marginVertical: 5, // Add vertical margin to create space between rows
+    alignItems: "center",
+    marginVertical: 10,
   },
-  vipText: {
-    padding: 3,
+  titleRoom: {
+    fontSize: 18,
     fontWeight: "bold",
-    fontSize: 14,
-    backgroundColor: "black",
-    color: "white",
-    marginLeft: 10, // Add left margin to create space between text elements
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: 22,
-    marginVertical: 10, // Add vertical margin to create space between title and other elements
+    marginTop: 10,
   },
 });

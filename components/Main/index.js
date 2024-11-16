@@ -16,6 +16,7 @@ import Home from "../Home";
 import TravelDetail from "../TravelDetails";
 import { View } from "react-native";
 import FilterPage from "../Filter";
+import Deserve from "../Order/Deserve";
 
 const Stack = createStackNavigator();
 
@@ -78,8 +79,17 @@ function Main() {
             headerTitleAlign: "center", // Căn giữa logo
           }}
         />
-        <Stack.Screen name="TravelDetail" component={TravelDetail} />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="TravelDetail"
+          component={TravelDetail}
+        />
         <Stack.Screen name="Filter" component={FilterPage} />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Deserve"
+          component={Deserve}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
