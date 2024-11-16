@@ -23,6 +23,8 @@ import Svg, { Path } from "react-native-svg";
 import ImageSlider from "./ImageSlide";
 import Header from "../Header/Header";
 import { handleGetDestination } from "../controller/homeController";
+import { Overlay } from "@rneui/themed";
+import OverlayDate from "../Filter/OverlayDate";
 export default function TravelDetail({ route, navigation }) {
   const [destination, setDestinations] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,6 +36,14 @@ export default function TravelDetail({ route, navigation }) {
   const [imagesDes, setImagesDes] = useState([]);
   const [roomImages, setRoomImages] = useState({});
   const [destinations, setListDestination] = useState([]);
+  const [selectDay, setSelectDay] = useState(true);
+  const [selectedSecondLastDay, setSelectedSecondLastDay] = useState("");
+  const [selectedLastDayOfMonth, setSelectedLastDayOfMonth] = useState("");
+  const [visibleDate, setVisibleDate] = useState(false); // Overlay cho ngày
+
+  const [visibleGuest, setVisibleGuest] = useState(false); // Overlay cho khách
+  const [numberGuest, setNumberGuest] = useState(1);
+  const [numberRoom, setNumbeRoom] = useState(1);
 
   const fetchListDestination = async () => {
     try {
@@ -127,6 +137,67 @@ export default function TravelDetail({ route, navigation }) {
       </View>
     );
   };
+  const toggleGuestOverlay = () => setVisibleGuest(!visibleGuest);
+  const handleAddGuest = () => {
+    setNumberGuest(numberGuest + 1);
+  };
+  const handleRemoveGuest = () => {
+    if (numberGuest > 1) {
+      setNumberGuest(numberGuest - 1);
+    }
+  };
+  const handleAddRoom = () => {
+    setNumbeRoom(numberRoom + 1);
+  };
+  const handleRemoveRoom = () => {
+    if (numberRoom > 1) {
+      setNumbeRoom(numberRoom - 1);
+    }
+  };
+  const toggleDateOverlay = () => setVisibleDate(!visibleDate);
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+  const getMonthDay = (date) => {
+    const day = date.split("-")[2];
+    const month = date.split("-")[1];
+    return `${day}/${month}`;
+  };
+  // Hàm lấy ngày thứ
+  const getDayOfWeek = (date) => {
+    const daysOfWeek = [
+      "Chủ Nhật",
+      "Thứ Hai ",
+      "Thứ Ba  ",
+      "Thứ Tư  ",
+      "Thứ Năm ",
+      "Thứ Sáu ",
+      "Thứ Bảy ",
+    ];
+    return daysOfWeek[date.getDay()];
+  };
+
+  // Hàm lấy 2 ngày cuối tháng
+  const getLastTwoDaysOfMonth = () => {
+    const today = new Date();
+    const lastDayOfMonth = new Date(
+      today.getFullYear(),
+      today.getMonth() + 1,
+      0
+    ); // Ngày cuối tháng
+    const secondLastDay = new Date(lastDayOfMonth);
+    secondLastDay.setDate(lastDayOfMonth.getDate() - 1); // Ngày trước đó một ngày
+
+    setSelectedSecondLastDay(formatDate(secondLastDay)); // Thiết lập ngày đã chọn ban đầu
+    setSelectedLastDayOfMonth(formatDate(lastDayOfMonth)); // Thiết lập ngày đã chọn ban đầu
+  };
+
+  useEffect(() => {
+    getLastTwoDaysOfMonth();
+  }, []);
 
   const handleNavigate = (id) => {
     navigation.push("TravelDetail", { id });
@@ -229,9 +300,7 @@ export default function TravelDetail({ route, navigation }) {
       </View>
       <View style={styles.ratingRow}>
         <View style={styles.ratingBox}>
-          <Text style={styles.ratingNumber}>
-            {destination?.average_rating.toFixed(1)}
-          </Text>
+          <Text style={styles.ratingNumber}>{destination?.average_rating}</Text>
         </View>
         <Text style={styles.excellentText}>Exceptional</Text>
       </View>
@@ -258,7 +327,141 @@ export default function TravelDetail({ route, navigation }) {
         <Text style={styles.description}>{destination?.location}</Text>
       </View>
       <Text style={styles.sectionTitle}>Choose your room</Text>
+      <TouchableOpacity
+        style={styles.buttonContainer1}
+        onPress={toggleDateOverlay}
+      >
+        <Icon name="calendar" size={30} color="green" />
+        <View>
+          <Text>Ngày</Text>
+          <Text style={{ fontSize: 18 }}>
+            {getMonthDay(selectedSecondLastDay)} -{" "}
+            {getMonthDay(selectedLastDayOfMonth)}
+          </Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.buttonContainer1}
+        onPress={toggleGuestOverlay}
+      >
+        <Icon name="person" size={30} color="orange" />
+        <View>
+          <Text>Guest</Text>
+          <Text style={{ fontSize: 20 }}>
+            {numberGuest} guest , {numberRoom} room
+          </Text>
+        </View>
+      </TouchableOpacity>
 
+      <Overlay
+        isVisible={visibleDate}
+        onBackdropPress={() => {}}
+        overlayStyle={styles.overlay}
+      >
+        <OverlayDate
+          toggleDateOverlay={toggleDateOverlay}
+          selectedSecondLastDay={selectedSecondLastDay}
+          selectedLastDayOfMonth={selectedLastDayOfMonth}
+          setSelectedSecondLastDay={setSelectedSecondLastDay}
+          setSelectedLastDayOfMonth={setSelectedLastDayOfMonth}
+          selectDay={selectDay}
+          setSelectDay={setSelectDay}
+          getDayOfWeek={getDayOfWeek}
+          getMonthDay={getMonthDay}
+        />
+      </Overlay>
+      <Overlay
+        isVisible={visibleGuest}
+        onBackdropPress={() => {}}
+        overlayStyle={styles.overlay}
+      >
+        <View style={styles.overlayContent}>
+          <Text style={{ fontSize: 30 }}>Filter</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20 }}>Số Khách</Text>
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <TouchableOpacity
+                style={{
+                  padding: 6,
+                  borderRadius: "50%",
+                  borderColor: "gray",
+                  borderStyle: "solid",
+                  borderWidth: 1,
+                }}
+                onPress={() => handleRemoveGuest()}
+              >
+                <Icon name="remove" size={20} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 20 }}>{numberGuest}</Text>
+              <TouchableOpacity
+                style={{
+                  padding: 6,
+                  borderRadius: "50%",
+                  borderColor: "gray",
+                  borderStyle: "solid",
+                  borderWidth: 1,
+                }}
+                onPress={() => handleAddGuest()}
+              >
+                <Icon name="add" size={20} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 20 }}>Số phòng</Text>
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <TouchableOpacity
+                style={{
+                  padding: 6,
+                  borderRadius: "50%",
+                  borderColor: "gray",
+                  borderStyle: "solid",
+                  borderWidth: 1,
+                }}
+                onPress={() => handleRemoveRoom()}
+              >
+                <Icon name="remove" size={20} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 20 }}>{numberRoom}</Text>
+              <TouchableOpacity
+                style={{
+                  padding: 6,
+                  borderRadius: "50%",
+                  borderColor: "gray",
+                  borderStyle: "solid",
+                  borderWidth: 1,
+                }}
+                onPress={() => handleAddRoom()}
+              >
+                <Icon name="add" size={20} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={toggleGuestOverlay}
+            style={styles.closeButton}
+          >
+            <Text style={{ fontSize: 20, color: "#000" }}>Đóng</Text>
+          </TouchableOpacity>
+        </View>
+      </Overlay>
       <View style={{ marginVertical: 20 }}>
         <FlatList
           data={rooms}
@@ -645,5 +848,40 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginTop: 10,
+  },
+  buttonContainer1: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 20,
+    backgroundColor: "#f0f0f0",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  overlayContent: {
+    width: "100%",
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#00bbf2",
+    borderRadius: 5,
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: "100%",
+    height: "100%",
+    paddingTop: 50,
+    alignItems: "center",
+    backgroundColor: "white",
   },
 });

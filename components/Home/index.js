@@ -19,28 +19,28 @@ function Home({ navigation }) {
       city: "Hồ Chí Minh",
       country: "Việt Nam",
       uri: require("../../assets/anh-hcm.png"),
-      value:"Hồ Chí Minh"
+      value: "Hồ Chí Minh",
     },
     {
       city: "Hà Nội",
       country: "Việt Nam",
       uri: require("../../assets/anh-ha-noi.png"),
-      value:"Hanoi"
+      value: "Hanoi",
     },
     {
       city: "Đà Nẵng",
       country: "Việt Nam",
       uri: require("../../assets/anh-da=nang.png"),
-      value:"Da nang"
+      value: "Da nang",
     },
     {
       city: "Khu Vực Khác",
       country: "Việt Nam",
       uri: require("../../assets/anh-khac.png"),
-      value:"Other"
+      value: "Other",
     },
   ];
- 
+
   const [dataLastWeekend, setDataLastWeekend] = useState([]);
   const handleGetData = async () => {
     let res = await handleGetDestination();

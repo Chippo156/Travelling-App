@@ -12,7 +12,17 @@ import { getFilterDestination } from "../controller/filterController";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Overlay, SearchBar } from "@rneui/themed";
-function OverlayDate({ toggleDateOverlay, selectedSecondLastDay, selectedLastDayOfMonth, setSelectedSecondLastDay, setSelectedLastDayOfMonth, selectDay, setSelectDay, getDayOfWeek, getMonthDay }) {
+function OverlayDate({
+  toggleDateOverlay,
+  selectedSecondLastDay,
+  selectedLastDayOfMonth,
+  setSelectedSecondLastDay,
+  setSelectedLastDayOfMonth,
+  selectDay,
+  setSelectDay,
+  getDayOfWeek,
+  getMonthDay,
+}) {
   return (
     <View style={styles.overlayContent}>
       <View
@@ -99,29 +109,29 @@ function OverlayDate({ toggleDateOverlay, selectedSecondLastDay, selectedLastDay
   );
 }
 const styles = StyleSheet.create({
-    overlayContent: {
-      width: "100%",
-    },
-    closeButton: {
-      marginTop: 20,
-      padding: 10,
-      backgroundColor: "#00bbf2",
-      borderRadius: 5,
-      textAlign: "center",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    overlay: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: "100%",
-      height: "100%",
-      paddingTop: 50,
-      alignItems: "center",
-      backgroundColor: "white",
-    },
-  });
+  overlayContent: {
+    width: "100%",
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#00bbf2",
+    borderRadius: 5,
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: "100%",
+    height: "100%",
+    paddingTop: 50,
+    alignItems: "center",
+    backgroundColor: "white",
+  },
+});
 export default OverlayDate;
