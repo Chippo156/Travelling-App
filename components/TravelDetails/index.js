@@ -288,6 +288,7 @@ export default function TravelDetail({ route, navigation }) {
                   width={24}
                   height={24}
                   fill={"green"}
+                  clipRule="evenodd"
                 >
                   <Path
                     fillRule="evenodd"
@@ -321,6 +322,7 @@ export default function TravelDetail({ route, navigation }) {
                       xmlnsXlink="http://www.w3.org/1999/xlink"
                       width={24}
                       height={24}
+                      clipRule="evenodd"
                     >
                       <Path
                         fill-rule="evenodd"
@@ -343,6 +345,7 @@ export default function TravelDetail({ route, navigation }) {
                       xmlnsXlink="http://www.w3.org/1999/xlink"
                       width={24}
                       height={24}
+                      clipRule="evenodd"
                     >
                       <Path d="M6 18h2l-3 3-3-3h2V6c0-1.1.9-2 2-2h12V2l3 3-3 3V6H6v12zm14-8v2h-2v-2h2zm0 8a2 2 0 0 1-2 2v-2h2zm0-4v2h-2v-2h2zm-4 4v2h-2v-2h2zm-4 0v2h-2v-2h2z"></Path>
                     </Svg>
@@ -359,6 +362,7 @@ export default function TravelDetail({ route, navigation }) {
                       xmlnsXlink="http://www.w3.org/1999/xlink"
                       width={24}
                       height={24}
+                      clipRule="evenodd"
                     >
                       <Path
                         fill-rule="evenodd"
@@ -377,6 +381,7 @@ export default function TravelDetail({ route, navigation }) {
                       xmlnsXlink="http://www.w3.org/1999/xlink"
                       width={24}
                       height={24}
+                      clipRule="evenodd"
                     >
                       <Path
                         fill-rule="evenodd"

@@ -55,3 +55,12 @@ export let getRoomById = async (id) => {
     return error;
   }
 };
+export const getFullAmenities = async () => {
+  try {
+    const response = await axios.get(`/amenities`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}

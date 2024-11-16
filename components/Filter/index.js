@@ -34,9 +34,7 @@ function FilterPage({ route, navigation }) {
   // Hàm gọi API để lấy các địa điểm theo thành phố
   const handleGetFilterDestination = async (city) => {
     let res = await getFilterDestination(city || "Ho Chi Minh");
-    console.log("res", res);
     if (res && res.data.code === 200) {
-      console.log("Fetched destinations:", res.data);
       setFilteredDestinations(res.data.result); // Cập nhật dữ liệu sau khi nhận được
     }
     setLoading(false); // Thay đổi trạng thái khi đã nhận được dữ liệu
@@ -359,7 +357,7 @@ function FilterPage({ route, navigation }) {
         onBackdropPress={() => {}}
         overlayStyle={styles.overlay}
       >
-        <OverlayFilter />
+        <OverlayFilter city={city||"Hồ Chí Minh"} toggleFilterOverlay={toggleFilterOverlay}/>
       </Overlay>
     </View>
   );
