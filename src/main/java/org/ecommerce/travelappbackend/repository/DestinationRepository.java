@@ -14,12 +14,15 @@ import java.util.List;
 
 public interface DestinationRepository extends JpaRepository<Destination, Long>{
     List<Destination> findByCategoryId(Long category_id);
-    @Query("SELECT DISTINCT d FROM Destination d JOIN Room r on d.id=r.destination.id WHERE " +
+    @Query("SELECT DISTINCT d FROM Destination d JOIN Room r on d.id=r.destination.id JOIN DestinationAmenity da on da.destination.id=d.id WHERE " +
             "(:categoryId IS NULL OR d.category.id = :categoryId) AND " +
-            "(:averageRating IS NULL OR d.averageRating >= :averageRating) AND " +
-            "(:price IS NULL OR r.price <= :price)")
-    List<Destination> filterDestination(@Param("categoryId") Long id,@Param("averageRating") Double averageRating,@Param("price") Double price);
-
+            "(:averageRating IS NULL OR d.averageRating = :averageRating) AND " +
+            "(:price IS NULL OR r.price <= :price) AND " +
+            "(:amenityId IS NULL OR da.amenity.id = :amenityId)")
+    List<Destination> filterDestination(@Param("categoryId") Long id,
+                                        @Param("averageRating") Double averageRating,
+                                        @Param("price") Double price,
+                                        @Param("amenityId") Long amenityId);
     List<Destination> findByLocationContaining(String location);
 
     @Query("SELECT d FROM Destination d JOIN Room r on d.id=r.destination.id WHERE " +
@@ -32,6 +35,8 @@ public interface DestinationRepository extends JpaRepository<Destination, Long>{
 
     @Query("SELECT d FROM Destination d WHERE d.location LIKE %:search% OR d.name LIKE %:search% OR d.description LIKE %:search%")
     List<Destination> searchDestination(@Param("search") String search);
+
+
 
 
 

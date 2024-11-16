@@ -18,12 +18,11 @@ public class DestinationAmenityController {
     private final DestinationAmenityService destinationAmenityService;
 
     @PostMapping
-    public ApiResponse<DestinationAmenity> saveDestinationAmenity(@RequestBody DestinationAmenityRequest request) {
+    public ApiResponse<String> saveDestinationAmenity(@RequestBody DestinationAmenityRequest request) {
 
         try{
-           DestinationAmenity destinationAmenity= destinationAmenityService.saveDestinationAmenity(request);
-
-            return new ApiResponse<>(200,"Destination Amenity saved successfully",destinationAmenity);
+           destinationAmenityService.saveDestinationAmenity(request);
+            return new ApiResponse<>(200,"Destination Amenity saved successfully",null);
 
         }catch (Exception e ){
             return new ApiResponse<>(500,e.getMessage(),null);

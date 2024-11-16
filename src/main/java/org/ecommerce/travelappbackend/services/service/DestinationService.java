@@ -22,7 +22,7 @@ public interface DestinationService {
 
     void updateImage(Long id, String imageUrl);
 
-    List<Destination> filterDestination(String location, Long categoryId, Double averageRating,Double price);
+    List<Destination> filterDestination(String location, Long categoryId, Double averageRating,Double price,Long amenityId);
     List<Destination> getDestinationByLocation(String location);
     List<Destination> findAvailableDestinations(String startDate, String endDate);
 

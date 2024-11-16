@@ -107,14 +107,15 @@ public class DestinationController {
             @RequestParam(required = false) String location,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Double averageRating,
-            @RequestParam(required = false) Double price
+            @RequestParam(required = false) Double price,
+            @RequestParam(required = false) Long amenityId
 
     ) {
         try {
             String locationParam = location != null ? StringUtils.stripAccents(location.toLowerCase().replaceAll("[\\s,]", "")) : null;
             System.out.println(locationParam);
             return new ApiResponse<>(200, "success",
-                    destinationService.filterDestination(locationParam, categoryId, averageRating, price).stream().map(mapper::toDestinationResponse).toList());
+                    destinationService.filterDestination(locationParam, categoryId, averageRating, price,amenityId).stream().map(mapper::toDestinationResponse).toList());
         } catch (Exception e) {
             return new ApiResponse<>(400, e.getMessage(), null);
         }
