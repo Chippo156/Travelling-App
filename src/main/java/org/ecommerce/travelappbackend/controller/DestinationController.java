@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -108,14 +109,18 @@ public class DestinationController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Double averageRating,
             @RequestParam(required = false) Double price,
-            @RequestParam(required = false) Long amenityId
-
+            @RequestParam(required = false) Long amenityId,
+            @RequestParam(required = false) Integer sleeps,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate
     ) {
         try {
             String locationParam = location != null ? StringUtils.stripAccents(location.toLowerCase().replaceAll("[\\s,]", "")) : null;
             System.out.println(locationParam);
+            LocalDate start = startDate != null ? LocalDate.parse(startDate) : null;
+            LocalDate end = endDate != null ? LocalDate.parse(endDate) : null;
             return new ApiResponse<>(200, "success",
-                    destinationService.filterDestination(locationParam, categoryId, averageRating, price,amenityId).stream().map(mapper::toDestinationResponse).toList());
+                    destinationService.filterDestination(locationParam, categoryId, averageRating, price,amenityId,sleeps,start,end).stream().map(mapper::toDestinationResponse).toList());
         } catch (Exception e) {
             return new ApiResponse<>(400, e.getMessage(), null);
         }

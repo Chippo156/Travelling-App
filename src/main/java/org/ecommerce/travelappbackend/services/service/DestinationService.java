@@ -5,6 +5,7 @@ import org.ecommerce.travelappbackend.entity.Destination;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface DestinationService {
@@ -22,7 +23,7 @@ public interface DestinationService {
 
     void updateImage(Long id, String imageUrl);
 
-    List<Destination> filterDestination(String location, Long categoryId, Double averageRating,Double price,Long amenityId);
+    List<Destination> filterDestination(String location, Long categoryId, Double averageRating, Double price, Long amenityId, Integer sleeps, LocalDate startDate, LocalDate endDate);
     List<Destination> getDestinationByLocation(String location);
     List<Destination> findAvailableDestinations(String startDate, String endDate);
 

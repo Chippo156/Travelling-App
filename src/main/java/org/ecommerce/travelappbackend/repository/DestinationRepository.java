@@ -18,11 +18,22 @@ public interface DestinationRepository extends JpaRepository<Destination, Long>{
             "(:categoryId IS NULL OR d.category.id = :categoryId) AND " +
             "(:averageRating IS NULL OR d.averageRating = :averageRating) AND " +
             "(:price IS NULL OR r.price <= :price) AND " +
-            "(:amenityId IS NULL OR da.amenity.id = :amenityId)")
+            "(:amenityId IS NULL OR da.amenity.id = :amenityId) AND " +
+            "(:location IS NULL OR REPLACE(REPLACE(d.location, ' ', ''), '[^\\p{IsAlphabetic}\\p{IsDigit}]', '') LIKE %:location%) AND " +
+            "(:sleeps IS NULL OR r.sleeps >= :sleeps) AND " +
+            "(:startDate IS NULL OR :endDate IS NULL OR " +
+            "NOT EXISTS (SELECT 1 FROM Bookings b WHERE b.room.id = r.id AND " +
+            "((b.checkInDate <= :endDate AND b.checkOutDate >= :startDate))))")
     List<Destination> filterDestination(@Param("categoryId") Long id,
                                         @Param("averageRating") Double averageRating,
                                         @Param("price") Double price,
-                                        @Param("amenityId") Long amenityId);
+                                        @Param("amenityId") Long amenityId,
+                                        @Param("location") String location,
+                                        @Param("sleeps") Integer sleeps,
+                                        @Param("startDate") LocalDate startDate,
+                                        @Param("endDate") LocalDate endDate);
+
+
     List<Destination> findByLocationContaining(String location);
 
     @Query("SELECT d FROM Destination d JOIN Room r on d.id=r.destination.id WHERE " +
