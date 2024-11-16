@@ -36,44 +36,47 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomResponse saveRoom(RoomRequest roomRequest) {
-        try{
-            Destination destination = destinationRepository.findById(roomRequest.getDestinationId()).orElseThrow(()->new RuntimeException("Destination not found"));
+        try {
+            Destination destination = destinationRepository.findById(roomRequest.getDestinationId()).orElseThrow(() -> new RuntimeException("Destination not found"));
             Room room = roomMapper.toRoom(roomRequest);
             room.setDestination(destination);
             return roomMapper.toRoomResponse(roomRepository.save(room));
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
-    public RoomResponse updateRoom(Long id,RoomRequest roomRequest) {
-        try{
-            Room room = roomRepository.findById(id).orElseThrow(()->new RuntimeException("Room not found"));
-            if(roomRequest.getRoomType()!=null)
+    public RoomResponse updateRoom(Long id, RoomRequest roomRequest) {
+        try {
+            Room room = roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room not found"));
+            if (roomRequest.getRoomType() != null)
                 room.setRoomType(roomRequest.getRoomType());
-            if(roomRequest.getDescription()!=null)
+            if (roomRequest.getDescription() != null)
                 room.setDescription(roomRequest.getDescription());
-            if(roomRequest.getBeds()!=null)
+            if (roomRequest.getBeds() != null)
                 room.setBeds(roomRequest.getBeds());
-            if(roomRequest.getPrice()!=0)
+            if (roomRequest.getPrice() != 0)
                 room.setPrice(roomRequest.getPrice());
-            if(roomRequest.getSleeps()!=0)
+            if (roomRequest.getSleeps() != 0)
                 room.setSleeps(roomRequest.getSleeps());
-            if(roomRequest.getFeatures()!=null)
+            if (roomRequest.getQuantity() != 0)
+                room.setQuantity(roomRequest.getQuantity());
+
+
+            if (roomRequest.getFeatures() != null)
                 room.setFeatures(roomRequest.getFeatures());
             return roomMapper.toRoomResponse(roomRepository.save(room));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
     public void deleteRoom(Long id) {
-        try{
+        try {
             roomRepository.deleteById(id);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -91,26 +94,31 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void updateImage(Long id, String imageUrl) {
-        try{
-            Room room = roomRepository.findById(id).orElseThrow(()->new RuntimeException("Room not found"));
+        try {
+            Room room = roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room not found"));
             room.setImageUrl(imageUrl);
             roomRepository.save(room);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
 
     }
+
     @Override
     public RoomResponse findDistinctFirstByDestinationId(Long destinationId) {
-       try{
-              return roomMapper.toRoomResponse(roomRepository.findDistinctFirstByDestinationId(destinationId));
-       }catch (Exception e){
-           throw new RuntimeException(e.getMessage());
-       }
+        try {
+            return roomMapper.toRoomResponse(roomRepository.findDistinctFirstByDestinationId(destinationId));
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
     public List<RoomResponse> filterRoomsIsNotBooked(Long destinationId, LocalDate startDate, LocalDate endDate) {
-        return roomRepository.filterRoomsIsNotBooked(destinationId,startDate,endDate).stream().map(roomMapper::toRoomResponse).toList();
+return null;    }
+
+    @Override
+    public List<RoomResponse> findAvailableRooms(Long destinationId,Integer sleeps, LocalDate startDate, LocalDate endDate, Integer quantity) {
+        return roomRepository.findAvailableRooms(destinationId, sleeps, startDate, endDate, quantity).stream().map(roomMapper::toRoomResponse).toList();
     }
 }

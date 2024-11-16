@@ -42,6 +42,8 @@ public class Room {
     private double price; // Giá phòng mỗi đêm
     private String imageUrl; // Link ảnh phòng
 
+    @Column(name = "quantity", nullable = false)
+    private int quantity; // Số lượng phòng
     @ManyToOne
     @JoinColumn(name = "destination_id")
     private Destination destination;

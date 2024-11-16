@@ -32,8 +32,6 @@ public interface DestinationRepository extends JpaRepository<Destination, Long>{
                                         @Param("sleeps") Integer sleeps,
                                         @Param("startDate") LocalDate startDate,
                                         @Param("endDate") LocalDate endDate);
-
-
     List<Destination> findByLocationContaining(String location);
 
     @Query("SELECT d FROM Destination d JOIN Room r on d.id=r.destination.id WHERE " +
@@ -42,13 +40,6 @@ public interface DestinationRepository extends JpaRepository<Destination, Long>{
             "((b.checkInDate <= :endDate AND b.checkOutDate >= :startDate))))")
     List<Destination> findAvailableDestinations(@Param("startDate") LocalDate startDate,
                                                 @Param("endDate") LocalDate endDate);
-
-
     @Query("SELECT d FROM Destination d WHERE d.location LIKE %:search% OR d.name LIKE %:search% OR d.description LIKE %:search%")
     List<Destination> searchDestination(@Param("search") String search);
-
-
-
-
-
 }

@@ -19,4 +19,6 @@ public interface RoomService {
      RoomResponse findDistinctFirstByDestinationId(Long destinationId);
         List<RoomResponse> filterRoomsIsNotBooked(Long destinationId, LocalDate startDate, LocalDate endDate);
 
+     List<RoomResponse>  findAvailableRooms(Long destinationId,Integer sleeps, LocalDate startDate, LocalDate endDate, Integer quantity);
+
 }

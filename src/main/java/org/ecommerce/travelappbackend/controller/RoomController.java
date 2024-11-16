@@ -59,6 +59,14 @@ public class RoomController {
             return new ApiResponse<>(400, ex.getMessage(), null);
         }
     }
+    @PutMapping("/{id}")
+    public ApiResponse<RoomResponse> updateRoom(@PathVariable Long id, @RequestBody RoomRequest roomRequest) {
+        try {
+            return new ApiResponse<>(200, "success", roomService.updateRoom(id, roomRequest));
+        } catch (Exception ex) {
+            return new ApiResponse<>(400, ex.getMessage(), null);
+        }
+    }
     @DeleteMapping("/{id}")
     public ApiResponse<String> deleteRoom(@PathVariable Long id) {
         try {
@@ -120,6 +128,20 @@ public class RoomController {
             LocalDate start = LocalDate.parse(startDate);
             LocalDate end = LocalDate.parse(endDate);
             return new ApiResponse<>(200, "success", roomService.filterRoomsIsNotBooked(id, start, end));
+        } catch (Exception ex) {
+            return new ApiResponse<>(400, ex.getMessage(), null);
+        }
+    }
+    @GetMapping("/available")
+    public ApiResponse<List<RoomResponse>> getAvailableRooms(@RequestParam(required = false) Integer sleeps,
+                                                     @RequestParam(required = false) String startDate,
+                                                     @RequestParam(required = false) String endDate,
+                                                     @RequestParam(required = false) Integer quantity,
+                                                     @RequestParam(required = false) Long destinationId){
+        try {
+            LocalDate start = startDate != null ? LocalDate.parse(startDate) : null;
+            LocalDate end = endDate != null ? LocalDate.parse(endDate) : null;
+            return new ApiResponse<>(200, "success", roomService.findAvailableRooms(destinationId,sleeps, start, end, quantity));
         } catch (Exception ex) {
             return new ApiResponse<>(400, ex.getMessage(), null);
         }
