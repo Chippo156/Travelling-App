@@ -4,7 +4,7 @@ import { FaFacebook, FaTwitter } from "react-icons/fa";
 // import { FaSquareInstagram } from "react-icons/fa6";
 import { TouchableOpacity, View, Text, TextInput } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import { login, logout,loadingTrue,loadingFalse } from "../Redux/userSlice";
+import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
 import TravelDetail from "../TravelDetails";
 import { loginUser, reloadUser } from "../controller/loginController";
 import AsyncStorage from "@react-native-async-storage/async-storage";

@@ -3,8 +3,7 @@ import axios from "../axios/axios";
 export let getDestinationById = async (id) => {
   try {
     const response = await axios.get(`/destinations/${id}`);
-
-    return response.data.result;
+    return response.data;
   } catch (error) {
     console.error(error);
     return error;
