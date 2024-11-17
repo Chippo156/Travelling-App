@@ -22,7 +22,6 @@ function FilterPage({ route, navigation }) {
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const { city } = route.params || "Hồ Chí Minh"; // Nhận thành phố từ params
   const [filteredDestinations, setFilteredDestinations] = useState([]); // Lưu trữ dữ liệu lọc
-  const [loading, setLoading] = useState(true); // Trạng thái loading
   const [search, setSearch] = useState("");
   const [selectDay, setSelectDay] = useState(true);
   const [selectedSecondLastDay, setSelectedSecondLastDay] = useState("");
@@ -37,7 +36,6 @@ function FilterPage({ route, navigation }) {
     if (res && res.data.code === 200) {
       setFilteredDestinations(res.data.result); // Cập nhật dữ liệu sau khi nhận được
     }
-    setLoading(false); // Thay đổi trạng thái khi đã nhận được dữ liệu
   };
 
   useEffect(() => {

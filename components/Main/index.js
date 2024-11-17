@@ -4,7 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { ActivityIndicator, Image } from "react-native";
 import { reloadUser } from "../controller/loginController";
 import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
-import { useSelector, useDispatch } from "react-redux";thi
+import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Login from "../Login";
@@ -50,7 +50,7 @@ function Main() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="TravelDetail">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
           name="Splash"
           component={Splash}
