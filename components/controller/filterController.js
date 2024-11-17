@@ -17,3 +17,14 @@ export const getFilterDestination = async (city) => {
     return error;
   }
 };
+export const getImageDestination = async (id) => {
+  try {
+    const res = await axios(
+      `destination-images/destination/${id}`
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}

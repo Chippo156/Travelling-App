@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { getFilterDestination } from "../controller/filterController";
+import { getFilterDestination, getImageDestination } from "../controller/filterController";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Overlay, SearchBar } from "@rneui/themed";
