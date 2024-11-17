@@ -110,7 +110,7 @@ function FilterPage({ route, navigation }) {
         }}
         onPress={() =>
           navigation.navigate("TravelDetail", {
-            destination: item,
+            id: item.destination_id,
             selectedSecondLastDay,
             selectedLastDayOfMonth,
             numberGuest,
@@ -122,19 +122,19 @@ function FilterPage({ route, navigation }) {
             source={{ uri: item.image_url }}
             style={styles.destinationImage}
           />
-          <View style={{ flex: 3,gap:10 }}>
+          <View style={{ flex: 3, gap: 10 }}>
             <Text style={styles.destinationName}>{item.name}</Text>
             <Text style={styles.destinationDescription}>
               {city || item.location}
             </Text>
             <Text
               style={{
-                 borderRadius: "12px",
+                borderRadius: "12px",
                 color: "#fff",
                 backgroundColor: "#00bbf2",
                 height: 30,
                 width: 30,
-                lineHeight:30,
+                lineHeight: 30,
                 textAlign: "center",
               }}
             >
@@ -357,7 +357,10 @@ function FilterPage({ route, navigation }) {
         onBackdropPress={() => {}}
         overlayStyle={styles.overlay}
       >
-        <OverlayFilter city={city||"Hồ Chí Minh"} toggleFilterOverlay={toggleFilterOverlay}/>
+        <OverlayFilter
+          city={city || "Hồ Chí Minh"}
+          toggleFilterOverlay={toggleFilterOverlay}
+        />
       </Overlay>
     </View>
   );
