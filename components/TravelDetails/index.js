@@ -25,8 +25,13 @@ import ImageSlider from "./ImageSlide";
 import Header from "../Header/Header";
 import { handleGetDestination } from "../controller/homeController";
 import { Overlay } from "@rneui/themed";
+import { loadingTrue, loadingFalse } from "../Redux/userSlice";
+
 import OverlayDate from "../Filter/OverlayDate";
+import { useDispatch } from "react-redux";
 export default function TravelDetail({ route, navigation }) {
+  const dispatch = useDispatch();
+
   const [destination, setDestinations] = useState(null);
   const [loading, setLoading] = useState(true);
   const [amenities, setAmenities] = useState([]);
@@ -46,13 +51,23 @@ export default function TravelDetail({ route, navigation }) {
   const [numberGuest, setNumberGuest] = useState(1);
   const [numberRoom, setNumbeRoom] = useState(1);
 
+  const currentDate = new Date();
+  const refundDate = new Date(currentDate);
+  refundDate.setDate(currentDate.getDate() + 7);
+  const formatDateRefund = (date) => {
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
   const fetchListDestination = async () => {
     try {
       let res = await handleGetDestination();
       setListDestination(res.result);
-      console.log("====================================");
-      console.log(res.result);
-      console.log("====================================");
     } catch (error) {
       console.log(error);
     }
@@ -78,10 +93,15 @@ export default function TravelDetail({ route, navigation }) {
   const getDestinationDetails = async () => {
     if (route.params && route.params.id) {
       let res = await getDestinationById(route.params.id);
-      setDestinations(res);
+      if (res.code === 200) {
+        setDestinations(res.result);
+        setLoading(false);
+      }
     } else {
       let res = await getDestinationById(1);
-      setDestinations(res);
+      if (res.code === 200) {
+        setDestinations(res.result);
+      }
     }
   };
   const formatCurrency = (amount) => {
@@ -207,6 +227,12 @@ export default function TravelDetail({ route, navigation }) {
     navigation.navigate("Deserve", {
       desId: desid,
       roomId: roomid,
+      startDate: selectedSecondLastDay,
+      endDate: selectedLastDayOfMonth,
+      numberGuest: numberGuest,
+      numberRoom: numberRoom,
+      refund: checked,
+      extra: checkedExtra,
     });
   };
 
@@ -637,7 +663,7 @@ export default function TravelDetail({ route, navigation }) {
                   <View style={styles.row}>
                     <RadioButton value="second" />
                     <Text style={{ width: 150 }}>
-                      Fully refundable before 27 Nov
+                      Fully refundable before {formatDateRefund(refundDate)}
                     </Text>
                   </View>
                   <View style={{ marginLeft: 40, marginRight: 10 }}>

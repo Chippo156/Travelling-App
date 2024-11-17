@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Modal,
   ScrollView,
@@ -13,45 +14,55 @@ import {
   getImagesDestination,
   getRoomById,
 } from "../controller/DetailsController";
-import { FlatList } from "react-native-gesture-handler";
 import { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 import ImageSlider from "../TravelDetails/ImageSlide";
 import { CheckBox } from "react-native-elements";
-import { Checkbox } from "react-native-paper";
+import Svg, { Path } from "react-native-svg";
+import { useDispatch, useSelector } from "react-redux";
+import { createBooking } from "../controller/BookingController";
+import { loadingTrue, loadingFalse } from "../Redux/userSlice";
 
 export default function Deserve({ route, navigation }) {
-  //   const destinationId = route.params.desId;
-  //   const roomId = route.params.roomId;
-  const destinationId = 1;
-  const roomId = 1;
-  const adult = 2;
+  const dispatch = useDispatch();
+
+  const destinationId = route.params.desId;
+  const roomId = route.params.roomId;
+  const numberGuest = route.params.numberGuest;
+  const numberRoom = route.params.numberRoom;
+  const DateCheckIn = route.params.startDate;
+  const DateCheckOut = route.params.endDate;
+  const refund = route.params.refund;
+  const extra = route.params.extra;
+
+  const checkInDate = new Date(DateCheckIn);
+  const checkOutDate = new Date(DateCheckOut);
+  const timeDiff = checkOutDate - checkInDate; // Milliseconds
+  const dayDiff = timeDiff / (1000 * 60 * 60 * 24);
 
   const [destination, setDestination] = useState({});
   const [imagesDes, setImagesDes] = useState([]);
-
-  const DateCheckIn = "30/11";
-  const DateCheckOut = "01/12";
   const [modalVisible, setModalVisible] = useState(false);
   const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(100000);
+  const [loading, setLoading] = useState(true);
 
-  const handleApplyCoupon = () => {
-    // Xử lý mã coupon ở đây
-    console.log("Applied Coupon:", couponCode);
-    setModalVisible(false);
-  };
   const fetchDestination = async () => {
     try {
-      let res = await getDestinationById(destinationId);
-      setDestination(res);
+      if (destinationId) {
+        let res = await getDestinationById(destinationId);
+        if (res.code === 200) {
+          setDestination(res.result);
+        }
+      }
     } catch (error) {
       console.error(error);
       return error;
     }
   };
   const fetchImagesDestination = async () => {
-    if (route.params && route.params.id) {
-      let res = await getImagesDestination(route.params.id);
+    if (destinationId) {
+      let res = await getImagesDestination(destinationId);
       setImagesDes(res);
     } else {
       let res = await getImagesDestination(1);
@@ -63,6 +74,7 @@ export default function Deserve({ route, navigation }) {
     try {
       let res = await getRoomById(roomId);
       setRoom(res);
+      console.log(res);
     } catch (error) {
       console.error(error);
       return error;
@@ -102,6 +114,69 @@ export default function Deserve({ route, navigation }) {
       ...prev,
       [option]: !prev[option],
     }));
+  };
+
+  const [total, setTotal] = useState(0);
+  const [refundCost, setRefundCost] = useState(0);
+  const [extraCost, setExtraCost] = useState(0);
+  useEffect(() => {
+    setRefundCost(refund === "first" ? 0 : room.price * 0.15);
+    setExtraCost(extra === "first" ? 0 : 500000);
+    setTotal(room.price * dayDiff * numberRoom);
+  }, [room]);
+
+  const [flag, setFlag] = useState(false);
+  const handleApplyCoupon = () => {
+    // Xử lý mã coupon ở đây
+    if (couponCode === "DISCOUNT" && flag === false) {
+      setFlag(true);
+      setTotal(total - discount);
+      setModalVisible(false);
+    }
+    if (flag === true) {
+      Alert.alert("Coupon code is applied successfully!");
+      setModalVisible(false);
+    }
+  };
+  //Bookings API
+  const user_id = 1;
+  const fetchBooking = async () => {
+    const selectPaymentMethod = () => {
+      if (selectedOptions.payAtProperty) {
+        return "payAtProperty";
+      } else if (selectedOptions.creditCard) {
+        return "creditCard";
+      } else if (selectedOptions.momo) {
+        return "momo";
+      }
+    };
+    try {
+      dispatch(loadingTrue());
+      let res = await createBooking(
+        user_id,
+        destinationId,
+        roomId,
+        "pending",
+        selectPaymentMethod(),
+        DateCheckIn,
+        DateCheckOut,
+        total * 1.1 + refundCost + extraCost
+      );
+      if (res.code === 200) {
+        Alert.alert("Booking successfully!");
+        navigation.navigate("Home");
+      } else {
+        setLoading(false);
+        Alert.alert("Booking failed!");
+      }
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+    dispatch(loadingFalse());
+  };
+  const handleBooking = () => {
+    fetchBooking();
   };
   return (
     <ScrollView style={styles.container}>
@@ -159,6 +234,32 @@ export default function Deserve({ route, navigation }) {
           gap: 20,
         }}
       >
+        <Text style={{ fontWeight: "bold", fontSize: 20 }}>Room details</Text>
+        <View style={{ flexDirection: "row", gap: 20 }}>
+          <Image
+            source={{ uri: room.image_url }}
+            style={{ width: 150, height: 150, borderRadius: "50%" }}
+          />
+          <View style={{ gap: 10 }}>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+              {room.room_type} {room.description}
+            </Text>
+            <Text>{room.beds}</Text>
+            <Text>{room.features}</Text>
+            <Text>{room.area} sq m</Text>
+            <Text>Each room has {room.sleeps} guests</Text>
+          </View>
+        </View>
+      </View>
+      <View
+        style={{
+          borderWidth: 1,
+          borderRadius: 5,
+          marginTop: 20,
+          padding: 10,
+          gap: 20,
+        }}
+      >
         <Text style={{ fontWeight: "bold", fontSize: 20 }}>Price details</Text>
         <View
           style={{
@@ -167,8 +268,34 @@ export default function Deserve({ route, navigation }) {
             alignItems: "center",
           }}
         >
-          <Text>1 night, 1 room</Text>
-          <Text>{formatCurrency(room.price)}</Text>
+          <Text>
+            {dayDiff} night, {numberRoom} room
+          </Text>
+          <Text>{formatCurrency(total)}</Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+
+            paddingVertical: 10,
+          }}
+        >
+          <Text>Tax</Text>
+          <Text>{formatCurrency(total * 0.1)}</Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+
+            paddingVertical: 10,
+          }}
+        >
+          <Text>Refund</Text>
+          <Text>{formatCurrency(refundCost)}</Text>
         </View>
         <View
           style={{
@@ -179,10 +306,9 @@ export default function Deserve({ route, navigation }) {
             paddingVertical: 10,
           }}
         >
-          <Text>Tax</Text>
-          <Text>{formatCurrency(room.price * 0.1)}</Text>
+          <Text>Extra</Text>
+          <Text>{formatCurrency(extraCost)}</Text>
         </View>
-
         <View
           style={{
             flexDirection: "row",
@@ -193,7 +319,7 @@ export default function Deserve({ route, navigation }) {
         >
           <Text style={{ fontWeight: "bold" }}>Total</Text>
           <Text style={{ fontWeight: "bold" }}>
-            {formatCurrency(room.price * 1.1)}
+            {formatCurrency(total * 1.1 + refundCost + extraCost)}
           </Text>
         </View>
         <View>
@@ -255,16 +381,56 @@ export default function Deserve({ route, navigation }) {
         <Text>Who's checking in?</Text>
         <View>
           <Text>
-            <Text style={{ fontWeight: "bold" }}>Room 1:</Text> Adult {adult},{" "}
-            {room.beds} , no smokers, no pets
+            <Text style={{ fontWeight: "bold" }}> {numberRoom} Room: </Text>{" "}
+            {numberGuest} Guest , {room.beds} , no smokers, no pets
           </Text>
         </View>
-        <View style={{ flexDirection: "row", gap: 5 }}>
-          <Text style={{ color: "green" }}> Free parking</Text>
-          <Text style={{ color: "green" }}>Free Wifi</Text>
+        <View style={{ flexDirection: "row", gap: 20 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <Svg
+              className="uitk-icon uitk-icon-small uitk-icon-positive-theme"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              width={24}
+              height={24}
+              fill={"green"}
+              clipRule="evenodd"
+            >
+              <Path
+                fillRule="evenodd"
+                d="M6 3h7a6 6 0 0 1 0 12h-3v6H6V3zm4 8h3.2a2 2 0 0 0 2-2 2 2 0 0 0-2-2H10v4z"
+                clipRule="evenodd"
+              />
+            </Svg>
+            <Text style={{ color: "green" }}>Free parking</Text>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <Svg
+              class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              width={24}
+              height={24}
+              fill={"green"}
+              clipRule="evenodd"
+            >
+              <Path
+                fill-rule="evenodd"
+                d="m1 9 2 2a12.73 12.73 0 0 1 18 0l2-2A15.57 15.57 0 0 0 1 9zm8 8 3 3 3-3a4.24 4.24 0 0 0-6 0zm-2-2-2-2a9.91 9.91 0 0 1 14 0l-2 2a7.07 7.07 0 0 0-10 0z"
+                clip-rule="evenodd"
+              ></Path>
+            </Svg>
+            <Text style={{ color: "green", justifyContent: "center" }}>
+              Free Wifi
+            </Text>
+          </View>
         </View>
         <View>
-          <Text>Customer Name:</Text>
+          <Text>Guest Name:</Text>
           <Text>
             <Text style={{ fontWeight: "bold" }}>Vo Van Nghia Hiep</Text>
           </Text>
@@ -361,7 +527,7 @@ export default function Deserve({ route, navigation }) {
         </View>
       </View>
       <View style={{ marginVertical: 10 }}>
-        <TouchableOpacity style={styles.openButton}>
+        <TouchableOpacity style={styles.openButton} onPress={handleBooking}>
           <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
             Complete booking
           </Text>
