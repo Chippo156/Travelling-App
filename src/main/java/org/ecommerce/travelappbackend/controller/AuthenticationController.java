@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.ecommerce.travelappbackend.dtos.request.AuthenticationRequest;
 import org.ecommerce.travelappbackend.dtos.request.IntrospectRequest;
+import org.ecommerce.travelappbackend.dtos.request.LogoutRequest;
+import org.ecommerce.travelappbackend.dtos.request.RefreshRequest;
 import org.ecommerce.travelappbackend.dtos.response.ApiResponse;
 import org.ecommerce.travelappbackend.dtos.response.AuthenticationResponse;
 import org.ecommerce.travelappbackend.dtos.response.IntrospectResponse;
@@ -27,11 +29,10 @@ public class AuthenticationController {
 
     @PostMapping("/token")
     public ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
-        try{
+        try {
             AuthenticationResponse result = authenticationService.authenticate(authenticationRequest);
             return ApiResponse.<AuthenticationResponse>builder().result(result).build();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ApiResponse.<AuthenticationResponse>builder()
                     .code(400)
                     .message(e.getMessage())
@@ -39,6 +40,7 @@ public class AuthenticationController {
                     .build();
         }
     }
+
     @PostMapping("/introspect")
     public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest introspectRequest) throws ParseException, JOSEException {
         try {
@@ -56,14 +58,30 @@ public class AuthenticationController {
                     .build();
         }
     }
-//    @PostMapping("/logout")
-//    public ApiResponse<Void> logout(@RequestBody AuthenticationRequest authenticationRequest) {
-//        authenticationService.(authenticationRequest);
-//        return ApiResponse.<Void>builder().build();
-//    }
 
-
-
+    @PostMapping("/logout")
+    public ApiResponse<?> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        try {
+            authenticationService.logout(request);
+            return ApiResponse.builder()
+                    .code(200)
+                    .message("success")
+                    .result(null)
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.builder()
+                    .code(400)
+                    .message(e.getMessage())
+                    .result(null)
+                    .build();
+        }
+    }
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> refresh(@RequestBody RefreshRequest refreshRequest)
+            throws Exception {
+        AuthenticationResponse result = authenticationService.refreshToken(refreshRequest);
+        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+    }
 
 
 }

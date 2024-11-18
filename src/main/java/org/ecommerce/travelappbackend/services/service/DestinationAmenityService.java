@@ -9,5 +9,5 @@ public interface DestinationAmenityService {
     DestinationAmenity saveDestinationAmenity(DestinationAmenityRequest request);
     DestinationAmenity getDestinationAmenity(Long destinationId, Long amenityId);
     List<DestinationAmenity> getDestinationAmenities(Long destinationId);
-
+    String fakeData();
 }

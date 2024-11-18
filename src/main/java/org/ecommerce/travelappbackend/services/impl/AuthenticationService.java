@@ -12,11 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.ecommerce.travelappbackend.dtos.request.AuthenticationRequest;
 import org.ecommerce.travelappbackend.dtos.request.IntrospectRequest;
 import org.ecommerce.travelappbackend.dtos.request.LogoutRequest;
+import org.ecommerce.travelappbackend.dtos.request.RefreshRequest;
 import org.ecommerce.travelappbackend.dtos.response.AuthenticationResponse;
 import org.ecommerce.travelappbackend.dtos.response.IntrospectResponse;
 import org.ecommerce.travelappbackend.dtos.response.UserResponse;
+import org.ecommerce.travelappbackend.entity.InvalidatedToken;
 import org.ecommerce.travelappbackend.entity.User;
 import org.ecommerce.travelappbackend.mapper.UserMapper;
+import org.ecommerce.travelappbackend.repository.InvalidTokenRepository;
 import org.ecommerce.travelappbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,6 +39,7 @@ import java.util.UUID;
 public class AuthenticationService {
     UserRepository userRepository;
     UserMapper userMapper;
+    InvalidTokenRepository invalidatedTokenRepository;
 
     @NonFinal
     @Value("${jwt.secretKey}")
@@ -51,15 +55,10 @@ public class AuthenticationService {
     public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
         var token = request.getToken();
        SignedJWT signedJWT =  verifyToken(token, false);
-
-
        User user = userRepository.findById(Long.parseLong(signedJWT.getJWTClaimsSet().getSubject()))
                .orElseThrow(() -> new RuntimeException("User not found"));
         UserResponse userResponse = userMapper.toUserResponse(user);
-
         return IntrospectResponse.builder().userResponse(userResponse).valid(true).build();
-
-
     }
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -72,13 +71,19 @@ public class AuthenticationService {
         var token = generateToken(user);
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
-//    public void logout(LogoutRequest request) throws ParseException, JOSEException {
-//        var token = request.getToken();
-//        var signedJWT = verifyToken(token, false);
-//        var invalidatedToken = new InvalidatedToken();
-//        invalidatedToken.setTokenId(signedJWT.getJWTClaimsSet().getJWTID());
-//        invalidatedTokenRepository.save(invalidatedToken);
-//    }
+    public void logout(LogoutRequest request) throws ParseException, JOSEException {
+        try {
+            var signToken = verifyToken(request.getToken(), true);
+            String jit = signToken.getJWTClaimsSet().getJWTID();
+            Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+            InvalidatedToken invalidatedToken =
+                    InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+            invalidatedTokenRepository.save(invalidatedToken);
+        } catch (Exception e) {
+            log.info("Token already expired");
+            throw new RuntimeException("Token already expired");
+        }
+    }
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
@@ -90,14 +95,32 @@ public class AuthenticationService {
                 .plus(REFRESH_DURATION, ChronoUnit.SECONDS)
                 .toEpochMilli())
                 : signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        System.out.println(expiryTime);
+        System.out.println(signedJWT.getJWTClaimsSet().getExpirationTime());
         var verified = signedJWT.verify(verifier);
         if (!(verified && expiryTime.after(new Date()))) {
             throw new RuntimeException("Token verification failed");
         }
         return signedJWT;
     }
+    public AuthenticationResponse refreshToken(RefreshRequest request) throws Exception {
+        var signedJWT = verifyToken(request.getToken(), true);
+        var jid = signedJWT.getJWTClaimsSet().getJWTID();
+        var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        InvalidatedToken invalidatedToken =
+                InvalidatedToken.builder().id(jid).expiryTime(expiryTime).build();
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        var user = userRepository
+                .findById(Long.valueOf(signedJWT.getJWTClaimsSet().getSubject()))
+                .orElseThrow(() -> new Exception("User not found"));
+        var token = generateToken(user);
+        return AuthenticationResponse.builder().token(token).authenticated(true).build();
+    }
     private String generateToken(User user) {
         JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.HS256).build();
+        System.out.println(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli());
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(String.valueOf(user.getId()))
                 .issuer("Nghia-hiep")

@@ -40,6 +40,18 @@ public class DestinationAmenityController {
         }
     }
 
+    @GetMapping("/fake")
+    public ApiResponse<String> fakeData() {
+        try{
+            destinationAmenityService.fakeData();
+            return new ApiResponse<>(200,"Fake data created successfully",null);
+        }catch (Exception e){
+            return new ApiResponse<>(500,e.getMessage(),null);
+        }
+    }
+
+
+
 
 
 

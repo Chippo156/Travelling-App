@@ -146,4 +146,12 @@ public class RoomController {
             return new ApiResponse<>(400, ex.getMessage(), null);
         }
     }
+    @GetMapping("/fakeData")
+    public ApiResponse<String> fakeData(){
+        try {
+            return new ApiResponse<>(200, "success", roomService.fakeData());
+        } catch (Exception ex) {
+            return new ApiResponse<>(400, ex.getMessage(), null);
+        }
+    }
 }
