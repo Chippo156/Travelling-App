@@ -2,6 +2,7 @@ import {
   FlatList,
   Image,
   ScrollView,
+  ScrollViewBase,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -289,6 +290,7 @@ export default function TravelDetail({ route, navigation }) {
                   <Text style={styles.amenityText}>{item?.amenityName}</Text>
                 </View>
               )}
+              nestedScrollEnabled={true}
               keyExtractor={(item) => item.id.toString()}
               numColumns={1}
             />
@@ -364,6 +366,7 @@ export default function TravelDetail({ route, navigation }) {
               <Text style={styles.amenityText}>{item?.amenityName}</Text>
             </View>
           )}
+          nestedScrollEnabled={true}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
         />
@@ -511,6 +514,7 @@ export default function TravelDetail({ route, navigation }) {
       <View style={{ marginVertical: 20 }}>
         <FlatList
           data={rooms}
+          nestedScrollEnabled={true}
           renderItem={({ item }) => (
             <View style={styles.roomItem}>
               <View>
@@ -778,6 +782,7 @@ export default function TravelDetail({ route, navigation }) {
           horizontal={true}
           keyExtractor={(item, index) => index.toString()}
           showsHorizontalScrollIndicator={false}
+          nestedScrollEnabled={true}
         />
       </View>
     </ScrollView>

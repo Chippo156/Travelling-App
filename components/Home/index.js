@@ -55,9 +55,15 @@ function Home({ navigation }) {
   const handleCityDetail = (value) => {
     navigation.navigate("Filter", { city: value });
   };
+  const handleDetails = (id) => {
+    navigation.navigate("TravelDetail", { id });
+  };
   const renderItem = ({ item }) => {
     return (
-      <TouchableOpacity style={{ margin: 4 }}>
+      <TouchableOpacity
+        style={{ margin: 4 }}
+        onPress={() => handleDetails(item.destination_id)}
+      >
         <Image
           source={{ uri: item.image_url }}
           style={{ width: 240, height: 135, borderRadius: 8 }}
