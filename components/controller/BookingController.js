@@ -28,3 +28,21 @@ export let createBooking = async (
     return error;
   }
 };
+export let getListBookingById = async (id) => {
+  try {
+    const response = await axios.get(`/bookings/user/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};
+export let getDesitnationById = async (id) => {
+  try {
+    const response = await axios.get(`/destinations/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
