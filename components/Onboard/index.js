@@ -5,16 +5,6 @@ import * as SplashScreen from "expo-splash-screen";
 function Onboard({ navigation }) {
   const [index, setIndex] = useState(0);
 
-  useEffect(() => {
-    // Giữ màn hình splash cho đến khi component sẵn sàng
-    SplashScreen.preventAutoHideAsync();
-
-    // Ẩn màn hình splash khi component sẵn sàng
-    const hideSplash = async () => {
-      await SplashScreen.hideAsync();
-    };
-    hideSplash();
-  }, []);
 
   const handleGetStarted = () => {
     if (index === 2) {

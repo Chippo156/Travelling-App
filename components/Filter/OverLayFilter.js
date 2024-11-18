@@ -13,14 +13,27 @@ import { getFullAmenities } from "../controller/DetailsController";
 import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 
-const OverLayFilter = ({ toggleFilterOverlay, city }) => {
-  const [activeAmenities, setActiveAmenities] = useState([]);
-  const [priceRange, setPriceRange] = useState(0);
-  const [rating, setRating] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [searchText, setSearchText] = useState("");
+const OverLayFilter = ({ handleGetFilterDestination,toggleFilterOverlay,activeAmenities,setActiveAmenities,priceRange,setPriceRange,rating,setRating,selectedCategory,setSelectedCategory,searchText, setSearchText}) => {
+  
   const [amenities, setAmenities] = useState([]);
-  const categories = ["Villa", "Resort", "Hotel", "Apartment"];
+  const categories = [
+    {
+      id: 1,
+      categoryName: "Villa",
+    },
+    {
+      id: 2,
+      categoryName: "Resort",
+    },
+    {
+      id: 3,
+      categoryName: "Hotel",
+    },
+    {
+      id: 4,
+      categoryName: "Apartment",
+    },
+  ];
 
   const formatPrice = (price) => {
     return price.toLocaleString("vi-VN", {
@@ -45,6 +58,33 @@ const OverLayFilter = ({ toggleFilterOverlay, city }) => {
   useEffect(() => {
     getAmenity();
   }, []);
+
+  const renderAmenity = ({ item, index }) => (
+    <View style={styles.flexRow}>
+      <Button
+        title={item.amenity_name}
+        icon={
+          <Icon
+            name={item.amenity_icon}
+            size={24}
+            color={activeAmenities.includes(index+1) ? "#fff" : "#333"}
+          />
+        }
+        buttonStyle={
+          activeAmenities.includes(index+1)
+            ? styles.activeButton
+            : styles.inactiveButton
+        }
+        titleStyle={
+          activeAmenities.includes(index+1)
+            ? { color: "#fff" }
+            : { color: "#000" }
+        }
+        onPress={() => toggleAmenity(index+1)}
+      />
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -53,108 +93,84 @@ const OverLayFilter = ({ toggleFilterOverlay, city }) => {
       >
         <Icon name="close" size={24} color="#000" />
       </TouchableOpacity>
-      <Text style={styles.label}>Tìm theo tên nơi lưu trú</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nhập tên nơi lưu trú"
-        value={searchText}
-        onChangeText={setSearchText}
-      />
+      <FlatList
+        ListHeaderComponent={
+          <>
+            <Text style={styles.label}>Tìm theo tên nơi lưu trú</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Nhập tên nơi lưu trú"
+              value={searchText}
+              onChangeText={setSearchText}
+            />
 
-      <Text style={styles.label}>Lọc theo danh sách</Text>
-      {categories.map((category, index) => (
-        <CheckBox
-          key={index}
-          title={category}
-          checked={selectedCategory === category}
-          onPress={() => setSelectedCategory(category)}
-          containerStyle={styles.checkboxContainer}
-        />
-      ))}
-
-      <Text style={styles.label}>Giá mỗi đêm: {formatPrice(priceRange)}</Text>
-      <Slider
-        value={priceRange}
-        onValueChange={setPriceRange}
-        maximumValue={30000000}
-        minimumValue={0}
-        step={500000}
-        thumbStyle={styles.thumb}
-        trackStyle={styles.track}
-        minimumTrackTintColor="#2E7D32"
-        maximumTrackTintColor="#D3D3D3"
-      />
-
-      <Text style={styles.label}>Xếp hạng sao</Text>
-      <View style={styles.ratingContainer}>
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Button
-            key={star}
-            title={`${star}`}
-            icon={
-              <Icon
-                name="star"
-                type="font-awesome"
-                color={rating >= star ? "#FFD700" : "#000"}
+            <Text style={styles.label}>Lọc theo danh sách</Text>
+            {categories.map((category) => (
+              <CheckBox
+                key={category.id}
+                title={category.categoryName}
+                checked={selectedCategory === category.id}
+                onPress={() => setSelectedCategory(category.id)}
+                containerStyle={styles.checkboxContainer}
               />
-            }
-            buttonStyle={
-              rating >= star ? styles.activeStarButton : styles.starButton
-            }
-            onPress={() => setRating(star)}
-            iconRight
-            titleStyle={{ color: "#000" }}
-          />
-        ))}
-      </View>
+            ))}
 
-      <Text style={styles.label}>Tiện nghi, dịch vụ</Text>
-      <View>
-        <FlatList
-          data={amenities}
-          renderItem={({ item }) => (
-            <View style={styles.flexRow}>
-              <Button
-                title={item.amenity_name}
-                icon={
-                  <Icon
-                    name={item.amenity_icon}
-                    size={24}
-                    color={
-                      activeAmenities.includes(item.amenity_name)
-                        ? "#fff"
-                        : "#333"
-                    }
-                  />
-                }
-                buttonStyle={
-                  activeAmenities.includes(item.amenity_name)
-                    ? styles.activeButton
-                    : styles.inactiveButton
-                }
-                titleStyle={
-                  activeAmenities.includes(item.amenity_name)
-                    ? { color: "#fff" }
-                    : { color: "#000" }
-                }
-                onPress={() => toggleAmenity(item.amenity_name)}
-              />
+            <Text style={styles.label}>
+              Giá mỗi đêm: {formatPrice(priceRange)}
+            </Text>
+            <Slider
+              value={priceRange}
+              onValueChange={setPriceRange}
+              maximumValue={30000000}
+              minimumValue={0}
+              step={500000}
+              thumbStyle={styles.thumb}
+              trackStyle={styles.track}
+              minimumTrackTintColor="#2E7D32"
+              maximumTrackTintColor="#D3D3D3"
+            />
+
+            <Text style={styles.label}>Xếp hạng sao</Text>
+            <View style={styles.ratingContainer}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Button
+                  key={star}
+                  title={`${star}`}
+                  icon={
+                    <Icon
+                      name="star"
+                      type="font-awesome"
+                      color={rating >= star ? "#FFD700" : "#000"}
+                    />
+                  }
+                  buttonStyle={
+                    rating >= star ? styles.activeStarButton : styles.starButton
+                  }
+                  onPress={() => setRating(star)}
+                  iconRight
+                  titleStyle={{ color: "#000" }}
+                />
+              ))}
             </View>
-          )}
-          keyExtractor={(item) => item.amenity_name}
-          numColumns={2}
-        />
-      </View>
-      <Button
-        title="Submit"
-        buttonStyle={styles.button}
-        onPress={() =>
-          alert(
-            `Search: ${searchText}, Category: ${selectedCategory}, Price: ${formatPrice(
-              priceRange
-            )}, Rating: ${rating}`
-          )
+
+            <Text style={styles.label}>Tiện nghi, dịch vụ</Text>
+          </>
         }
+        data={amenities}
+        renderItem={renderAmenity}
+        keyExtractor={(item) => item.amenity_name}
+        numColumns={2}
+        ListFooterComponent={
+          <Button
+            title="Submit"
+            buttonStyle={styles.button}
+            onPress={() =>
+              handleGetFilterDestination() &&
+              toggleFilterOverlay()
+            }
+          />
+        }
+        style={{ flex: 1 }}
       />
     </View>
   );
@@ -163,7 +179,8 @@ const OverLayFilter = ({ toggleFilterOverlay, city }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingTop: 20,
+
     backgroundColor: "#F5F5F5",
     width: "100%",
     position: "relative",
@@ -171,7 +188,7 @@ const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
     top: -50,
-    left: 10,
+    left: 0,
     height: 50,
     width: 50,
     borderRadius: 25,

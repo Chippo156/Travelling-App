@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
-  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,9 +10,9 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { handleGetDestination } from "../controller/homeController";
+import Footer from "../Footer";
 
 function Home({ navigation }) {
-  const [activeTab, setActiveTab] = useState("home"); // Trạng thái theo dõi tab đang active
   const data = [
     {
       city: "Hồ Chí Minh",
@@ -139,74 +138,40 @@ function Home({ navigation }) {
     );
   };
 
-  // Hàm để đổi trạng thái active tab
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hello!</Text>
-      <Text style={styles.title}>Explore stays in trending destinations</Text>
-      <View>
-        <FlatList
-          data={data} // Dữ liệu để hiển thị
-          renderItem={renderCity} // Hàm render cho từng item
-          keyExtractor={(item, index) => index.toString()}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-      <View style={styles.containerr}>
-        <View style={styles.contentContainer}>
-          <Text style={styles.title}>Last-minute weekend deals</Text>
-          <TouchableOpacity>
-            <Text style={{ color: "#ff6347", fontSize: 18, marginBottom: 10 }}>
-              See all
-            </Text>
-          </TouchableOpacity>
+      <ScrollView style={{padding:16}}>
+        <Text style={styles.title}>Hello!</Text>
+        <Text style={styles.title}>Explore stays in trending destinations</Text>
+        <View>
+          <FlatList
+            data={data}
+            renderItem={renderCity}
+            keyExtractor={(item, index) => index.toString()}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
-        <FlatList
-          data={dataLastWeekend}
-          renderItem={renderItem}
-          horizontal={true}
-          keyExtractor={(item, index) => index.toString()}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={[
-            styles.footerButton,
-            activeTab === "home" && styles.activeTab,
-          ]}
-          onPress={() => handleTabChange("home")}
-        >
-          <Icon name="home" style={{ fontSize: 20 }} />
-          <Text style={styles.footerText}>Trang Chủ</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.footerButton,
-            activeTab === "search" && styles.activeTab,
-          ]}
-          onPress={() => handleTabChange("search")}
-        >
-          <Icon name="search" style={{ fontSize: 20 }} />
-          <Text style={styles.footerText}>Tìm Kiếm</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.footerButton,
-            activeTab === "user" && styles.activeTab,
-          ]}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Icon name="person" style={{ fontSize: 20 }} />
-          <Text style={styles.footerText}>Tài Khoản</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.containerr}>
+          <View style={styles.contentContainer}>
+            <Text style={styles.title}>Last-minute weekend deals</Text>
+            <TouchableOpacity>
+              <Text style={{ color: "#ff6347", fontSize: 18, marginBottom: 10 }}>
+                See all
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={dataLastWeekend}
+            renderItem={renderItem}
+            horizontal={true}
+            keyExtractor={(item, index) => index.toString()}
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+      </ScrollView>
+      <Footer value={"home"} navigation={navigation} />
     </View>
   );
 }
@@ -214,8 +179,8 @@ function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: "#fff",
+    minHeight:"100vh",
   },
   title: {
     fontSize: 18,
@@ -235,28 +200,7 @@ const styles = StyleSheet.create({
   },
   containerr: {
     marginTop: 30,
-  },
-  footer: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: "100%",
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
-  },
-  footerButton: {
-    flex: 1,
-    alignItems: "center",
-    gap: 4,
-  },
-  footerText: {
-    fontSize: 16,
-    color: "#000",
+    marginBottom: 50,
   },
 });
 

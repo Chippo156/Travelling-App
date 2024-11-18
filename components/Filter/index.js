@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { getFilterDestination } from "../controller/filterController";
+import { getFilterDestination, getImageDestination } from "../controller/filterController";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Overlay, SearchBar } from "@rneui/themed";
@@ -22,22 +22,53 @@ function FilterPage({ route, navigation }) {
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const { city } = route.params || "Hồ Chí Minh"; // Nhận thành phố từ params
   const [filteredDestinations, setFilteredDestinations] = useState([]); // Lưu trữ dữ liệu lọc
-  const [loading, setLoading] = useState(true); // Trạng thái loading
   const [search, setSearch] = useState("");
   const [selectDay, setSelectDay] = useState(true);
   const [selectedSecondLastDay, setSelectedSecondLastDay] = useState("");
   const [selectedLastDayOfMonth, setSelectedLastDayOfMonth] = useState("");
   const [numberGuest, setNumberGuest] = useState(1);
+  const [activeAmenities, setActiveAmenities] = useState([]);
+  const [priceRange, setPriceRange] = useState(0);
+  const [rating, setRating] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [searchText, setSearchText] = useState("");
   const updateSearch = (search) => {
     setSearch(search);
   };
   // Hàm gọi API để lấy các địa điểm theo thành phố
   const handleGetFilterDestination = async (city) => {
-    let res = await getFilterDestination(city || "Ho Chi Minh");
+    let param = "";
+    if(search){
+      param = `&search=${search}`;
+    }
+    if (activeAmenities.length > 0) {
+      param += `&amenityIds=${activeAmenities.join(",")}`;
+    }
+    if (priceRange > 0) {
+      param += `&price=${priceRange}`;
+    }
+    if (rating > 0) {
+      param += `&averageRating=${rating}`;
+    }
+    if (selectedCategory) {
+      param += `&categoryId=${selectedCategory}`;
+    }
+    if (searchText) {
+      param += `&search=${searchText}`;
+    }
+    if(numberGuest){
+      param += `&sleeps=${numberGuest}`;
+    }
+    if(selectedSecondLastDay){
+      param += `&startDate=${selectedSecondLastDay}`;
+    }
+    if(selectedLastDayOfMonth){
+      param += `&endDate=${selectedLastDayOfMonth}`;
+    }
+    let res = await getFilterDestination(city || "Ho Chi Minh", param);
     if (res && res.data.code === 200) {
       setFilteredDestinations(res.data.result); // Cập nhật dữ liệu sau khi nhận được
     }
-    setLoading(false); // Thay đổi trạng thái khi đã nhận được dữ liệu
   };
 
   useEffect(() => {
@@ -129,7 +160,7 @@ function FilterPage({ route, navigation }) {
             </Text>
             <Text
               style={{
-                borderRadius: "12px",
+                borderRadius: 12,
                 color: "#fff",
                 backgroundColor: "#00bbf2",
                 height: 30,
@@ -158,6 +189,7 @@ function FilterPage({ route, navigation }) {
       setNumberGuest(numberGuest - 1);
     }
   };
+   
   return (
     <View style={styles.container}>
       {isButtonVisible && (
@@ -360,6 +392,17 @@ function FilterPage({ route, navigation }) {
         <OverlayFilter
           city={city || "Hồ Chí Minh"}
           toggleFilterOverlay={toggleFilterOverlay}
+          activeAmenities={activeAmenities}
+          setActiveAmenities={setActiveAmenities}
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+          rating={rating}
+          setRating={setRating}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          searchText={searchText}
+          setSearchText={setSearchText}
+          handleGetFilterDestination={handleGetFilterDestination}
         />
       </Overlay>
     </View>

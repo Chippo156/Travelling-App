@@ -8,6 +8,16 @@ import {
 import { Text, TextInput } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+} from "react-native";
+import { registerUser } from "../controller/registerController";
+import Icon from "react-native-vector-icons/Ionicons";
+
 function Register({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState("");
