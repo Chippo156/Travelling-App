@@ -109,18 +109,22 @@ public class DestinationController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Double averageRating,
             @RequestParam(required = false) Double price,
-            @RequestParam(required = false) Long amenityId,
+            @RequestParam(required = false) List<Long> amenityIds,
             @RequestParam(required = false) Integer sleeps,
             @RequestParam(required = false) String startDate,
-            @RequestParam(required = false) String endDate
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String search
     ) {
         try {
             String locationParam = location != null ? StringUtils.stripAccents(location.toLowerCase().replaceAll("[\\s,]", "")) : null;
+            String searchParam = search != null ? StringUtils.stripAccents(search.toLowerCase().replaceAll("[\\s,]", "")) : null;
+
             System.out.println(locationParam);
+
             LocalDate start = startDate != null ? LocalDate.parse(startDate) : null;
             LocalDate end = endDate != null ? LocalDate.parse(endDate) : null;
             return new ApiResponse<>(200, "success",
-                    destinationService.filterDestination(locationParam, categoryId, averageRating, price,amenityId,sleeps,start,end).stream().map(mapper::toDestinationResponse).toList());
+                    destinationService.filterDestination(searchParam,locationParam, categoryId, averageRating, price,amenityIds,sleeps,start,end).stream().map(mapper::toDestinationResponse).toList());
         } catch (Exception e) {
             return new ApiResponse<>(400, e.getMessage(), null);
         }

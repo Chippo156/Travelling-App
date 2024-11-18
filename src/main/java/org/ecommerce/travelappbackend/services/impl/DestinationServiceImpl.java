@@ -113,9 +113,9 @@ public class DestinationServiceImpl implements DestinationService {
     }
 
     @Override
-    public List<Destination> filterDestination(String location, Long categoryId, Double averageRating,Double price, Long amenityId, Integer sleeps, LocalDate startDate, LocalDate endDate) {
+    public List<Destination> filterDestination(String search,String location, Long categoryId, Double averageRating,Double price, List<Long> amenityIds, Integer sleeps, LocalDate startDate, LocalDate endDate) {
         try{
-            return destinationRepository.filterDestination(categoryId,averageRating,price,amenityId,location,sleeps,startDate,endDate);
+            return destinationRepository.filterDestination(categoryId,averageRating,price,amenityIds,location,sleeps,startDate,endDate,search);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
