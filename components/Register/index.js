@@ -1,20 +1,7 @@
 import { useState } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ActivityIndicator,
-} from "react-native";
-import { Text, TextInput } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
+import { StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 
-import {
-  TouchableOpacity,
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-} from "react-native";
+import { View, Text, TextInput, ScrollView } from "react-native";
 import { registerUser } from "../controller/registerController";
 import Icon from "react-native-vector-icons/Ionicons";
 
