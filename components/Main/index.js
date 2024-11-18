@@ -17,6 +17,7 @@ import TravelDetail from "../TravelDetails";
 import { View } from "react-native";
 import FilterPage from "../Filter";
 import Deserve from "../Order/Deserve";
+import User from "../User";
 
 const Stack = createStackNavigator();
 
@@ -50,7 +51,7 @@ function Main() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Splash"
           component={Splash}
@@ -89,6 +90,11 @@ function Main() {
           options={{ headerShown: true }}
           name="Deserve"
           component={Deserve}
+        />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="User"
+          component={User}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -14,8 +14,6 @@ export default Splash = ({ navigation }) => {
   return (
     <View
       style={{
-        minWidth: "100vw",
-        minHeight: "100vh",
         backgroundColor: "#FF6421",
         display: "flex",
         justifyContent: "center",
