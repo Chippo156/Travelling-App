@@ -85,7 +85,7 @@ function Login({ navigation }) {
               style={{
                 color: "#000",
                 fontSize: 26,
-                lineHeight: 34,
+                lineHeight: 58,
                 fontWeight: "bold",
               }}
             >
@@ -96,17 +96,23 @@ function Login({ navigation }) {
             </Text>
             <View
               style={{
+                flexDirection: "row",
                 width: "100%",
                 height: 58,
                 backgroundColor: "#F7F7F9",
                 paddingLeft: 8,
                 paddingRight: 8,
-                marginTop: 30,
+                marginTop: 20,
               }}
             >
               <TextInput
                 placeholder="Email"
-                style={{ fontSize: 16, lineHeight: 58 }}
+                style={{
+                  fontSize: 16,
+                  height: "100%",
+                  textAlignVertical: "center",
+                  paddingVertical: 0,
+                }}
                 value={email}
                 onChangeText={setEmail}
               />
@@ -125,8 +131,13 @@ function Login({ navigation }) {
             >
               <TextInput
                 placeholder="Password"
-                secureTextEntry={true}
-                style={{ fontSize: 16, lineHeight: 58, width: "100%" }}
+                secureTextEntry={!showPassword}
+                style={{
+                  fontSize: 16,
+                  lineHeight: 58,
+                  width: "100%",
+                  textAlignVertical: "center",
+                }}
                 value={password}
                 onChangeText={setPassword}
               />

@@ -5,6 +5,8 @@ import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import UserDashboard from "./UserDashboard";
 import Footer from "../Footer";
+import { logoutUser } from "../controller/loginController";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 function User({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
@@ -14,8 +16,10 @@ function User({ navigation }) {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
+
+
   return isLoggedIn ? (
-   <UserDashboard handleTabChange={handleTabChange} activeTab={activeTab} setActiveTab={setActiveTab} />
+   <UserDashboard handleTabChange={handleTabChange} activeTab={activeTab} setActiveTab={setActiveTab} navigation={navigation} />
   ) : (
     <View style={styles.container}>
       <View style={{ padding: 16 }}>

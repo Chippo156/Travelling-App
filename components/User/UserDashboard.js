@@ -2,8 +2,30 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Footer from "../Footer";
+import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../controller/loginController";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const UserDashboard = ({ navigation}) => {
+const UserDashboard = ({ navigation }) => {
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    let token = await AsyncStorage.getItem("token");
+    dispatch(loadingTrue());
+    
+    let res = await logoutUser(token);
+    console.log(res);
+    if (res && (res.code === 200 || res.code === 400)) {
+      await AsyncStorage.removeItem("token");
+      dispatch(logout());
+      navigation.navigate("Home");
+    } else {
+      alert("Đăng xuất thất bại");
+    }
+    dispatch(loadingFalse());
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ padding: 16 }}>
@@ -76,7 +98,7 @@ const UserDashboard = ({ navigation}) => {
           <Icon name="chevron-forward-outline" style={styles.arrowIcon} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Đăng Xuất</Text>
         </TouchableOpacity>
       </ScrollView>

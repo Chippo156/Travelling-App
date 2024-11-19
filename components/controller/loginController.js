@@ -23,3 +23,13 @@ export let reloadUser = async (token) => {
     return error;
   }
 };
+export let logoutUser = async (token) => {
+  try {
+    const response = await axios.post("/auth/logout", { token: token });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}
+
