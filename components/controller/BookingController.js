@@ -1,6 +1,8 @@
 import axios from "../axios/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingTrue, loadingFalse } from "../Redux/userSlice";
+import { Linking } from "react-native";
+import { Alert } from "react-native";
 
 export let createBooking = async (
   user_id,
@@ -27,25 +29,43 @@ export let createBooking = async (
         quantity,
       });
       return response.data;
-    } else if (payment_method === "VNPAY") {
-      if (window.confirm("You definitely pay via card?")) {
-        const response = await axios.post("/bookings", {
-          user_id,
-          destination_id,
-          room_id,
-          payment_status,
-          payment_method,
-          check_in_date,
-          check_out_date,
-          amount,
-          quantity,
-        });
-        handleVNPay(amount, "NCB", response.data.result.id);
-      } else {
-        alert("You cancel payment");
-      }
     }
-    return response.data;
+    // } else if (payment_method === "VNPAY") {
+    //   Alert.alert("Confirmation", "You definitely pay via card?", [
+    //     {
+    //       text: "Cancel",
+    //       onPress: () => alert("You cancel payment"),
+    //       style: "cancel",
+    //     },
+    //     {
+    //       text: "OK",
+    //       onPress: async () => {
+    //         try {
+    //           const response = await axios.post("/bookings", {
+    //             user_id,
+    //             destination_id,
+    //             room_id,
+    //             payment_status,
+    //             payment_method,
+    //             check_in_date,
+    //             check_out_date,
+    //             amount,
+    //             quantity,
+    //           });
+    //           if (response.data && response.data.result) {
+    //             handleVNPay(amount, "NCB", response.data.result.id);
+    //             return response.data;
+    //           } else {
+    //             alert("Error: No result in response");
+    //           }
+    //         } catch (error) {
+    //           console.error("Error making the booking:", error);
+    //           alert("An error occurred while processing your payment.");
+    //         }
+    //       },
+    //     },
+    //   ]);
+    // }
   } catch (error) {
     console.error(error);
     return error;
@@ -58,8 +78,12 @@ export let handleVNPay = async (amount, bankCode, orderId) => {
     );
     const paymentData = response.data;
     if (paymentData?.code === "ok") {
-      window.location.href = paymentData.paymentUrl;
+      Linking.openURL(paymentData.paymentUrl).catch((err) =>
+        console.error("An error occurred while opening the URL", err)
+      );
     }
+
+    return "success";
   } catch (error) {
     console.error("Error creating payment: ", error);
     alert(`Error creating payment ${error}`);
