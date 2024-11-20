@@ -11,5 +11,6 @@ public interface ReviewService {
     List<ReviewResponse> getReviewsByDestinationId(Long destinationId);
 
     boolean saveReview(ReviewRequest request);
+    int countAllByDestinationId(Long destinationId);
     String fakeData();
 }

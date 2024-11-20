@@ -9,6 +9,12 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface BookingMapper {
     Bookings toBooking(BookingRequest bookingRequest);
+    @Mappings({
+            @org.mapstruct.Mapping(target = "userId", source = "bookings.user.id"),
+            @org.mapstruct.Mapping(target = "destinationId", source = "bookings.destination.id"),
+            @org.mapstruct.Mapping(target = "roomId", source = "bookings.room.id")
+    })
+    BookingRequest toBookingRequest(Bookings bookings);
 
     @Mappings({
             @org.mapstruct.Mapping(target = "userId", source = "bookings.user.id"),

@@ -60,6 +60,8 @@ public class SecurityConfig {
                     )
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, methodGet()).permitAll()
+                    .requestMatchers(HttpMethod.PUT).permitAll()
+                    .requestMatchers(HttpMethod.DELETE).permitAll()
                     .requestMatchers("/api/v1/cloudinary/upload").permitAll()
                     .anyRequest()
                     .authenticated();

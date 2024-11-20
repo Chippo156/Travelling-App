@@ -59,6 +59,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public int countAllByDestinationId(Long destinationId) {
+        try {
+            return repository.countAllByDestinationId(destinationId);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while counting reviews by destination id");
+        }
+    }
+
+    @Override
     public String fakeData() {
         Faker faker = new Faker();
         for (int i = 0; i < 40; i++) {

@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 
 public class BookingResponse {
 
+    Long id;
     @JsonProperty("user_id")
     Long userId;
     @JsonProperty("destination_id")
@@ -38,5 +39,6 @@ public class BookingResponse {
     String paymentMethod;
     @JsonProperty("payment_date")
     LocalDate paymentDate;
+    int quantity;
     double amount;
 }

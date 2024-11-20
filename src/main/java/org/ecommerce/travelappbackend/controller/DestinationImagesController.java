@@ -25,5 +25,13 @@ public class DestinationImagesController {
             return new ApiResponse<>(400, ex.getMessage(), null);
         }
     }
+    @GetMapping("/fake")
+    public ApiResponse<String> fakeData() {
+        try {
+            return new ApiResponse<>(200, "success", destinationImageService.fakeData());
+        } catch (Exception ex) {
+            return new ApiResponse<>(400, ex.getMessage(), null);
+        }
+    }
 
 }

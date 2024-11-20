@@ -1,6 +1,7 @@
 package org.ecommerce.travelappbackend.services.impl;
 
 import lombok.RequiredArgsConstructor;
+import net.datafaker.Faker;
 import org.ecommerce.travelappbackend.dtos.request.DestinationImageRequest;
 import org.ecommerce.travelappbackend.entity.Destination;
 import org.ecommerce.travelappbackend.entity.DestinationImage;
@@ -42,4 +43,24 @@ public class DestinationImageServiceImpl implements DestinationImageService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    @Override
+    public String fakeData() {
+        Faker faker = new Faker();
+        for (int i = 16; i < 28; i++) {
+            // Tìm Destination một lần cho mỗi i
+            Destination destination = destinationRepository.findById((long) i)
+                    .orElseThrow(() -> new RuntimeException("Destination not found"));
+
+            for (int j = 0; j < 7; j++) {
+                // Khởi tạo lại destinationImage cho mỗi lần lặp trong vòng lặp con
+                DestinationImage destinationImage = new DestinationImage();
+                destinationImage.setImageUrl(faker.internet().image());
+                destinationImage.setDestination(destination);
+                destinationImageRepository.save(destinationImage);
+            }
+        }
+        return "Fake data created successfully";
+    }
+
 }

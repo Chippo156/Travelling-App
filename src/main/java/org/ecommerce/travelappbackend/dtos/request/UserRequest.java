@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Setter
 @Getter
 @Data
@@ -17,5 +19,10 @@ public class UserRequest {
     private String email;
     @NotBlank(message = "Phone cannot be empty")
     private String phone;
+    private String address;
+    private String sex;
+    private LocalDate dob;
+
+    private String informationAgent;
 
 }

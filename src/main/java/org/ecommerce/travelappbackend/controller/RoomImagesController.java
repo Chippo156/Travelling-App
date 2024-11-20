@@ -16,10 +16,20 @@ import java.util.List;
 @RequestMapping("${api.prefix}/room-images")
 public class RoomImagesController {
     private final RoomImageService roomImageService;
+
     @GetMapping("/room/{id}")
     public ApiResponse<List<RoomImage>> getRoomImages(@PathVariable Long id) {
         try {
             return new ApiResponse<>(200, "success", roomImageService.get(id));
+        } catch (Exception ex) {
+            return new ApiResponse<>(400, ex.getMessage(), null);
+        }
+    }
+
+    @GetMapping("/fake")
+    public ApiResponse<String> fakeData() {
+        try {
+            return new ApiResponse<>(200, "success", roomImageService.fakeData());
         } catch (Exception ex) {
             return new ApiResponse<>(400, ex.getMessage(), null);
         }

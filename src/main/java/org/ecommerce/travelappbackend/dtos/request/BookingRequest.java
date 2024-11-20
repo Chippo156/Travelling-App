@@ -30,5 +30,9 @@ public class BookingRequest {
     String paymentStatus;
     @JsonProperty("payment_method")
     String paymentMethod;
+    @JsonProperty("payment_date")
+    LocalDate paymentDate;
+    @JsonProperty("quantity")
+    int quantity;
     double amount;
 }

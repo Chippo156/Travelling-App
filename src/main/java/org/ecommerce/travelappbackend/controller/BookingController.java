@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.ecommerce.travelappbackend.dtos.request.BookingRequest;
 import org.ecommerce.travelappbackend.dtos.response.ApiResponse;
 import org.ecommerce.travelappbackend.dtos.response.BookingResponse;
+import org.ecommerce.travelappbackend.mapper.BookingMapper;
 import org.ecommerce.travelappbackend.services.service.BookingService;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingController {
     private final BookingService bookingService;
+    private final BookingMapper bookingMapper;
     @GetMapping
     public ApiResponse<List<BookingResponse>> getAllBookings() {
         try{
@@ -35,7 +37,7 @@ public class BookingController {
     @GetMapping("/{id}")
     public ApiResponse<BookingResponse> getBooking(@PathVariable Long id){
         try{
-            return new ApiResponse<>(200, "success", bookingService.getBooking(id));
+         return new ApiResponse<>(200, "success", bookingMapper.toBookingResponse(bookingService.getBooking(id)));
         }
         catch (Exception e){
             return new ApiResponse<>(400, e.getMessage(), null);
@@ -68,5 +70,6 @@ public class BookingController {
             return new ApiResponse<>(400, e.getMessage(), null);
         }
     }
+
 
 }

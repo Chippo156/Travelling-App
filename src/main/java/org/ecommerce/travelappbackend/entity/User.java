@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,7 +25,12 @@ public class User extends BaseEntity{
      private String password;
      private String email;
      private String phone;
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+     private String address;
+     private String sex;
+     private LocalDate dob;
+     @Column(name = "information_agent")
+     private String informationAgent;
+     @ManyToOne
+     @JoinColumn(name = "role_id")
+     private Role role;
 }

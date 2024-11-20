@@ -8,4 +8,5 @@ import java.util.List;
 public interface DestinationImageService {
      DestinationImage uploadImage(Long destinationId, DestinationImageRequest request);
      List<DestinationImage> get(Long destinationId);
+     String fakeData();
 }

@@ -37,20 +37,16 @@ public class BookingServiceImpl implements BookingService {
             bookings.setDestination(destination);
             bookings.setRoom(room);
             bookings.setUser(user);
-
             if(bookingRequest.getPaymentStatus().equals("NO_PAID")){
                 bookings.setPaymentDate(null);
             }else if(bookingRequest.getPaymentStatus().equals("PAID")){
                 bookings.setPaymentDate(LocalDate.now());
             }
             bookings.setBookingStatus("BOOKED");
-            System.out.println("room quantity: "+room.getQuantity());
-            room.setQuantity(room.getQuantity()-1);
-            System.out.println("room quantity: "+room.getQuantity());
-
+            room.setQuantity(room.getQuantity()-bookingRequest.getQuantity());
             roomRepository.save(room);
+            bookings.setQuantity(bookingRequest.getQuantity());
             bookings = bookingRepository.save(bookings);
-
             return bookingMapper.toBookingResponse(bookings);
         }catch (Exception ex){
             throw new Exception(ex.getMessage());
@@ -58,16 +54,27 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponse getBooking(Long id) {
-        return bookingMapper.toBookingResponse(bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found")));
+    public Bookings getBooking(Long id) {
+        return bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found"));
     }
 
     @Override
     public BookingResponse updateBooking(Long id, BookingRequest bookingRequest) {
         try{
             Bookings bookings = bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found"));
-            bookings = bookingMapper.toBooking(bookingRequest);
-            bookings.setId(id);
+
+            if(bookingRequest.getCheckInDate()!=null){
+                bookings.setCheckInDate(bookingRequest.getCheckInDate());
+            }
+            if(bookingRequest.getCheckOutDate()!=null){
+                bookings.setCheckOutDate(bookingRequest.getCheckOutDate());
+            }
+            if(bookingRequest.getPaymentMethod()!=null){
+                bookings.setPaymentMethod(bookingRequest.getPaymentMethod());
+            }
+            if(bookingRequest.getAmount()!=0){
+                bookings.setAmount(bookingRequest.getAmount());
+            }
             if(bookingRequest.getPaymentStatus().equals("NO_PAID")){
                 bookings.setPaymentDate(null);
             }else if(bookingRequest.getPaymentStatus().equals("PAID")){
@@ -85,6 +92,9 @@ public class BookingServiceImpl implements BookingService {
         try{
             Bookings bookings = bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found"));
             bookings.setBookingStatus("CANCELLED");
+            Room room = roomRepository.findById(bookings.getRoom().getId()).orElseThrow(()->new RuntimeException("Room not found"));
+            room.setQuantity(room.getQuantity()+bookings.getQuantity());
+            roomRepository.save(room);
             bookingRepository.save(bookings);
             return true;
         }catch (Exception e){

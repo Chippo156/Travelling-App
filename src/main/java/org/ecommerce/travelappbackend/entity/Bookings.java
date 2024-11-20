@@ -20,8 +20,6 @@ public class Bookings extends BaseEntity {
     @Column(name = "booking_id")
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     Long id;
-
-    
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
@@ -45,4 +43,6 @@ public class Bookings extends BaseEntity {
     LocalDate paymentDate;
     @Column(name = "amount")
     double amount;
+    int quantity;
+
 }

@@ -38,4 +38,12 @@ public class ReviewController {
             return new ApiResponse<>(400, e.getMessage(), null);
         }
     }
+    @GetMapping("/count/{destinationId}")
+    public ApiResponse<?> countAllByDestinationId(@PathVariable Long destinationId){
+        try{
+            return new ApiResponse<>(200, "success", reviewService.countAllByDestinationId(destinationId));
+        }catch (Exception e){
+            return new ApiResponse<>(400, e.getMessage(), null);
+        }
+    }
 }

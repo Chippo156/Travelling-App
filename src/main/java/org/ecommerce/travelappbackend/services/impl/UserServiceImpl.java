@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Username already exists");
         }
         User user = mapper.toUser(userRequest);
+          System.out.println(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         List<Role> getRoles = roleRepository.findAll();
         user.setRole(getRoles.get(1));
