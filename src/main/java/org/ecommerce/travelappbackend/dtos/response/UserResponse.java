@@ -22,7 +22,12 @@ public class UserResponse {
     String address;
     String sex;
     LocalDate dob;
+    @JsonProperty("information_agent")
     String informationAgent;
+    @JsonProperty("last_name")
+    private String lastName;
+    @JsonProperty("first_name")
+    private String firstName;
     @JsonProperty("role_id")
     Long roleId;
 }

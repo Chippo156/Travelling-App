@@ -1,5 +1,6 @@
 package org.ecommerce.travelappbackend.dtos.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -22,7 +23,11 @@ public class UserRequest {
     private String address;
     private String sex;
     private LocalDate dob;
-
+    @JsonProperty("last_name")
+    private String lastName;
+    @JsonProperty("first_name")
+    private String firstName;
+    @JsonProperty("information_agent")
     private String informationAgent;
 
 }

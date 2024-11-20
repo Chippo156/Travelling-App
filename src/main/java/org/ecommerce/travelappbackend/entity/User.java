@@ -16,21 +16,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 
-public class User extends BaseEntity{
+public class User extends BaseEntity {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     private Long id;
-     private String username;
-     private String password;
-     private String email;
-     private String phone;
-     private String address;
-     private String sex;
-     private LocalDate dob;
-     @Column(name = "information_agent")
-     private String informationAgent;
-     @ManyToOne
-     @JoinColumn(name = "role_id")
-     private Role role;
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String username;
+    private String password;
+    private String email;
+    private String phone;
+    private String address;
+    private String sex;
+    private LocalDate dob;
+    @Column(name = "information_agent")
+    private String informationAgent;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 }

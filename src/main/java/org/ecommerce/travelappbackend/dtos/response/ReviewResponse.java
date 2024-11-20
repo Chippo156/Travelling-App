@@ -17,8 +17,5 @@ public class ReviewResponse {
     private int rating;
     @JsonProperty("image_url")
     private String imageUrl;
-    @JsonProperty("destination_id")
-    private Long destinationId;
-    @JsonProperty("user_id")
-    private Long userId;
+    private String username;
 }

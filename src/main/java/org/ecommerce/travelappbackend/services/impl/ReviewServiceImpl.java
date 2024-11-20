@@ -37,6 +37,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewResponse> getReviewsByDestinationId(Long destinationId) {
         try {
+
+
+
             return repository.findAllByDestinationId(destinationId).stream().map(mapper::toReviewResponse).toList();
         } catch (Exception e) {
             throw new RuntimeException("Error while fetching reviews by destination id");
