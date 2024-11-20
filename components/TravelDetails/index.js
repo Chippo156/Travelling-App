@@ -389,10 +389,13 @@ export default function TravelDetail({ route, navigation }) {
 
             <FlatList
               data={reviews}
-              keyExtractor={(index, item) => index.toString()}
+              keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <View style={styles.reviewCard}>
-                  <Text style={styles.rating}>{item.rating + 3}</Text>
+                  <Text style={styles.rating}>
+                    {item.rating + 3}{" "}
+                    <Icon name="star" size={20} color="#FFD700" />
+                  </Text>
                   <Text style={styles.reviewerInfo}>
                     {item.username} - {item.created_at}
                   </Text>

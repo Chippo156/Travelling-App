@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createBooking,
   fetchPaymentInfo,
+  handleVNPay,
   paymentVNPAY,
 } from "../controller/BookingController";
 import { loadingTrue, loadingFalse } from "../Redux/userSlice";
@@ -151,6 +152,7 @@ export default function Deserve({ route, navigation }) {
         return "VNPAY";
       }
     };
+    const amount = total * 1.1 + refundCost + extraCost;
     try {
       dispatch(loadingTrue());
       let res = await createBooking(
@@ -161,14 +163,16 @@ export default function Deserve({ route, navigation }) {
         selectPaymentMethod(),
         DateCheckIn,
         DateCheckOut,
-        total * 1.1 + refundCost + extraCost,
+        amount,
         numberRoom
       );
-      if (res.code === 200 && res) {
-        Alert.alert("Booking successfully!");
+
+      if (selectPaymentMethod() === "VNPAY") {
+        let paymentRes = await handleVNPay(amount, "NCB", res.result.id);
       } else {
-        Alert.alert("Booking failed!");
+        Alert.alert("Booking successfully!");
       }
+
       dispatch(loadingFalse());
     } catch (error) {
       console.error(error);
