@@ -1,18 +1,14 @@
 import axios from "../axios/axios";
 
-export const getFilterDestination = async (city,param) => {
+export const getFilterDestination = async (city, param) => {
   try {
     console.log(param);
     if (city === "Other") {
-      if(param){
-        const res = await axios(
-          `/destinations/filter?${param}`
-        );
+      if (param) {
+        const res = await axios(`/destinations/filter?${param}`);
         return res;
-      }else{
-        const res = await axios(
-          `/destinations/filter?page=1&size=10`
-        );
+      } else {
+        const res = await axios(`/destinations/filter?page=1&size=10`);
         return res;
       }
     }
@@ -27,12 +23,10 @@ export const getFilterDestination = async (city,param) => {
 };
 export const getImageDestination = async (id) => {
   try {
-    const res = await axios(
-      `destination-images/destination/${id}`
-    );
+    const res = await axios(`destination-images/destination/${id}`);
     return res;
   } catch (error) {
     console.log(error);
     return error;
   }
-}
+};

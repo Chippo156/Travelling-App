@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  Modal,
   ScrollView,
   ScrollViewBase,
   StyleSheet,
@@ -17,6 +18,7 @@ import {
   getFilterRoom,
   getImageRoom,
   getImagesDestination,
+  getReviews,
   getRoomsByDestinationId,
 } from "../controller/DetailsController";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -51,7 +53,8 @@ export default function TravelDetail({ route, navigation }) {
   const [visibleGuest, setVisibleGuest] = useState(false); // Overlay cho khách
   const [numberGuest, setNumberGuest] = useState(1);
   const [numberRoom, setNumbeRoom] = useState(1);
-
+  const [reviews, setReviews] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
   const currentDate = new Date();
   const refundDate = new Date(currentDate);
   refundDate.setDate(currentDate.getDate() + 7);
@@ -117,6 +120,22 @@ export default function TravelDetail({ route, navigation }) {
       setAmenities(res);
     }
   };
+  const liked =
+    "Cleanliness, staff & service, property conditions & facilities, room comfort";
+
+  const getReview = async () => {
+    try {
+      if (destination && destination.destination_id) {
+        let res = await getReviews(destination.destination_id);
+        if (res.code === 200) {
+          setReviews(res.result);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     rooms.forEach((room) => {
       fetchImageRoom(room.id);
@@ -130,6 +149,7 @@ export default function TravelDetail({ route, navigation }) {
 
   useEffect(() => {
     getAmenity();
+    getReview();
   }, [destination]);
 
   const getRoomsByDestination = async () => {
@@ -352,9 +372,45 @@ export default function TravelDetail({ route, navigation }) {
         </View>
         <Text style={styles.excellentText}>Exceptional</Text>
       </View>
-      <View>
-        <Text style={styles.reviewsText}>See all 10 reviews</Text>
-      </View>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text style={styles.reviewsText}>
+          See all {reviews?.length} reviews
+        </Text>
+      </TouchableOpacity>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Reviews ({reviews.length})</Text>
+
+            <FlatList
+              data={reviews}
+              keyExtractor={(index, item) => index.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.reviewCard}>
+                  <Text style={styles.rating}>{item.rating + 3}</Text>
+                  <Text style={styles.reviewerInfo}>
+                    {item.username} - {item.created_at}
+                  </Text>
+                  <Text style={styles.liked}>Liked: {liked}</Text>
+                  <Text style={styles.reviewTitle}>{item.title}</Text>
+                  <Text style={styles.description}>{item.content}</Text>
+                </View>
+              )}
+            />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <Text style={styles.sectionTitle}>About this property</Text>
       <Text style={styles.description}>{destination?.description}</Text>
       <View>
@@ -946,5 +1002,74 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     alignItems: "center",
     backgroundColor: "white",
+  },
+  openButton: {
+    backgroundColor: "#4CAF50",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    width: "90%",
+    maxHeight: "80%",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  reviewCard: {
+    backgroundColor: "#f9f9f9",
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  rating: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#4CAF50",
+  },
+  reviewerInfo: {
+    fontSize: 14,
+    color: "#555",
+  },
+  liked: {
+    fontSize: 14,
+    color: "#007BFF",
+    marginVertical: 5,
+  },
+  reviewTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginVertical: 5,
+  },
+  description: {
+    fontSize: 14,
+    color: "#333",
+    marginVertical: 5,
+  },
+  stayPeriod: {
+    fontSize: 12,
+    color: "#999",
+  },
+  closeButton: {
+    backgroundColor: "#FF5722",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignSelf: "center",
   },
 });

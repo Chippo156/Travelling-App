@@ -86,3 +86,12 @@ export const getFilterRoom = async (
     return error;
   }
 };
+export let getReviews = async (id) => {
+  try {
+    const response = await axios.get(`/reviews/destination/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};
