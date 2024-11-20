@@ -21,6 +21,7 @@ import User from "../User";
 import HistoryBooking from "../historybooking";
 import ProfileScreen from "../User/Profile";
 import HelpAndFeedback from "../User/HelpAndFeedBack";
+import BookingPage from "../BookingPage.js";
 
 const Stack = createStackNavigator();
 
@@ -54,7 +55,7 @@ function Main() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="TravelDetail">
+      <Stack.Navigator initialRouteName="Booking Details">
         <Stack.Screen
           name="Splash"
           component={Splash}
@@ -113,6 +114,11 @@ function Main() {
           options={{ headerShown: true }}
           name="Help And Feedback"
           component={HelpAndFeedback}
+        />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Booking Details"
+          component={BookingPage}
         />
       </Stack.Navigator>
     </NavigationContainer>
