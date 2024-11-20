@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
-
 import { View, Text, TextInput, ScrollView } from "react-native";
 import { registerUser } from "../controller/registerController";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -11,6 +10,11 @@ function Register({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   const register = async () => {
     setIsLoading(true);
@@ -58,17 +62,19 @@ function Register({ navigation }) {
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Password"
-            secureTextEntry={true}
+            secureTextEntry={!isPasswordVisible}
             style={styles.passwordInput}
             value={password}
             onChangeText={setPassword}
           />
-          <Icon
-            name="eye-off"
-            size={24}
-            color="#888"
-            style={styles.passwordIcon}
-          />
+          <TouchableOpacity onPress={togglePasswordVisibility}>
+            <Icon
+              name={isPasswordVisible ? "eye" : "eye-off"}
+              size={24}
+              color="#888"
+              style={styles.passwordIcon}
+            />
+          </TouchableOpacity>
         </View>
         <Text style={styles.passwordHint}>
           Password must be 8 characters long
