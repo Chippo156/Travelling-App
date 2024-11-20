@@ -19,6 +19,8 @@ import FilterPage from "../Filter";
 import Deserve from "../Order/Deserve";
 import User from "../User";
 import HistoryBooking from "../historybooking";
+import ProfileScreen from "../User/Profile";
+import HelpAndFeedback from "../User/HelpAndFeedBack";
 
 const Stack = createStackNavigator();
 
@@ -101,6 +103,16 @@ function Main() {
           options={{ headerShown: true }}
           name="HistoryBooking"
           component={HistoryBooking}
+        />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Profile"
+          component={ProfileScreen}
+        />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Help And Feedback"
+          component={HelpAndFeedback}
         />
       </Stack.Navigator>
     </NavigationContainer>

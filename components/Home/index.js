@@ -138,10 +138,9 @@ function Home({ navigation }) {
     );
   };
 
-
   return (
     <View style={styles.container}>
-      <ScrollView style={{padding:16}}>
+      <ScrollView style={{ padding: 16 }}>
         <Text style={styles.title}>Hello!</Text>
         <Text style={styles.title}>Explore stays in trending destinations</Text>
         <View>
@@ -157,7 +156,9 @@ function Home({ navigation }) {
           <View style={styles.contentContainer}>
             <Text style={styles.title}>Last-minute weekend deals</Text>
             <TouchableOpacity>
-              <Text style={{ color: "#ff6347", fontSize: 18, marginBottom: 10 }}>
+              <Text
+                style={{ color: "#ff6347", fontSize: 18, marginBottom: 10 }}
+              >
                 See all
               </Text>
             </TouchableOpacity>
@@ -180,7 +181,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    minHeight:"100vh",
+    minHeight: "100vh",
+    paddingBottom: 80,
   },
   title: {
     fontSize: 18,

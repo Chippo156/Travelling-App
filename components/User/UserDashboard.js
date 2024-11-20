@@ -28,12 +28,12 @@ const UserDashboard = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
+      <ScrollView contentContainerStyle={{ padding: 16,paddingBottom:80 }}>
         <Text style={styles.header}>Xin chào Dat!</Text>
         <Text style={styles.email}>ngodat200319@gmail.com</Text>
 
         {/* Settings Options */}
-        <View style={styles.option}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("Profile")}>
           <Icon name="person-outline" style={styles.icon} />
           <View style={styles.optionContent}>
             <View>
@@ -44,9 +44,9 @@ const UserDashboard = ({ navigation }) => {
             </View>
           </View>
           <Icon name="chevron-forward-outline" style={styles.arrowIcon} />
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.option}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("ContactInfo")}>
           <Icon name="call-outline" style={styles.icon} />
           <View style={styles.optionContent}>
             <View>
@@ -57,9 +57,9 @@ const UserDashboard = ({ navigation }) => {
             </View>
           </View>
           <Icon name="chevron-forward-outline" style={styles.arrowIcon} />
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.option}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("PaymentMethods")}>
           <Icon name="card-outline" style={styles.icon} />
           <View style={styles.optionContent}>
             <View>
@@ -70,9 +70,9 @@ const UserDashboard = ({ navigation }) => {
             </View>
           </View>
           <Icon name="chevron-forward-outline" style={styles.arrowIcon} />
-        </View>
+        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.option}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("Legal")}>
           <Icon name="document-text-outline" style={styles.icon} />
           <View style={styles.optionContent}>
             <View>
@@ -85,7 +85,7 @@ const UserDashboard = ({ navigation }) => {
           <Icon name="chevron-forward-outline" style={styles.arrowIcon} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.option}>
+        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate("Help And Feedback")}>
           <Icon name="help-circle-outline" style={styles.icon} />
           <View style={styles.optionContent}>
             <View>
@@ -101,6 +101,23 @@ const UserDashboard = ({ navigation }) => {
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Đăng Xuất</Text>
         </TouchableOpacity>
+        <View style={{backgroundColor:"#fff",gap:12,padding:12,borderRadius:12}}>
+          <Text style={{color:"#282d70",fontSize:24}}>T1 group</Text>
+          <Text style={styles.subMainfooter}>Công ty</Text>
+          <Text style={styles.subSubFooter}>Về Chúng tôi</Text>
+          <Text style={styles.subSubFooter}>Việc làm</Text>
+          <Text style={styles.subSubFooter}>Đăng thông tin nơi lưu trú</Text>
+          <Text style={styles.subSubFooter}>Hợp tác</Text>
+          <Text style={styles.subSubFooter}>Tin tức & báo chí</Text>
+          <Text style={styles.subMainfooter}>Khám phá</Text>
+          <Text style={styles.subSubFooter}>Cẩm năng du lịch Việt Nam</Text>
+          <Text style={styles.subSubFooter}>Khách sạn tại Việt Nam</Text>
+          <Text style={styles.subSubFooter}>Nhà và căn hộ tại Việt Nam</Text>
+          <Text style={styles.subSubFooter}>Thuê xe tự lái tại Việt Nam</Text>
+          <Text style={styles.subMainfooter}>Chính sách</Text>
+          <Text style={styles.subSubFooter}>Tuyên bố bảo mật</Text>
+          <Text style={styles.subSubFooter}>Điều khoản sử dụng</Text>
+        </View>
       </ScrollView>
 
       <Footer value={"user"} navigation={navigation} />
@@ -112,6 +129,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+  },
+  subMainfooter:{ 
+    color:"#191e3b",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  subSubFooter:{
+    color:"#1668e3",
+    fontSize: 12,
   },
   header: {
     fontSize: 24,
