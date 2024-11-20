@@ -20,7 +20,11 @@ import ImageSlider from "../TravelDetails/ImageSlide";
 import { CheckBox } from "react-native-elements";
 import Svg, { Path } from "react-native-svg";
 import { useDispatch, useSelector } from "react-redux";
-import { createBooking } from "../controller/BookingController";
+import {
+  createBooking,
+  fetchPaymentInfo,
+  paymentVNPAY,
+} from "../controller/BookingController";
 import { loadingTrue, loadingFalse } from "../Redux/userSlice";
 
 export default function Deserve({ route, navigation }) {
@@ -80,6 +84,7 @@ export default function Deserve({ route, navigation }) {
       return error;
     }
   };
+
   useEffect(() => {
     fetchDestination();
     fetchImagesDestination();
@@ -105,10 +110,8 @@ export default function Deserve({ route, navigation }) {
   };
   const [selectedOptions, setSelectedOptions] = useState({
     payAtProperty: false,
-    creditCard: false,
-    momo: false,
+    VNPAY: false,
   });
-
   const handleToggle = (option) => {
     setSelectedOptions((prev) => ({
       ...prev,
@@ -144,10 +147,8 @@ export default function Deserve({ route, navigation }) {
     const selectPaymentMethod = () => {
       if (selectedOptions.payAtProperty) {
         return "payAtProperty";
-      } else if (selectedOptions.creditCard) {
-        return "creditCard";
-      } else if (selectedOptions.momo) {
-        return "momo";
+      } else if (selectedOptions.VNPAY) {
+        return "VNPAY";
       }
     };
     try {
@@ -160,20 +161,19 @@ export default function Deserve({ route, navigation }) {
         selectPaymentMethod(),
         DateCheckIn,
         DateCheckOut,
-        total * 1.1 + refundCost + extraCost
+        total * 1.1 + refundCost + extraCost,
+        numberRoom
       );
-      if (res.code === 200) {
+      if (res.code === 200 && res) {
         Alert.alert("Booking successfully!");
-        navigation.navigate("Home");
       } else {
-        setLoading(false);
         Alert.alert("Booking failed!");
       }
+      dispatch(loadingFalse());
     } catch (error) {
       console.error(error);
       return error;
     }
-    dispatch(loadingFalse());
   };
   const handleBooking = () => {
     fetchBooking();
@@ -487,22 +487,11 @@ export default function Deserve({ route, navigation }) {
 
         <View style={styles.option}>
           <CheckBox
-            title="Credit card"
-            checked={selectedOptions.creditCard}
-            onPress={() => handleToggle("creditCard")}
+            title="VNPAY"
+            checked={selectedOptions.VNPAY}
+            onPress={() => handleToggle("VNPAY")}
           />
-          <Text style={styles.description}>
-            Visa, Mastercard, JCB, American Express
-          </Text>
-        </View>
-
-        <View style={styles.option}>
-          <CheckBox
-            title="Momo"
-            checked={selectedOptions.momo}
-            onPress={() => handleToggle("momo")}
-          />
-          <Text style={styles.description}>Pay with Momo</Text>
+          <Text style={styles.description}>Pay with VNPAY</Text>
         </View>
       </View>
       <View

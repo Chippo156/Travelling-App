@@ -28,7 +28,7 @@ function Main() {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.user.isLoading);
   const handleReloadUser = async () => {
-    dispatch(loadingTrue());
+    dispatch(loadingFalse());
     const token = await AsyncStorage.getItem("token");
     let res_token = await reloadUser(token);
     if (res_token && res_token.code === 200) {
@@ -54,7 +54,7 @@ function Main() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="User">
+      <Stack.Navigator initialRouteName="TravelDetail">
         <Stack.Screen
           name="Splash"
           component={Splash}
