@@ -242,7 +242,7 @@ export default function Deserve({ route, navigation }) {
         <View style={{ flexDirection: "row", gap: 20 }}>
           <Image
             source={{ uri: room.image_url }}
-            style={{ width: 150, height: 150, borderRadius: "50%" }}
+            style={{ width: 150, height: 150, borderRadius: 50 }}
           />
           <View style={{ gap: 10 }}>
             <Text style={{ fontSize: 16, fontWeight: "bold" }}>

@@ -27,6 +27,13 @@ function Footer({ value, navigation }) {
         <Text style={styles.footerText}>Tìm Kiếm</Text>
       </TouchableOpacity>
       <TouchableOpacity
+        style={[styles.footerButton, activeTab === "HistoryBooking" && styles.activeTab]}
+        onPress={() => handleTabChange("HistoryBooking")}
+      >
+        <Icon name="car" style={{ fontSize: 20 }} />
+        <Text style={styles.footerText}>Chuyến Đi</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         style={[styles.footerButton, activeTab === "user" && styles.activeTab]}
         onPress={() => handleTabChange("user")}
       >
