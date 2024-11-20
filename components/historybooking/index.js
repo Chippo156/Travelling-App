@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import {
   getDesitnationById,
@@ -13,7 +14,7 @@ import {
 } from "../controller/BookingController";
 import { useSelector } from "react-redux";
 
-const HistoryBooking = () => {
+const HistoryBooking = ({ navigation }) => {
   const [bookings, setBookings] = useState([]);
   const user = useSelector((state) => state.user.user);
   const [isLoading, setIsLoading] = useState(true);
@@ -81,31 +82,37 @@ const HistoryBooking = () => {
       item.payment_status === "success"
         ? styles.paymentStatusSuccess
         : styles.paymentStatusPending;
+    console.log(item);
     return (
-      <View style={styles.itemContainer}>
-        <Image
-          source={{ uri: item.destination.image_url }}
-          style={styles.image}
-        />
-        <View style={styles.detailsContainer}>
-          <Text style={styles.destinationTitle}>{item.destination.name}</Text>
-          <Text style={styles.stayDuration}>
-            {tinhSoNgay(item.check_out_date, item.check_in_date)}
-          </Text>
-          <Text style={styles.location}>
-            Address:{" "}
-            {item.destination.location
-              ? item.destination.location
-              : "Loading..."}
-          </Text>
-          <Text style={[styles.paymentStatus, paymentStatusStyle]}>
-            Payment Status: {item.payment_status}
-          </Text>
-          <Text style={styles.amount}>
-            Amount: {formatCurrency(item.amount)}
-          </Text>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => navigation.navigate("Booking Details", { bookid: item })}
+      >
+        <View style={{flexDirection:"row"}}>
+          <Image
+            source={{ uri: item.destination.image_url }}
+            style={styles.image}
+          />
+          <View style={styles.detailsContainer}>
+            <Text style={styles.destinationTitle}>{item.destination.name}</Text>
+            <Text style={styles.stayDuration}>
+              {tinhSoNgay(item.check_out_date, item.check_in_date)}
+            </Text>
+            <Text style={styles.location}>
+              Address:{" "}
+              {item.destination.location
+                ? item.destination.location
+                : "Loading..."}
+            </Text>
+            <Text style={[styles.paymentStatus, paymentStatusStyle]}>
+              Payment Status: {item.payment_status}
+            </Text>
+            <Text style={styles.amount}>
+              Amount: {formatCurrency(item.amount)}
+            </Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
