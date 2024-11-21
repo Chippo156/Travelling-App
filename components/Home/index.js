@@ -11,6 +11,7 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import { handleGetDestination } from "../controller/homeController";
 import Footer from "../Footer";
+import { getCountReview } from "../controller/DetailsController";
 
 function Home({ navigation }) {
   const data = [
@@ -39,12 +40,20 @@ function Home({ navigation }) {
       value: "Other",
     },
   ];
-
+  const handleGetCountReview = async (des_id) => {
+    let res = await getCountReview(des_id);
+    if (res && res.code === 200) {
+      return res.result;
+    }
+  };
   const [dataLastWeekend, setDataLastWeekend] = useState([]);
   const handleGetData = async () => {
     let res = await handleGetDestination();
     if (res && res.code === 200) {
-      console.log(res.result);
+      for (const item of res.result) {
+        let count = await handleGetCountReview(item.destination_id);
+        item.count_review = count;
+      }
       setDataLastWeekend(res.result);
     }
   };
@@ -60,12 +69,18 @@ function Home({ navigation }) {
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        style={{ margin: 4 }}
+        style={{
+          margin: 4,
+          borderColor: "#fff",
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderRadius: 8,
+        }}
         onPress={() => handleDetails(item.destination_id)}
       >
         <Image
           source={{ uri: item.image_url }}
-          style={{ width: 240, height: 135, borderRadius: 8 }}
+          style={{ width: "100%", height: 135, borderRadius: 8 }}
         />
         <View style={{ width: "100%", padding: 12, display: "flex", gap: 10 }}>
           <Text
@@ -75,11 +90,20 @@ function Home({ navigation }) {
               width: 240,
               lineHeight: 18,
               height: 36,
+              color: "white", // Thêm màu trắng
             }}
           >
             {item.name}
           </Text>
-          <Text numberOfLines={2} style={{ fontSize: 16, width: 240 }}>
+
+          <Text
+            numberOfLines={2}
+            style={{
+              fontSize: 16,
+              width: 240,
+              color: "white", // Thêm màu trắng
+            }}
+          >
             {item.description}
           </Text>
           <View
@@ -97,11 +121,14 @@ function Home({ navigation }) {
                 borderRadius: 12,
                 textAlign: "center",
                 padding: 8,
+                color: "white",
               }}
             >
               {item.average_rating}
             </Text>
-            <Text style={{ paddingLeft: 12 }}>(400 reviews)</Text>
+            <Text style={{ paddingLeft: 12,color:"#fff" }}>
+              ({item.count_review} reviews)
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -116,7 +143,7 @@ function Home({ navigation }) {
           height: 250,
           borderRadius: 8,
           margin: 4,
-          borderColor: "gray",
+          borderColor: "#fff",
           borderWidth: 1,
           borderStyle: "solid",
         }}
@@ -129,11 +156,12 @@ function Home({ navigation }) {
             fontWeight: "bold",
             paddingTop: 10,
             paddingBottom: 6,
+            color: "white",
           }}
         >
           {item.city}
         </Text>
-        <Text style={{ paddingLeft: 12 }}>{item.country}</Text>
+        <Text style={{ paddingLeft: 12, color: "white" }}>{item.country}</Text>
       </TouchableOpacity>
     );
   };
@@ -180,7 +208,7 @@ function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#191e3b",
     minHeight: "100vh",
     paddingBottom: 80,
   },
@@ -188,11 +216,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "white", // Thêm màu trắng
   },
   image: {
     width: "100%",
     height: 150,
     marginBottom: 10,
+    resizeMode: "cover",
+    borderRadius: 8,
   },
   contentContainer: {
     alignItems: "center",

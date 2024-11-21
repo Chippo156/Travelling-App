@@ -16,20 +16,19 @@ export let createBooking = async (
   quantity
 ) => {
   try {
-    if (payment_method !== "VNPAY") {
-      const response = await axios.post("/bookings", {
-        user_id,
-        destination_id,
-        room_id,
-        payment_status,
-        payment_method,
-        check_in_date,
-        check_out_date,
-        amount,
-        quantity,
-      });
-      return response.data;
-    }
+    const response = await axios.post("/bookings", {
+      user_id,
+      destination_id,
+      room_id,
+      payment_status,
+      payment_method,
+      check_in_date,
+      check_out_date,
+      amount,
+      quantity,
+    });
+    return response.data;
+
     // } else if (payment_method === "VNPAY") {
     //   Alert.alert("Confirmation", "You definitely pay via card?", [
     //     {

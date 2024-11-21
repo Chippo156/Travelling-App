@@ -82,13 +82,12 @@ const HistoryBooking = ({ navigation }) => {
       item.payment_status === "success"
         ? styles.paymentStatusSuccess
         : styles.paymentStatusPending;
-    console.log(item);
     return (
       <TouchableOpacity
         style={styles.itemContainer}
         onPress={() => navigation.navigate("Booking Details", { bookid: item })}
       >
-        <View style={{flexDirection:"row"}}>
+        <View style={{flexDirection:"row",width:"100%"}}>
           <Image
             source={{ uri: item.destination.image_url }}
             style={styles.image}
@@ -98,7 +97,7 @@ const HistoryBooking = ({ navigation }) => {
             <Text style={styles.stayDuration}>
               {tinhSoNgay(item.check_out_date, item.check_in_date)}
             </Text>
-            <Text style={styles.location}>
+            <Text style={styles.location} numberOfLines={2}>
               Address:{" "}
               {item.destination.location
                 ? item.destination.location
@@ -124,6 +123,7 @@ const HistoryBooking = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
       />
+      
     </View>
   );
 };
@@ -156,15 +156,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 2,
+    width: "100%",
   },
   image: {
-    width: 100,
-    height: 100,
     borderRadius: 8,
     marginRight: 16,
+    flex:2,
+    resizeMode:"cover"
   },
   detailsContainer: {
-    flex: 1,
+    flex:3
   },
   destinationTitle: {
     fontSize: 18,

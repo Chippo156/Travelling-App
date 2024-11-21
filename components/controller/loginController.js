@@ -16,7 +16,6 @@ export let loginUser = async (email, password) => {
 export let reloadUser = async (token) => {
   try {
     const response = await axios.post("/auth/introspect", { token: token });
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error(error);

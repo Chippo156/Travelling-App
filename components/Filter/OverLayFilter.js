@@ -44,7 +44,6 @@ const OverLayFilter = ({ handleGetFilterDestination,toggleFilterOverlay,activeAm
   const getAmenity = async () => {
     let res = await getFullAmenities();
     if (res && res.code === 200) {
-      console.log(res);
       setAmenities(res.result);
     }
   };

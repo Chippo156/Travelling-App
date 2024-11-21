@@ -20,7 +20,6 @@ const BookingPage = ({ route }) => {
   const [room, setRoom] = useState({});
   const handleGetDestination = async (id) => {
     let res = await getDestinationById(id);
-    console.log(res);
     if (res && res.code === 200) {
       setDestination(res.result);
     }
@@ -214,7 +213,6 @@ const BookingPage = ({ route }) => {
         style={canCancelBooking(bookid) ? styles.button : styles.buttonDisabled}
         onPress={() => {
           if (canCancelBooking(bookid)) {
-            console.log("Cancel Booking");
             // Thực hiện hành động hủy đặt phòng ở đây
           } else {
             Alert.alert(

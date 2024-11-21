@@ -2,7 +2,6 @@ import axios from "../axios/axios";
 
 export const getFilterDestination = async (city, param) => {
   try {
-    console.log(param);
     if (city === "Other") {
       if (param) {
         const res = await axios(`/destinations/filter?${param}`);

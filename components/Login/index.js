@@ -48,7 +48,6 @@ function Login({ navigation }) {
   };
 
   useEffect(() => {
-    console.log(isLoggedIn);
     if (isLoggedIn) {
       navigation.navigate("Home");
     }

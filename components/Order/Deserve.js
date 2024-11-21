@@ -154,7 +154,7 @@ export default function Deserve({ route, navigation }) {
     };
     const amount = total * 1.1 + refundCost + extraCost;
     try {
-      dispatch(loadingTrue());
+      // dispatch(loadingTrue());
       let res = await createBooking(
         user_id,
         destinationId,
@@ -166,14 +166,15 @@ export default function Deserve({ route, navigation }) {
         amount,
         numberRoom
       );
-
-      if (selectPaymentMethod() === "VNPAY") {
-        let paymentRes = await handleVNPay(amount, "NCB", res.result.id);
-      } else {
-        Alert.alert("Booking successfully!");
+      if (res && res.code === 200) {
+        if (selectPaymentMethod() === "VNPAY") {
+          let paymentRes = await handleVNPay(amount, "NCB", res.result.id);
+        } else {
+          Alert.alert("Booking successfully!");
+        }
       }
 
-      dispatch(loadingFalse());
+      // dispatch(loadingFalse());
     } catch (error) {
       console.error(error);
       return error;
@@ -392,7 +393,7 @@ export default function Deserve({ route, navigation }) {
         <View style={{ flexDirection: "row", gap: 20 }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Svg
-              className="uitk-icon uitk-icon-small uitk-icon-positive-theme"
+              // className="uitk-icon uitk-icon-small uitk-icon-positive-theme"
               aria-hidden="true"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -412,7 +413,7 @@ export default function Deserve({ route, navigation }) {
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Svg
-              class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+              // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
               aria-hidden="true"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -423,9 +424,9 @@ export default function Deserve({ route, navigation }) {
               clipRule="evenodd"
             >
               <Path
-                fill-rule="evenodd"
+                fillRule="evenodd"
                 d="m1 9 2 2a12.73 12.73 0 0 1 18 0l2-2A15.57 15.57 0 0 0 1 9zm8 8 3 3 3-3a4.24 4.24 0 0 0-6 0zm-2-2-2-2a9.91 9.91 0 0 1 14 0l-2 2a7.07 7.07 0 0 0-10 0z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               ></Path>
             </Svg>
             <Text style={{ color: "green", justifyContent: "center" }}>

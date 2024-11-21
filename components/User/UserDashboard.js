@@ -15,7 +15,6 @@ const UserDashboard = ({ navigation }) => {
     dispatch(loadingTrue());
     
     let res = await logoutUser(token);
-    console.log(res);
     if (res && (res.code === 200 || res.code === 400)) {
       await AsyncStorage.removeItem("token");
       dispatch(logout());

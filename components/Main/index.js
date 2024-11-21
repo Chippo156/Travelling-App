@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { ActivityIndicator, Image } from "react-native";
+import { ActivityIndicator, Image, Text } from "react-native";
 import { reloadUser } from "../controller/loginController";
 import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
@@ -75,11 +75,16 @@ function Main() {
           options={{
             headerShown: true,
             headerTitle: () => (
-              <Image
-                source={require("../../assets/logo.png")} // Đường dẫn đến logo của bạn
-                style={{ width: 100, height: 40 }} // Điều chỉnh kích thước logo theo ý muốn
-                resizeMode="contain"
-              />
+              <View style={{flexDirection:"row",gap:8,alignItems:"center"}}>
+                <Image
+                  source={require("../../assets/logo.png")} // Đường dẫn đến logo của bạn
+                  style={{ width: 50, height: 20 }} // Điều chỉnh kích thước logo theo ý muốn
+                  resizeMode="contain"
+                />
+                <Text
+                  style={{ color: "#fff", fontSize: 20, fontWeight: "bold",color:"#191e3b" }} // Đổi màu chữ
+                >Tourista</Text>
+              </View>
             ),
             headerTitleAlign: "center", // Căn giữa logo
           }}

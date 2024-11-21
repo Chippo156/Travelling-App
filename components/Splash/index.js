@@ -18,6 +18,8 @@ export default Splash = ({ navigation }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        width: "100%",
+        height: "100%",
       }}
     >
       <Text style={{ color: "#fff", fontSize: 30, fontWeight: "bold" }}>

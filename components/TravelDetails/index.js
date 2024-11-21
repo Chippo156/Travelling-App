@@ -592,7 +592,7 @@ export default function TravelDetail({ route, navigation }) {
                 ]}
               >
                 <Svg
-                  className="uitk-icon uitk-icon-small uitk-icon-positive-theme"
+                  // className="uitk-icon uitk-icon-small uitk-icon-positive-theme"
                   aria-hidden="true"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
@@ -627,7 +627,7 @@ export default function TravelDetail({ route, navigation }) {
                 <View style={{ gap: 10 }}>
                   <View style={styles.flexRow}>
                     <Svg
-                      class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+                      // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
                       aria-hidden="true"
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
@@ -637,9 +637,9 @@ export default function TravelDetail({ route, navigation }) {
                       clipRule="evenodd"
                     >
                       <Path
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="m1 9 2 2a12.73 12.73 0 0 1 18 0l2-2A15.57 15.57 0 0 0 1 9zm8 8 3 3 3-3a4.24 4.24 0 0 0-6 0zm-2-2-2-2a9.91 9.91 0 0 1 14 0l-2 2a7.07 7.07 0 0 0-10 0z"
-                        clip-rule="evenodd"
+                        clipRule="evenodd"
                       ></Path>
                     </Svg>
 
@@ -650,7 +650,7 @@ export default function TravelDetail({ route, navigation }) {
                   </View>
                   <View style={styles.flexRow}>
                     <Svg
-                      class="uitk-icon uitk-icon-default-theme"
+                      // class="uitk-icon uitk-icon-default-theme"
                       aria-hidden="true"
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
@@ -667,7 +667,7 @@ export default function TravelDetail({ route, navigation }) {
                 <View style={{ gap: 10 }}>
                   <View style={styles.flexRow}>
                     <Svg
-                      class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+                      // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
                       aria-hidden="true"
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
@@ -677,16 +677,16 @@ export default function TravelDetail({ route, navigation }) {
                       clipRule="evenodd"
                     >
                       <Path
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="M10.99 8A3 3 0 1 1 5 8a3 3 0 0 1 6 0zm8 0A3 3 0 1 1 13 8a3 3 0 0 1 6 0zM8 13c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm7.03.05c.35-.03.68-.05.97-.05 2.33 0 7 1.17 7 3.5V19h-6v-2.5c0-1.48-.81-2.61-1.97-3.45z"
-                        clip-rule="evenodd"
+                        clipRule="evenodd"
                       ></Path>
                     </Svg>
                     <Text>Sleeps {item.sleeps}</Text>
                   </View>
                   <View style={styles.flexRow}>
                     <Svg
-                      class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+                      // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
                       aria-hidden="true"
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
@@ -696,9 +696,9 @@ export default function TravelDetail({ route, navigation }) {
                       clipRule="evenodd"
                     >
                       <Path
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="M11 7h8a4 4 0 0 1 4 4v9h-2v-3H3v3H1V5h2v9h8V7zm-1 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
-                        clip-rule="evenodd"
+                        clipRule="evenodd"
                       ></Path>
                     </Svg>
                     <Text>{item.beds}</Text>
