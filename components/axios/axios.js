@@ -3,6 +3,7 @@ import axios from "axios";
 // Khởi tạo instance axios
 const axiosInstance = axios.create({
   baseURL: "https://travelling-app.onrender.com/api/v1", // URL mặc định cho tất cả các yêu cầu
+  // URL mặc định cho tất cả các yêu c
   headers: {
     "Content-Type": "application/json",
   },

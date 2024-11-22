@@ -7,6 +7,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
@@ -16,16 +18,23 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 function Login({ navigation }) {
   const [isFocused, setIsFocused] = useState(false);
-  const [email, setEmail] = useState("");
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
   const handleLogin = async () => {
-    dispatch(loadingTrue());
-    const userInfo = { email, password };
-    let res = await loginUser(email, password);
+    setIsLoading(true);
+
+    const userInfo = { username, password };
+    let res = await loginUser(username, password);
+
     if (res && res.code === 1000) {
       await AsyncStorage.setItem("token", res.result.token);
       const token = await AsyncStorage.getItem("token");
@@ -44,7 +53,7 @@ function Login({ navigation }) {
     } else {
       alert("Đăng nhập thất bại");
     }
-    dispatch(loadingFalse());
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -54,200 +63,161 @@ function Login({ navigation }) {
   }, [isLoggedIn]);
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "space-between" }}
-      >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "#fff",
-            padding: 20,
-            paddingTop: 50,
-            paddingBottom: 50,
-            justifyContent: "space-between",
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              alignItems: "center",
-              gap: 10,
-              width: "100%",
-            }}
-          >
-            <Text
-              style={{
-                color: "#000",
-                fontSize: 26,
-                lineHeight: 58,
-                fontWeight: "bold",
-              }}
-            >
-              Sign in now
-            </Text>
-            <Text style={{ color: "#7D848D", fontSize: 16, lineHeight: 20 }}>
-              Please sign in to continue our app
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                height: 58,
-                backgroundColor: "#F7F7F9",
-                paddingLeft: 8,
-                paddingRight: 8,
-                marginTop: 20,
-              }}
-            >
-              <TextInput
-                placeholder="Email"
-                style={{
-                  fontSize: 16,
-                  height: "100%",
-                  textAlignVertical: "center",
-                  paddingVertical: 0,
-                }}
-                value={email}
-                onChangeText={setEmail}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                height: 58,
-                backgroundColor: "#F7F7F9",
-                paddingLeft: 8,
-                paddingRight: 8,
-                position: "relative",
-                marginTop: 20,
-              }}
-            >
-              <TextInput
-                placeholder="Password"
-                secureTextEntry={!showPassword}
-                style={{
-                  fontSize: 16,
-                  lineHeight: 58,
-                  width: "100%",
-                  textAlignVertical: "center",
-                }}
-                value={password}
-                onChangeText={setPassword}
-              />
-              <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-                style={{ position: "absolute", top: 20, right: 8 }}
-              >
-                <Icon name={showPassword ? "eye" : "eye-off"} size={24} />
-              </TouchableOpacity>
-            </View>
-            <Text
-              style={{
-                fontSize: 14,
-                textAlign: "right",
-                width: "100%",
-                color: "#FF6421",
-                marginTop: 8,
-              }}
-            >
-              Forgot password?
-            </Text>
-            <TouchableOpacity
-              style={{
-                width: "100%",
-                backgroundColor: "#FF6421",
-                borderRadius: 12,
-                height: 58,
-                cursor: "pointer",
-                marginTop: 30,
-              }}
-              onPress={handleLogin}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "#fff",
-                  fontSize: 20,
-                  lineHeight: 58,
-                }}
-              >
-                Sign in
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                justifyContent: "center",
-                marginTop: 20,
-                gap: 8,
-              }}
-            >
-              <Text style={{ fontSize: 14, lineHeight: 16, color: "#707B81" }}>
-                Don't have an account?
-              </Text>
-              <TouchableOpacity
-                style={{ cursor: "pointer" }}
-                onPress={() => navigation.navigate("Register")}
-              >
-                <Text
-                  style={{ fontSize: 14, lineHeight: 16, color: "#FF6421" }}
-                >
-                  Sign up
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              justifyContent: "center",
-              gap: 20,
-              marginTop: 30,
-            }}
-          >
+    <View style={styles.container}>
+      <View style={styles.formContainer}>
+        <Text style={styles.title}>Sign in now</Text>
+        <Text style={styles.subtitle}></Text>
+
+        <TextInput
+          placeholder="User Name"
+          style={[styles.input, { lineHeight: undefined }]} // Không sử dụng lineHeight
+          value={username}
+          onChangeText={setUserName}
+        />
+
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="Password"
+            secureTextEntry={!isPasswordVisible}
+            style={styles.passwordInput}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity onPress={togglePasswordVisibility}>
             <Icon
-              name="logo-facebook"
-              size={30}
-              style={{
-                padding: 12,
-                borderRadius: 50,
-                backgroundColor: "#1877f2",
-                color: "#fff",
-              }}
+              name={isPasswordVisible ? "eye" : "eye-off"}
+              size={24}
+              color="#888"
+              style={styles.passwordIcon}
             />
-            <Icon
-              name="logo-instagram"
-              size={30}
-              style={{
-                padding: 12,
-                borderRadius: 50,
-                backgroundColor: "#d94dac",
-                color: "#fff",
-              }}
-            />
-            <Icon
-              name="logo-twitter"
-              size={30}
-              style={{
-                padding: 12,
-                borderRadius: 50,
-                backgroundColor: "#03a9f4",
-                color: "#fff",
-              }}
-            />
-          </View>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+
+        <TouchableOpacity
+          style={styles.signUpButton}
+          onPress={handleLogin}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.signUpText}>Sign In</Text>
+          )}
+        </TouchableOpacity>
+
+        <View style={styles.footerText}>
+          <Text style={styles.footerNormalText}>Don't an account?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <Text style={styles.footerLinkText}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.socialContainer}>
+        <TouchableOpacity>
+          <Icon name="logo-facebook" size={30} color="#4267B2" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Icon name="logo-instagram" size={30} color="#C13584" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Icon name="logo-twitter" size={30} color="#1DA1F2" />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
+    paddingVertical: 50,
+    justifyContent: "space-between",
+  },
+  formContainer: {
+    alignItems: "center",
+    width: "100%",
+    gap: 15,
+  },
+  title: {
+    fontSize: 26,
+    lineHeight: 34,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#7D848D",
+    marginTop: 5,
+  },
+  input: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "#F7F7F9",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    marginTop: 15,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    height: 50,
+    backgroundColor: "#F7F7F9",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginTop: 15,
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: 16,
+  },
+  passwordIcon: {
+    marginLeft: 10,
+  },
+  passwordHint: {
+    fontSize: 14,
+    color: "#FF6421",
+    marginTop: 5,
+    alignSelf: "flex-start",
+  },
+  signUpButton: {
+    width: "100%",
+    backgroundColor: "#FF6421",
+    borderRadius: 8,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  signUpText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  footerText: {
+    flexDirection: "row",
+    marginTop: 15,
+  },
+  footerNormalText: {
+    fontSize: 14,
+    color: "#707B81",
+  },
+  footerLinkText: {
+    fontSize: 14,
+    color: "#FF6421",
+    marginLeft: 5,
+  },
+  socialContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 20,
+    marginTop: 20,
+  },
+});
 
 export default Login;

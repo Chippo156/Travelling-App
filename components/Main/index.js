@@ -55,7 +55,7 @@ function Main() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HistoryBooking">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Splash"
           component={Splash}
@@ -75,15 +75,24 @@ function Main() {
           options={{
             headerShown: true,
             headerTitle: () => (
-              <View style={{flexDirection:"row",gap:8,alignItems:"center"}}>
+              <View
+                style={{ flexDirection: "row", gap: 8, alignItems: "center" }}
+              >
                 <Image
                   source={require("../../assets/logo.png")} // Đường dẫn đến logo của bạn
                   style={{ width: 50, height: 20 }} // Điều chỉnh kích thước logo theo ý muốn
                   resizeMode="contain"
                 />
                 <Text
-                  style={{ color: "#fff", fontSize: 20, fontWeight: "bold",color:"#191e3b" }} // Đổi màu chữ
-                >Tourista</Text>
+                  style={{
+                    color: "#fff",
+                    fontSize: 20,
+                    fontWeight: "bold",
+                    color: "#191e3b",
+                  }} // Đổi màu chữ
+                >
+                  Tourista
+                </Text>
               </View>
             ),
             headerTitleAlign: "center", // Căn giữa logo

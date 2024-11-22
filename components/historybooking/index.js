@@ -87,7 +87,7 @@ const HistoryBooking = ({ navigation }) => {
         style={styles.itemContainer}
         onPress={() => navigation.navigate("Booking Details", { bookid: item })}
       >
-        <View style={{flexDirection:"row",width:"100%"}}>
+        <View style={{ flexDirection: "row", width: "100%" }}>
           <Image
             source={{ uri: item.destination.image_url }}
             style={styles.image}
@@ -117,13 +117,12 @@ const HistoryBooking = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Lịch sử đặt chuyến</Text>
+      <Text style={styles.header}>Booking history</Text>
       <FlatList
         data={bookings}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
       />
-      
     </View>
   );
 };
@@ -161,11 +160,11 @@ const styles = StyleSheet.create({
   image: {
     borderRadius: 8,
     marginRight: 16,
-    flex:2,
-    resizeMode:"cover"
+    flex: 2,
+    resizeMode: "cover",
   },
   detailsContainer: {
-    flex:3
+    flex: 3,
   },
   destinationTitle: {
     fontSize: 18,
