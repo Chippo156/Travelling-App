@@ -44,5 +44,4 @@ public class Bookings extends BaseEntity {
     @Column(name = "amount")
     double amount;
     int quantity;
-
 }

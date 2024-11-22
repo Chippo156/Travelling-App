@@ -24,8 +24,7 @@ public class User extends BaseEntity {
     private String firstName;
     private String lastName;
     private String username;
-    private String password;
-    private String email;
+    private String password;private String email;
     private String phone;
     private String address;
     private String sex;
@@ -35,4 +34,5 @@ public class User extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
 }

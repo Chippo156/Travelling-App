@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class PopularAmenityResponse {
     @JsonProperty("amenity_name")
-    String amenityName;
+    private String amenityName;
     @JsonProperty("amenity_icon")
     String amenityIcon;
 }

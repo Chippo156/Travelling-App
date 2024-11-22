@@ -12,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Role {
 
     @Id

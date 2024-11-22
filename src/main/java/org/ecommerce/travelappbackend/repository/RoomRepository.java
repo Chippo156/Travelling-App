@@ -15,12 +15,12 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     Room findDistinctFirstByDestinationId(Long destinationId);
 
-    @Query("SELECT r FROM Room r  WHERE " +
+    @Query("SELECT r FROM Room r WHERE " +
             "(:destinationId IS NULL OR r.destination.id = :destinationId) AND " +
             "(:sleeps IS NULL OR r.sleeps >= :sleeps) AND " +
-            "(:quantity IS NULL OR r.quantity >= :quantity) AND " +
-            "(:startDate IS NULL OR :endDate IS NULL OR " +
-            "NOT EXISTS (SELECT 1 FROM Bookings b WHERE b.room.id = r.id AND " +
+            "(:quantity IS NULL OR :quantity >= r.quantity )AND " +
+            "(:startDate IS NULL OR :endDate IS NULL )OR " +
+            "(:quantity IS NULL OR r.quantity > (SELECT COUNT(b) FROM Bookings b WHERE b.room.id = r.id AND " +
             "((b.checkInDate <= :endDate AND b.checkOutDate >= :startDate))))")
     List<Room> findAvailableRooms(
             @Param("destinationId") Long destinationId,

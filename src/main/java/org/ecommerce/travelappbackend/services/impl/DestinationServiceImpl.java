@@ -7,6 +7,7 @@ import org.ecommerce.travelappbackend.entity.Destination;
 import org.ecommerce.travelappbackend.mapper.DestinationMapper;
 import org.ecommerce.travelappbackend.repository.CategoryRepository;
 import org.ecommerce.travelappbackend.repository.DestinationRepository;
+import org.ecommerce.travelappbackend.repository.ReviewRepository;
 import org.ecommerce.travelappbackend.services.service.DestinationService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,9 +61,6 @@ public class DestinationServiceImpl implements DestinationService {
                 destination.setCategory(category);
               if(destinationRequest.getImageUrl()!=null)
                 destination.setImageUrl(destinationRequest.getImageUrl());
-
-
-
             destinationRepository.save(destination);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());

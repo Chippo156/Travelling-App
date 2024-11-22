@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "popular_amenities")
 @Setter
@@ -18,4 +20,5 @@ public class PopularAmenity {
     private Long id;
     private String amenityName;
     private String amenityIcon;
+
 }
