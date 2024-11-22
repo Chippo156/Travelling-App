@@ -70,6 +70,15 @@ public class BookingController {
             return new ApiResponse<>(400, e.getMessage(), null);
         }
     }
+    @GetMapping("/user/{userId}/cancelled")
+    public ApiResponse<List<BookingResponse>> getCancelledBookingsByUserId(@PathVariable Long userId){
+        try{
+            return new ApiResponse<>(200, "success", bookingService.getCancelledBookingsByUserId(userId));
+        }
+        catch (Exception e){
+            return new ApiResponse<>(400, e.getMessage(), null);
+        }
+    }
 
 
 }

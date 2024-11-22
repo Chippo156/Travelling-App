@@ -19,5 +19,7 @@ public interface BookingService {
 
      List<BookingResponse> getBookingsByUserId(Long userId);
 
+     List<BookingResponse> getCancelledBookingsByUserId(Long userId);
+
 
 }

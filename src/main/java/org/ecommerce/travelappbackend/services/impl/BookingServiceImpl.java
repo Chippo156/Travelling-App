@@ -111,4 +111,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponse> getBookingsByUserId(Long userId) {
         return bookingRepository.findByUserId(userId).stream().map(bookingMapper::toBookingResponse).toList();
     }
+
+    @Override
+    public List<BookingResponse> getCancelledBookingsByUserId(Long userId) {
+        return bookingRepository.findCancelledBookingsByUserId(userId).stream().map(bookingMapper::toBookingResponse).toList();
+    }
 }
