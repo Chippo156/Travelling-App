@@ -8,7 +8,10 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { getFilterDestination, getImageDestination } from "../controller/filterController";
+import {
+  getFilterDestination,
+  getImageDestination,
+} from "../controller/filterController";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Overlay, SearchBar } from "@rneui/themed";
@@ -38,7 +41,7 @@ function FilterPage({ route, navigation }) {
   // Hàm gọi API để lấy các địa điểm theo thành phố
   const handleGetFilterDestination = async (city) => {
     let param = "";
-    if(search){
+    if (search) {
       param = `&search=${search}`;
     }
     if (activeAmenities.length > 0) {
@@ -56,13 +59,13 @@ function FilterPage({ route, navigation }) {
     if (searchText) {
       param += `&search=${searchText}`;
     }
-    if(numberGuest){
+    if (numberGuest) {
       param += `&sleeps=${numberGuest}`;
     }
-    if(selectedSecondLastDay){
+    if (selectedSecondLastDay) {
       param += `&startDate=${selectedSecondLastDay}`;
     }
-    if(selectedLastDayOfMonth){
+    if (selectedLastDayOfMonth) {
       param += `&endDate=${selectedLastDayOfMonth}`;
     }
     let res = await getFilterDestination(city || "Ho Chi Minh", param);
@@ -84,6 +87,7 @@ function FilterPage({ route, navigation }) {
       ),
     });
   }, [city, navigation]);
+
   const formatDate = (date) => {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -132,12 +136,12 @@ function FilterPage({ route, navigation }) {
       <TouchableOpacity
         style={{
           width: "100%",
-          marginTop: 20,
-          paddingTop: 10,
-          paddingBottom: 10,
           borderColor: "#f0f0f0",
           borderStyle: "solid",
           borderWidth: 1,
+          backgroundColor: "#fff",
+          borderRadius: 10,
+          marginTop: 10,
         }}
         onPress={() =>
           navigation.navigate("TravelDetail", {
@@ -153,7 +157,7 @@ function FilterPage({ route, navigation }) {
             source={{ uri: item.image_url }}
             style={styles.destinationImage}
           />
-          <View style={{ flex: 3, gap: 10 }}>
+          <View style={{ flex: 3, gap: 10, padding: 10 }}>
             <Text style={styles.destinationName}>{item.name}</Text>
             <Text style={styles.destinationDescription}>
               {city || item.location}
@@ -189,7 +193,8 @@ function FilterPage({ route, navigation }) {
       setNumberGuest(numberGuest - 1);
     }
   };
-   
+  console.log(filteredDestinations.length);
+
   return (
     <View style={styles.container}>
       {isButtonVisible && (
@@ -266,7 +271,7 @@ function FilterPage({ route, navigation }) {
           alignItems: "center",
         }}
       >
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
           Danh sách khách sạn
         </Text>
         <TouchableOpacity
@@ -283,12 +288,15 @@ function FilterPage({ route, navigation }) {
           <Text style={{ marginLeft: 8, fontSize: 20 }}>Bộ lọc</Text>
         </TouchableOpacity>
       </View>
-      <FlatList
+      {filteredDestinations.length === 0 && (<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ fontSize: 20, color: "#fff" }}>Không có kết quả nào</Text>
+      </View>)}
+      {filteredDestinations.length > 0 && (<FlatList
         data={filteredDestinations} // Dữ liệu lọc được
         renderItem={renderItem}
         keyExtractor={(item, index) => item.destination_id.toString()}
         contentContainerStyle={{ marginVertical: 10 }}
-      />
+      />)}
       {/* Overlay cho Điểm đến */}
       <Overlay
         isVisible={visibleDestination}
@@ -337,6 +345,12 @@ function FilterPage({ route, navigation }) {
         overlayStyle={styles.overlay}
       >
         <View style={styles.overlayContent}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={toggleGuestOverlay} // Navigate to Home screen
+          >
+            <Icon name="arrow-back" size={24} color="blue" />
+          </TouchableOpacity>
           <Text style={{ fontSize: 30 }}>Khách</Text>
           <View
             style={{
@@ -413,17 +427,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#191e3b",
   },
   destinationItem: {
-    gap: 10,
-
     flexDirection: "row",
     backgroundColor: "#fff",
     width: "100%",
   },
   destinationImage: {
-    resizeMode: "contain",
+    resizeMode: "cover",
     flex: 2,
   },
   destinationName: {
@@ -487,6 +499,13 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     alignItems: "center",
     backgroundColor: "white",
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "absolute",
+    top: -30,
+    left: 10,
   },
 });
 

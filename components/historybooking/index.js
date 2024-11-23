@@ -7,17 +7,27 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Button,
 } from "react-native";
 import {
   getDesitnationById,
   getListBookingById,
 } from "../controller/BookingController";
 import { useSelector } from "react-redux";
-
+import Icon from "react-native-vector-icons/Ionicons";
 const HistoryBooking = ({ navigation }) => {
   const [bookings, setBookings] = useState([]);
   const user = useSelector((state) => state.user.user);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    console.log("User state:", user);
+    if (user) {
+      handleGetBooking();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user]);
 
   const handleGetDestination = async (id) => {
     try {
@@ -27,6 +37,7 @@ const HistoryBooking = ({ navigation }) => {
       console.error(error);
     }
   };
+
   const handleGetBooking = async () => {
     if (user && user.id) {
       try {
@@ -50,14 +61,61 @@ const HistoryBooking = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    handleGetBooking();
-  }, [user]);
-
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (user && bookings.length === 0) {
+    return (
+      <View style={styles.nullContainer}>
+        {/* Thay thế phần Image bằng SVG */}
+        <Image
+          source={{
+            uri: "https://a.travel-assets.com/egds/illustrations/uds-default/baggage__large.svg",
+          }}
+          style={styles.image}
+        />
+
+        {/* Tiêu đề */}
+        <Text style={styles.title}>Chuyến đi</Text>
+
+        {/* Mô tả */}
+        <Text style={styles.description}>
+          {user.first_name}, bạn không có chuyến đi sắp tới nào. Bạn định đi đâu tiếp theo?
+        </Text>
+
+        {/* Nút "Bắt đầu khám phá" */}
+        <TouchableOpacity style={styles.primaryButton} onPress={()=>navigation.navigate("Home")}>
+          <Text style={styles.primaryButtonText}>Bắt đầu khám phá</Text>
+        </TouchableOpacity>
+
+        {/* Nút "Tìm đặt phòng của bạn" */}
+        <TouchableOpacity style={styles.secondaryButton} onPress={()=>navigation.navigate("Filter")}>
+          <Text style={styles.secondaryButtonText}>Tìm đặt phòng của bạn</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  if (!user) {
+    return (
+      <View style={styles.nullContainer}>
+        <Text style={{position:"absolute",top:30,left:16,fontSize:28,fontWeight:"bold"}}>Chuyến đi</Text>
+        <Image
+          source={{
+            uri: "https://a.travel-assets.com/egds/illustrations/uds-default/unlock__large.svg",
+          }}
+          style={styles.image}
+        />
+
+
+        <TouchableOpacity style={styles.primaryButton} onPress={()=>navigation.navigate("Login")}>
+          <Text style={styles.primaryButtonText}>Đăng nhập hoặc tạo tài khoản miễn phí</Text>
+        </TouchableOpacity>
+
       </View>
     );
   }
@@ -87,7 +145,7 @@ const HistoryBooking = ({ navigation }) => {
         style={styles.itemContainer}
         onPress={() => navigation.navigate("Booking Details", { bookid: item })}
       >
-        <View style={{ flexDirection: "row", width: "100%" }}>
+        <View style={{ flexDirection: "row", width: "100%",gap:20 }}>
           <Image
             source={{ uri: item.destination.image_url }}
             style={styles.image}
@@ -128,16 +186,29 @@ const HistoryBooking = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  footer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  footerText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  link: {
+    fontSize: 14,
+    color: "#007bff",
+    textDecorationLine: "underline",
+  },
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#191e3b",
   },
   header: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "#333",
+    color: "#fff",
   },
   loadingContainer: {
     flex: 1,
@@ -156,6 +227,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
     width: "100%",
+    gap:20
   },
   image: {
     borderRadius: 8,
@@ -203,6 +275,54 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
     marginBottom: 8,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#000",
+    textAlign: "center",
+  },
+  description: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#555",
+    marginBottom: 20,
+  },
+  primaryButton: {
+    backgroundColor: "#007bff",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  primaryButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  secondaryButton: {
+    borderColor: "#007bff",
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+  },
+  secondaryButtonText: {
+    color: "#007bff",
+    fontSize: 16,
+  },
+  image: {
+    width: 120,
+    height: 120,
+    marginBottom: 20,
+  },
+  nullContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    gap: 20,
   },
 });
 

@@ -59,7 +59,7 @@ function Login({ navigation }) {
   const login = async () => {
     setIsLoading(true);
     try {
-      let res = await loginUser(email, password);
+      let res = await loginUser(username, password);
       if (res && res.code === 200) {
         alert("Login success");
         navigation.navigate("Home");

@@ -12,7 +12,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { handleGetDestination } from "../controller/homeController";
 import Footer from "../Footer";
 import { getCountReview } from "../controller/DetailsController";
-
+                            
 function Home({ navigation }) {
   const data = [
     {

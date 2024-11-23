@@ -12,6 +12,7 @@ import { getFilterDestination } from "../controller/filterController";
 import { Calendar, CalendarList, Agenda } from "react-native-calendars";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Button, Overlay, SearchBar } from "@rneui/themed";
+
 function OverlayDate({
   toggleDateOverlay,
   selectedSecondLastDay,
@@ -22,16 +23,18 @@ function OverlayDate({
   setSelectDay,
   getDayOfWeek,
   getMonthDay,
+  navigation, // Assuming you are using React Navigation
 }) {
   return (
     <View style={styles.overlayContent}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={toggleDateOverlay} // Navigate to Home screen
+      >
+        <Icon name="arrow-back" size={24} color="blue" />
+      </TouchableOpacity>
       <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 10,
-        }}
+        style={styles.dateSelectionContainer}
       >
         <TouchableOpacity
           onPress={() => setSelectDay(true)}
@@ -108,9 +111,29 @@ function OverlayDate({
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   overlayContent: {
     width: "100%",
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "absolute",
+    top: 0,
+    left: 10,
+  },
+  backButtonText: {
+    marginLeft: 5,
+    fontSize: 16,
+    color: "blue",
+  },
+  dateSelectionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 50, // Adjusted to avoid overlap with the back button
   },
   closeButton: {
     marginTop: 20,
@@ -134,4 +157,5 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
 });
+
 export default OverlayDate;
