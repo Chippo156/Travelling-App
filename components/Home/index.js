@@ -127,7 +127,7 @@ function Home({ navigation }) {
               {item.average_rating}
             </Text>
             <Text style={{ paddingLeft: 12,color:"#fff" }}>
-              ({item.count_review} reviews)
+              ({(item.count_review).toFixed(1)} reviews)
             </Text>
           </View>
         </View>

@@ -174,7 +174,7 @@ export default function TravelDetail({ route, navigation }) {
         ))}
         {halfStar && <Icon name="star-half" size={20} color="#FFD700" />}
         {[...Array(emptyStars)].map((_, index) => (
-          <Icon key={index} name="star-o" size={20} color="#FFD700" />
+          <Icon key={index} name="star-outline" size={20} color="#FFD700" />
         ))}
       </View>
     );

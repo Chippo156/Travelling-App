@@ -105,10 +105,10 @@ function Register({ navigation }) {
           <Icon name="logo-facebook" size={30} color="#4267B2" />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Icon name="logo-instagram" size={30} color="#C13584" />
+          <Icon name="logo-google" size={30} color="#D44638" />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Icon name="logo-twitter" size={30} color="#1DA1F2" />
+          <Icon name="logo-github" size={30} color="#333" />
         </TouchableOpacity>
       </View>
     </View>
