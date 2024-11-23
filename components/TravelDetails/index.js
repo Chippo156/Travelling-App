@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { Destination } from "../../model/Destination";
 import { useEffect, useState } from "react";
-import { environtment } from "../../environtment/environtment";
+import CustomText from "./CustomText";
 import {
   getAmenities,
   getDestinationById,
@@ -275,7 +275,14 @@ export default function TravelDetail({ route, navigation }) {
   useEffect(() => {
     fetchFilterRoom();
   }, [numberGuest, numberRoom, selectedSecondLastDay, selectedLastDayOfMonth]);
+  const TextElement = ({ text, color }) => {
+    return <Text style={{ color }}>{text}</Text>;
+  };
 
+  TextElement.defaultProps = {
+    text: "Default Text",
+    color: "white",
+  };
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
@@ -304,13 +311,13 @@ export default function TravelDetail({ route, navigation }) {
           <View>
             <FlatList
               data={amenities.slice(0, 4)}
+              nestedScrollEnabled={true} // Enable nested scrolling
               renderItem={({ item }) => (
                 <View style={styles.flexRow}>
                   <Icon name={item.amenityIcon} size={24} color="#333" />
                   <Text style={styles.amenityText}>{item?.amenityName}</Text>
                 </View>
               )}
-              nestedScrollEnabled={true}
               keyExtractor={(item) => item.id.toString()}
               numColumns={1}
             />
@@ -323,19 +330,7 @@ export default function TravelDetail({ route, navigation }) {
               width: "100%",
               alignItems: "center",
             }}
-          >
-            <Text
-              style={{
-                backgroundColor: "#57ca61",
-                borderRadius: 12,
-                textAlign: "center",
-                padding: 8,
-              }}
-            >
-              {item.average_rating.toFixed(1)}
-            </Text>
-            <Text style={{ paddingLeft: 12 }}>(400 reviews)</Text>
-          </View>
+          ></View>
         </View>
       </TouchableOpacity>
     );
@@ -346,7 +341,6 @@ export default function TravelDetail({ route, navigation }) {
       <View>
         <ImageSlider images={imagesDes} />
       </View>
-
       <View
         style={{
           flexDirection: "row",
@@ -355,27 +349,27 @@ export default function TravelDetail({ route, navigation }) {
           marginVertical: 20,
         }}
       >
-        <Text>Entire Home</Text>
-        <Text style={styles.vipText}>VIP access</Text>
+        <CustomText>Entire Home</CustomText>
+        <CustomText style={styles.vipText}>VIP access</CustomText>
       </View>
       <View>
-        <Text style={styles.title}>{destination?.name}</Text>
+        <CustomText style={styles.title}>{destination?.name}</CustomText>
         <StarRating rating={destination?.average_rating} />
       </View>
       <View style={styles.refundRow}>
-        <Text style={styles.refundText}>Fully refundable</Text>
+        <CustomText style={styles.refundText}>Fully refundable</CustomText>
         <Text style={styles.refundText}>Reserve now, pay later</Text>
       </View>
       <View style={styles.ratingRow}>
         <View style={styles.ratingBox}>
           <Text style={styles.ratingNumber}>{destination?.average_rating}</Text>
         </View>
-        <Text style={styles.excellentText}>Exceptional</Text>
+        <CustomText style={styles.excellentText}>Exceptional</CustomText>
       </View>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <Text style={styles.reviewsText}>
+        <CustomText style={styles.reviewsText}>
           See all {reviews?.length} reviews
-        </Text>
+        </CustomText>
       </TouchableOpacity>
       <Modal
         animationType="slide"
@@ -386,12 +380,9 @@ export default function TravelDetail({ route, navigation }) {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Reviews ({reviews.length})</Text>
-
-            <FlatList
-              data={reviews}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <View style={styles.reviewCard}>
+            <ScrollView>
+              {reviews.map((item, index) => (
+                <View key={index.toString()} style={styles.reviewCard}>
                   <Text style={styles.rating}>
                     {item.rating + 3}{" "}
                     <Icon name="star" size={20} color="#FFD700" />
@@ -401,10 +392,13 @@ export default function TravelDetail({ route, navigation }) {
                   </Text>
                   <Text style={styles.liked}>Liked: {liked}</Text>
                   <Text style={styles.reviewTitle}>{item.title}</Text>
-                  <Text style={styles.description}>{item.content}</Text>
+                  <CustomText style={styles.description}>
+                    {item.content}
+                  </CustomText>
                 </View>
-              )}
-            />
+              ))}
+            </ScrollView>
+
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
@@ -414,15 +408,19 @@ export default function TravelDetail({ route, navigation }) {
           </View>
         </View>
       </Modal>
-      <Text style={styles.sectionTitle}>About this property</Text>
-      <Text style={styles.description}>{destination?.description}</Text>
+      <CustomText style={styles.sectionTitle}>About this property</CustomText>
+      <CustomText style={{ marginVertical: 10 }}>
+        {destination?.description}
+      </CustomText>
       <View>
         <FlatList
           data={amenities}
           renderItem={({ item }) => (
             <View style={styles.amenityItem}>
               <Icon name={item.amenityIcon} size={24} color="#333" />
-              <Text style={styles.amenityText}>{item?.amenityName}</Text>
+              <CustomText style={styles.amenityText}>
+                {item?.amenityName}
+              </CustomText>
             </View>
           )}
           nestedScrollEnabled={true}
@@ -431,10 +429,10 @@ export default function TravelDetail({ route, navigation }) {
         />
       </View>
       <View>
-        <Text style={styles.sectionTitle}>Explore the area</Text>
-        <Text style={styles.description}>{destination?.location}</Text>
+        <CustomText style={styles.sectionTitle}>Explore the area</CustomText>
+        <CustomText>{destination?.location}</CustomText>
       </View>
-      <Text style={styles.sectionTitle}>Choose your room</Text>
+      <CustomText style={styles.sectionTitle}>Choose your room</CustomText>
       <TouchableOpacity
         style={styles.buttonContainer1}
         onPress={toggleDateOverlay}
@@ -832,16 +830,18 @@ export default function TravelDetail({ route, navigation }) {
         />
       </View>
       <Text>
-        <Text style={styles.sectionTitle}>Explore other options</Text>
+        <CustomText style={styles.sectionTitle}>
+          Explore other options
+        </CustomText>
       </Text>
       <View style={{ marginTop: 10 }}>
         <FlatList
           data={destinations}
           renderItem={renderItem}
+          nestedScrollEnabled={true} // Enable nested scrolling
           horizontal={true}
           keyExtractor={(item, index) => index.toString()}
           showsHorizontalScrollIndicator={false}
-          nestedScrollEnabled={true}
         />
       </View>
     </ScrollView>
@@ -851,7 +851,7 @@ export default function TravelDetail({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#191e3b",
     paddingHorizontal: 20,
     marginTop: 20,
   },
@@ -914,8 +914,8 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     lineHeight: 24,
-    color: "#555",
     marginBottom: 10,
+    color: "#fff",
   },
   amenityItem: {
     flex: 1,
@@ -1004,7 +1004,7 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingTop: 50,
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: "#fff",
   },
   openButton: {
     backgroundColor: "#4CAF50",

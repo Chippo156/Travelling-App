@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Rating } from "react-native-ratings";
@@ -13,8 +14,17 @@ import {
   getDestinationById,
   getRoomById,
 } from "../controller/DetailsController";
+import {
+  CancelBooking,
+  createBooking,
+  handleVNPay,
+} from "../controller/BookingController";
+import { useDispatch } from "react-redux";
+import { loadingTrue, loadingFalse } from "../Redux/userSlice";
 
-const BookingPage = ({ route }) => {
+const BookingPage = ({ route, navigation }) => {
+  const dispatch = useDispatch();
+
   const { bookid } = route.params;
   const [destination, setDestination] = useState({});
   const [room, setRoom] = useState({});
@@ -104,7 +114,50 @@ const BookingPage = ({ route }) => {
   const canCancelBooking = (bookId) => {
     const currentDate = new Date();
     const checkInDate = new Date(bookId.check_in_date);
-    return checkInDate <= currentDate;
+    return checkInDate > currentDate;
+  };
+  const handleCancelBooking = async () => {
+    // Your logic to handle booking cancellation
+    try {
+      let res = await CancelBooking(bookid.id);
+      if (res && res.code === 200) {
+        Alert.alert("Booking cancelled successfully");
+        navigation.navigate("HistoryBooking");
+      } else {
+        Alert.alert("Error cancelling booking");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const convertPaymentMethod = (method) => {
+    switch (method) {
+      case "VNPAY":
+        return "VNPay";
+      case "payAtProperty":
+        return "Pay at property";
+    }
+  };
+  const paymentMethod = async () => {
+    dispatch(loadingTrue());
+    try {
+      let paymentRes = await handleVNPay(bookid.amount, "NCB", bookid.id);
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+    dispatch(loadingFalse());
+  };
+
+  const buttonPayment = (method) => {
+    if (method === "VNPAY" && bookid.payment_status === "pending") {
+      return (
+        <TouchableOpacity style={styles.buttonPayment} onPress={paymentMethod}>
+          <Text style={styles.buttonText}>Pay now</Text>
+        </TouchableOpacity>
+      );
+    }
+    return null;
   };
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -181,6 +234,10 @@ const BookingPage = ({ route }) => {
             {calculateNights(bookid.check_in_date, bookid.check_out_date)}{" "}
             Nights, {room.sleeps} Room, 2 Guests
           </Text>
+          <Text style={{ fontWeight: "bold" }}>
+            {" "}
+            Payment method: {convertPaymentMethod(bookid.payment_method)}
+          </Text>
         </View>
       </View>
 
@@ -208,12 +265,29 @@ const BookingPage = ({ route }) => {
           <Text style={styles.savings}>Your total saving: $240</Text>
         </View>
       </View>
+      {buttonPayment(bookid.payment_method)}
 
       <TouchableOpacity
         style={canCancelBooking(bookid) ? styles.button : styles.buttonDisabled}
         onPress={() => {
           if (canCancelBooking(bookid)) {
             // Thực hiện hành động hủy đặt phòng ở đây
+            Alert.alert(
+              "Confirm Cancellation",
+              "Are you sure you want to cancel this booking?",
+              [
+                {
+                  text: "No",
+                  onPress: () => console.log("Cancellation aborted"),
+                  style: "cancel",
+                },
+                {
+                  text: "Yes",
+                  onPress: () => handleCancelBooking(),
+                },
+              ],
+              { cancelable: false }
+            );
           } else {
             Alert.alert(
               "Cannot cancel booking",
@@ -357,6 +431,13 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#ff4d4d",
+    padding: 10,
+    alignItems: "center",
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  buttonPayment: {
+    backgroundColor: "#ffc107",
     padding: 10,
     alignItems: "center",
     borderRadius: 5,

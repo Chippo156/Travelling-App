@@ -154,7 +154,7 @@ export default function Deserve({ route, navigation }) {
     };
     const amount = total * 1.1 + refundCost + extraCost;
     try {
-      // dispatch(loadingTrue());
+      dispatch(loadingTrue());
       let res = await createBooking(
         user_id,
         destinationId,
@@ -174,7 +174,7 @@ export default function Deserve({ route, navigation }) {
         }
       }
 
-      // dispatch(loadingFalse());
+      dispatch(loadingFalse());
     } catch (error) {
       console.error(error);
       return error;
@@ -183,11 +183,19 @@ export default function Deserve({ route, navigation }) {
   const handleBooking = () => {
     fetchBooking();
   };
+  const TextElement = ({ text, color }) => {
+    return <Text style={{ color }}>{text}</Text>;
+  };
+
+  TextElement.defaultProps = {
+    text: "Default Text",
+    color: "white",
+  };
   return (
     <ScrollView style={styles.container}>
       <View style={styles.flexRow}>
         <Icon name="calendar" size={50} color="#FFD700"></Icon>
-        <Text style={{ color: "#000", fontSize: 11, width: 340 }}>
+        <Text style={{ color: "#fff", fontSize: 11, width: 340 }}>
           <Text style={{ fontWeight: "bold" }}>
             Full refund before 6:00 p.m., {formatDate(refundDate)} (local time
             of property).
@@ -196,7 +204,14 @@ export default function Deserve({ route, navigation }) {
           refund if plans change. Because of duplication, flexibility is needed.
         </Text>
       </View>
-      <View style={{ borderWidth: 1, borderRadius: 5 }}>
+      <View
+        style={{
+          marginVertical: 10,
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: "#f5f5f5",
+        }}
+      >
         <ImageSlider images={imagesDes} />
         <View style={{ padding: 20 }}>
           <Text
@@ -206,25 +221,39 @@ export default function Deserve({ route, navigation }) {
               borderBottomWidth: 1,
               padding: 10,
               marginBottom: 10,
+              color: "#fff",
             }}
           >
             {destination.name}
           </Text>
           <View style={{ gap: 10 }}>
-            <Text style={{ fontSize: 16 }}>{destination.description}</Text>
-            <Text>
-              <Text style={{ fontWeight: "bold" }}>Check in:</Text>{" "}
+            <Text style={{ fontSize: 16, color: "#fff" }}>
+              {destination.description}
+            </Text>
+            <Text style={{ color: "#fff" }}>
+              <Text style={{ fontWeight: "bold", color: "#fff" }}>
+                Check in:
+              </Text>{" "}
               {DateCheckIn}
             </Text>
-            <Text>
-              <Text style={{ fontWeight: "bold" }}>Check out:</Text>{" "}
+            <Text style={{ color: "#fff" }}>
+              <Text style={{ fontWeight: "bold", color: "#fff" }}>
+                Check out:
+              </Text>{" "}
               {DateCheckOut}
             </Text>
           </View>
         </View>
       </View>
       <View
-        style={{ borderWidth: 1, borderRadius: 5, marginTop: 20, padding: 10 }}
+        style={{
+          backgroundColor: "#fff",
+
+          borderWidth: 1,
+          borderRadius: 5,
+          marginTop: 20,
+          padding: 10,
+        }}
       >
         <Text style={{ color: "green" }}>
           Great choice! Hurry and book now before the room runs out!
@@ -232,32 +261,45 @@ export default function Deserve({ route, navigation }) {
       </View>
       <View
         style={{
+          borderColor: "#f5f5f5",
           borderWidth: 1,
           borderRadius: 5,
           marginTop: 20,
-          padding: 10,
+          padding: 12,
           gap: 20,
         }}
       >
-        <Text style={{ fontWeight: "bold", fontSize: 20 }}>Room details</Text>
+        <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 20 }}>
+          Room details
+        </Text>
         <View style={{ flexDirection: "row", gap: 20 }}>
           <Image
             source={{ uri: room.image_url }}
-            style={{ width: 150, height: 150, borderRadius: 50 }}
+            style={{ width: 150, height: 150, borderRadius: 100 }}
           />
           <View style={{ gap: 10 }}>
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 16,
+                fontWeight: "bold",
+                width: 200,
+              }}
+            >
               {room.room_type} {room.description}
             </Text>
-            <Text>{room.beds}</Text>
-            <Text>{room.features}</Text>
-            <Text>{room.area} sq m</Text>
-            <Text>Each room has {room.sleeps} guests</Text>
+            <Text style={{ color: "#fff", width: 200 }}>{room.beds}</Text>
+            <Text style={{ color: "#fff" }}>{room.features}</Text>
+            <Text style={{ color: "#fff" }}>{room.area} sq m</Text>
+            <Text style={{ color: "#fff" }}>
+              Each room has {room.sleeps} guests
+            </Text>
           </View>
         </View>
       </View>
       <View
         style={{
+          borderColor: "#f5f5f5",
           borderWidth: 1,
           borderRadius: 5,
           marginTop: 20,
@@ -265,7 +307,9 @@ export default function Deserve({ route, navigation }) {
           gap: 20,
         }}
       >
-        <Text style={{ fontWeight: "bold", fontSize: 20 }}>Price details</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 20, color: "#fff" }}>
+          Price details
+        </Text>
         <View
           style={{
             flexDirection: "row",
@@ -273,10 +317,10 @@ export default function Deserve({ route, navigation }) {
             alignItems: "center",
           }}
         >
-          <Text>
+          <Text style={{ color: "#fff" }}>
             {dayDiff} night, {numberRoom} room
           </Text>
-          <Text>{formatCurrency(total)}</Text>
+          <Text style={{ color: "#fff" }}>{formatCurrency(total)}</Text>
         </View>
         <View
           style={{
@@ -287,8 +331,8 @@ export default function Deserve({ route, navigation }) {
             paddingVertical: 10,
           }}
         >
-          <Text>Tax</Text>
-          <Text>{formatCurrency(total * 0.1)}</Text>
+          <Text style={{ color: "#fff" }}>Tax</Text>
+          <Text style={{ color: "#fff" }}>{formatCurrency(total * 0.1)}</Text>
         </View>
         <View
           style={{
@@ -299,8 +343,8 @@ export default function Deserve({ route, navigation }) {
             paddingVertical: 10,
           }}
         >
-          <Text>Refund</Text>
-          <Text>{formatCurrency(refundCost)}</Text>
+          <Text style={{ color: "#fff" }}>Refund</Text>
+          <Text style={{ color: "#fff" }}>{formatCurrency(refundCost)}</Text>
         </View>
         <View
           style={{
@@ -309,10 +353,11 @@ export default function Deserve({ route, navigation }) {
             alignItems: "center",
             borderBottomWidth: 1,
             paddingVertical: 10,
+            borderBottomColor: "#fff",
           }}
         >
-          <Text>Extra</Text>
-          <Text>{formatCurrency(extraCost)}</Text>
+          <Text style={{ color: "#fff" }}>Extra</Text>
+          <Text style={{ color: "#fff" }}>{formatCurrency(extraCost)}</Text>
         </View>
         <View
           style={{
@@ -322,19 +367,24 @@ export default function Deserve({ route, navigation }) {
             paddingVertical: 10,
           }}
         >
-          <Text style={{ fontWeight: "bold" }}>Total</Text>
-          <Text style={{ fontWeight: "bold" }}>
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>Total</Text>
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>
             {formatCurrency(total * 1.1 + refundCost + extraCost)}
           </Text>
         </View>
         <View>
-          <Text style={{ fontWeight: "bold" }}>
+          <Text style={{ color: "#fff", fontWeight: "bold" }}>
             Not included in total price
           </Text>
-          <Text>Additional fees are charged by the property</Text>
+          <Text style={{ color: "#fff" }}>
+            Additional fees are charged by the property
+          </Text>
         </View>
         <View>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <TouchableOpacity
+            style={{ padding: 10, backgroundColor: "#fff", borderRadius: 10 }}
+            onPress={() => setModalVisible(true)}
+          >
             <Text style={styles.openButtonText}>
               Use coupon codes, credits or promotional codes
             </Text>
@@ -381,11 +431,14 @@ export default function Deserve({ route, navigation }) {
           marginTop: 20,
           padding: 10,
           gap: 20,
+          borderColor: "#f5f5f5",
         }}
       >
-        <Text>Who's checking in?</Text>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: "#fff" }}>
+          Who's checking in?
+        </Text>
         <View>
-          <Text>
+          <Text style={{ color: "#fff" }}>
             <Text style={{ fontWeight: "bold" }}> {numberRoom} Room: </Text>{" "}
             {numberGuest} Guest , {room.beds} , no smokers, no pets
           </Text>
@@ -435,33 +488,37 @@ export default function Deserve({ route, navigation }) {
           </View>
         </View>
         <View>
-          <Text>Guest Name:</Text>
+          <Text style={{ color: "#fff" }}>Guest Name:</Text>
           <Text>
-            <Text style={{ fontWeight: "bold" }}>Vo Van Nghia Hiep</Text>
+            <Text style={{ color: "#fff", fontWeight: "bold" }}>
+              Vo Van Nghia Hiep
+            </Text>
           </Text>
         </View>
         <View>
-          <Text>Email:</Text>
+          <Text style={{ color: "#fff" }}>Email:</Text>
           <Text>
-            <Text style={{ fontWeight: "bold" }}>vovannghiahiep@gmail.com</Text>
+            <Text style={{ color: "#fff", fontWeight: "bold" }}>
+              vovannghiahiep@gmail.com
+            </Text>
           </Text>
         </View>
         <View style={{ gap: 10 }}>
-          <Text>FirstName:</Text>
+          <Text style={{ color: "#fff" }}>FirstName:</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter your first name"
           ></TextInput>
         </View>
         <View style={{ gap: 10 }}>
-          <Text>LastName:</Text>
+          <Text style={{ color: "#fff" }}>LastName:</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter your last name"
           ></TextInput>
         </View>
         <View style={{ gap: 10 }}>
-          <Text>Phone number:</Text>
+          <Text style={{ color: "#fff" }}>Phone number:</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter your phone number"
@@ -477,7 +534,9 @@ export default function Deserve({ route, navigation }) {
           gap: 20,
         }}
       >
-        <Text style={{ fontWeight: "bold" }}>Payment method</Text>
+        <Text style={{ fontWeight: "bold", color: "#fff" }}>
+          Payment method
+        </Text>
         <View style={styles.option}>
           <CheckBox
             title="Pay at the property"
@@ -508,12 +567,12 @@ export default function Deserve({ route, navigation }) {
           gap: 20,
         }}
       >
-        <Text style={{ fontWeight: "bold" }}>Policy Cancel</Text>
+        <Text style={{ fontWeight: "bold", color: "#fff" }}>Policy Cancel</Text>
         <View>
           <Text style={{ color: "green" }}>
             Full refund in advance {formatDate(refundDate)}
           </Text>
-          <Text>
+          <Text style={{ color: "#fff" }}>
             Changes or cancellations made after 6:00 PM (local time) on{" "}
             {formatDate(refundDate)} or no-shows will be charged a property fee
             equal to 100% of the total price paid for the reservation.
@@ -533,7 +592,7 @@ export default function Deserve({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#191e3b",
     padding: 10,
   },
   openButton: {
@@ -582,6 +641,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 20,
+    backgroundColor: "#f5f5f5",
   },
   applyButton: {
     backgroundColor: "#007BFF",
@@ -609,6 +669,6 @@ const styles = StyleSheet.create({
   description: {
     marginLeft: 35,
     fontSize: 14,
-    color: "#6c757d",
+    color: "#fff",
   },
 });

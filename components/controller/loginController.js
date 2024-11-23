@@ -30,5 +30,4 @@ export let logoutUser = async (token) => {
     console.error(error);
     return error;
   }
-}
-
+};

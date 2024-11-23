@@ -106,3 +106,12 @@ export let getDesitnationById = async (id) => {
     return error;
   }
 };
+export let CancelBooking = async (id) => {
+  try {
+    const response = await axios.delete(`/bookings/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};

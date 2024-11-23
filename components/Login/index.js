@@ -1,17 +1,59 @@
-import { useState } from "react";
-import { StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
-import { View, Text, TextInput } from "react-native";
-import { loginUser } from "../controller/loginController";
+import React, { useEffect, useState } from "react";
+import {
+  TouchableOpacity,
+  View,
+  Text,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
+import { loginUser, reloadUser } from "../controller/loginController";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/Ionicons";
 
 function Login({ navigation }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
+  };
+  const handleLogin = async () => {
+    setIsLoading(true);
+
+    const userInfo = { username, password };
+    let res = await loginUser(username, password);
+
+    if (res && res.code === 1000) {
+      await AsyncStorage.setItem("token", res.result.token);
+      const token = await AsyncStorage.getItem("token");
+      let res_token = await reloadUser(token);
+      if (res_token && res_token.code === 200) {
+        dispatch(
+          login({
+            user: res_token.result.user,
+            isLoggedIn: res_token.result.valid,
+          })
+        );
+        navigation.navigate("Home"); // Điều hướng sang trang Home sau khi đăng nhập
+      } else {
+        alert("Đăng nhập thất bại");
+      }
+    } else {
+      alert("Đăng nhập thất bại");
+    }
+    setIsLoading(false);
   };
 
   const login = async () => {
@@ -34,17 +76,16 @@ function Login({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}>
-        <Text style={styles.title}>Sign in</Text>
-        <Text style={styles.subtitle}>
-          Please enter your email and password to login
-        </Text>
+        <Text style={styles.title}>Sign in now</Text>
+        <Text style={styles.subtitle}></Text>
 
         <TextInput
-          placeholder="Email"
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
+          placeholder="User Name"
+          style={[styles.input, { lineHeight: undefined }]} // Không sử dụng lineHeight
+          value={username}
+          onChangeText={setUserName}
         />
+
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Password"
@@ -65,18 +106,18 @@ function Login({ navigation }) {
 
         <TouchableOpacity
           style={styles.signUpButton}
-          onPress={login}
+          onPress={handleLogin}
           disabled={isLoading}
         >
           {isLoading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <Text style={styles.signUpText}>Sign in</Text>
+            <Text style={styles.signUpText}>Sign In</Text>
           )}
         </TouchableOpacity>
 
         <View style={styles.footerText}>
-          <Text style={styles.footerNormalText}>Don't have an account?</Text>
+          <Text style={styles.footerNormalText}>Don't an account?</Text>
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>
             <Text style={styles.footerLinkText}>Sign up</Text>
           </TouchableOpacity>
@@ -88,10 +129,10 @@ function Login({ navigation }) {
           <Icon name="logo-facebook" size={30} color="#4267B2" />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Icon name="logo-google" size={30} color="#D44638" />
+          <Icon name="logo-instagram" size={30} color="#C13584" />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Icon name="logo-github" size={30} color="#333" />
+          <Icon name="logo-twitter" size={30} color="#1DA1F2" />
         </TouchableOpacity>
       </View>
     </View>
@@ -148,6 +189,12 @@ const styles = StyleSheet.create({
   },
   passwordIcon: {
     marginLeft: 10,
+  },
+  passwordHint: {
+    fontSize: 14,
+    color: "#FF6421",
+    marginTop: 5,
+    alignSelf: "flex-start",
   },
   signUpButton: {
     width: "100%",
