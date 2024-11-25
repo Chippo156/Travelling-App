@@ -31,7 +31,6 @@ public class DestinationImageServiceImpl implements DestinationImageService {
              } else {
                 return destinationImageRepository.save(destinationImage);
           }
-
      }
 
     @Override
@@ -62,5 +61,4 @@ public class DestinationImageServiceImpl implements DestinationImageService {
         }
         return "Fake data created successfully";
     }
-
 }

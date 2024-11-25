@@ -121,7 +121,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomResponse> findAvailableRooms(Long destinationId, Integer sleeps, LocalDate startDate, LocalDate endDate, Integer quantity) {
-        return roomRepository.findAvailableRooms(destinationId, sleeps, startDate, endDate, quantity).stream().map(roomMapper::toRoomResponse).toList();
+        int guest = (int) Math.ceil((double) sleeps / quantity);
+
+        return roomRepository.findAvailableRooms(destinationId, guest, startDate, endDate, quantity).stream().map(roomMapper::toRoomResponse).toList();
     }
 
     @Override
