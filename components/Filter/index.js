@@ -35,11 +35,13 @@ function FilterPage({ route, navigation }) {
   const [rating, setRating] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchText, setSearchText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState([]);
   const updateSearch = (search) => {
     setSearch(search);
   };
   // Hàm gọi API để lấy các địa điểm theo thành phố
-  const handleGetFilterDestination = async (city) => {
+  const handleGetFilterDestination = async () => {
     let param = "";
     if (search) {
       param = `&search=${search}`;
@@ -71,11 +73,23 @@ function FilterPage({ route, navigation }) {
     let res = await getFilterDestination(city || "Ho Chi Minh", param);
     if (res && res.data.code === 200) {
       setFilteredDestinations(res.data.result); // Cập nhật dữ liệu sau khi nhận được
+      return res.data.result;
     }
+    return [];
   };
-
+  const handleSearch = async (searchText) => {
+    setIsLoading(true);
+    setSearch(searchText);
+    if (!searchText) {
+      setSearchValue([]);
+    } else {
+      let value = await handleGetFilterDestination();
+      setSearchValue(value);
+    }
+    setIsLoading(false);
+  };
   useEffect(() => {
-    handleGetFilterDestination(city); // Gọi API khi component mount
+    handleGetFilterDestination(); // Gọi API khi component mount
     navigation.setOptions({
       headerTitle: `${city || "Hồ Chí Minh"}, Việt Nam`, // Cập nhật header với tên thành phố
       headerRight: () => (
@@ -86,7 +100,18 @@ function FilterPage({ route, navigation }) {
         />
       ),
     });
-  }, [city, navigation]);
+  }, [
+    city,
+    search,
+    activeAmenities,
+    priceRange,
+    rating,
+    selectedCategory,
+    searchText,
+    numberGuest,
+    selectedSecondLastDay,
+    selectedLastDayOfMonth,
+  ]);
 
   const formatDate = (date) => {
     const day = date.getDate().toString().padStart(2, "0");
@@ -193,7 +218,6 @@ function FilterPage({ route, navigation }) {
       setNumberGuest(numberGuest - 1);
     }
   };
-  console.log(filteredDestinations.length);
 
   return (
     <View style={styles.container}>
@@ -288,28 +312,68 @@ function FilterPage({ route, navigation }) {
           <Text style={{ marginLeft: 8, fontSize: 20 }}>Bộ lọc</Text>
         </TouchableOpacity>
       </View>
-      {filteredDestinations.length === 0 && (<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ fontSize: 20, color: "#fff" }}>Không có kết quả nào</Text>
-      </View>)}
-      {filteredDestinations.length > 0 && (<FlatList
-        data={filteredDestinations} // Dữ liệu lọc được
-        renderItem={renderItem}
-        keyExtractor={(item, index) => item.destination_id.toString()}
-        contentContainerStyle={{ marginVertical: 10 }}
-      />)}
-      {/* Overlay cho Điểm đến */}
+      {filteredDestinations.length === 0 && (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontSize: 20, color: "#fff" }}>
+            Không có kết quả nào
+          </Text>
+        </View>
+      )}
+      {filteredDestinations.length > 0 && (
+        <FlatList
+          data={filteredDestinations} // Dữ liệu lọc được
+          renderItem={renderItem}
+          keyExtractor={(item, index) => item.destination_id.toString()}
+          contentContainerStyle={{ marginVertical: 10 }}
+        />
+      )}
       <Overlay
         isVisible={visibleDestination}
-        onBackdropPress={() => {}}
+        onBackdropPress={toggleDestinationOverlay}
         overlayStyle={styles.overlay}
       >
+        <TouchableOpacity
+          style={[styles.backButton, { top: 10 }]}
+          onPress={toggleDestinationOverlay} // Navigate to Home screen
+        >
+          <Icon name="arrow-back" size={24} color="blue" />
+          <Text style={{fontSize:24,}}>{city},Việt Nam</Text>
+        </TouchableOpacity>
         <View style={styles.overlayContent}>
           <SearchBar
             placeholder="Tìm kiếm..."
-            onChangeText={updateSearch}
+            onChangeText={handleSearch}
             value={search}
             containerStyle={{ width: "100%" }}
           />
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#00bbf2" style={{paddingTop:30}} />
+          ) : (
+            <View>
+              <Text style={styles.searchTitle}>Danh sách tìm kiếm</Text>
+              <FlatList
+                data={searchValue}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <View style={styles.resultItem}>
+                    <Text style={styles.resultText}>
+                      Location: {item.location}
+                    </Text>
+                    <Text style={styles.resultText}>
+                      Dates: {getMonthDay(selectedSecondLastDay)} -{" "}
+                      {getMonthDay(selectedLastDayOfMonth)}
+                    </Text>
+                    <Text style={styles.resultText}>Guests: {numberGuest}</Text>
+                  </View>
+                )}
+                ListEmptyComponent={
+                  <Text style={styles.noResultsText}>Không có kết quả nào</Text>
+                }
+              />
+            </View>
+          )}
           <TouchableOpacity
             onPress={toggleDestinationOverlay}
             style={styles.closeButton}
@@ -318,7 +382,6 @@ function FilterPage({ route, navigation }) {
           </TouchableOpacity>
         </View>
       </Overlay>
-
       {/* Overlay cho Ngày */}
       <Overlay
         isVisible={visibleDate}
@@ -424,6 +487,17 @@ function FilterPage({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  searchTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  noResultsText: {
+    textAlign: "center",
+    fontSize: 20,
+    color: "#555",
+  },
   container: {
     flex: 1,
     padding: 16,
@@ -506,6 +580,43 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -30,
     left: 10,
+  },
+  city: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  filterContainer: {
+    marginBottom: 20,
+  },
+  filterText: {
+    fontSize: 16,
+    color: "#555",
+  },
+  searchInput: {
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  resultItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  resultText: {
+    fontSize: 16,
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#00bbf2",
+    borderRadius: 5,
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

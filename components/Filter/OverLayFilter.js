@@ -7,14 +7,27 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { Slider, Rating, Button, CheckBox } from "@rneui/themed";
+import Slider from "@react-native-community/slider";
+import { Rating, Button, CheckBox } from "@rneui/themed";
 import Icon from "react-native-vector-icons/Ionicons";
 import { getFullAmenities } from "../controller/DetailsController";
 import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 
-const OverLayFilter = ({ handleGetFilterDestination,toggleFilterOverlay,activeAmenities,setActiveAmenities,priceRange,setPriceRange,rating,setRating,selectedCategory,setSelectedCategory,searchText, setSearchText}) => {
-  
+const OverLayFilter = ({
+  handleGetFilterDestination,
+  toggleFilterOverlay,
+  activeAmenities,
+  setActiveAmenities,
+  priceRange = 0, // Default value
+  setPriceRange,
+  rating = 0, // Default value
+  setRating,
+  selectedCategory,
+  setSelectedCategory,
+  searchText,
+  setSearchText,
+}) => {
   const [amenities, setAmenities] = useState([]);
   const categories = [
     {
@@ -66,20 +79,20 @@ const OverLayFilter = ({ handleGetFilterDestination,toggleFilterOverlay,activeAm
           <Icon
             name={item.amenity_icon}
             size={24}
-            color={activeAmenities.includes(index+1) ? "#fff" : "#333"}
+            color={activeAmenities.includes(index + 1) ? "#fff" : "#333"}
           />
         }
         buttonStyle={
-          activeAmenities.includes(index+1)
+          activeAmenities.includes(index + 1)
             ? styles.activeButton
             : styles.inactiveButton
         }
         titleStyle={
-          activeAmenities.includes(index+1)
+          activeAmenities.includes(index + 1)
             ? { color: "#fff" }
             : { color: "#000" }
         }
-        onPress={() => toggleAmenity(index+1)}
+        onPress={() => toggleAmenity(index + 1)}
       />
     </View>
   );
@@ -123,8 +136,7 @@ const OverLayFilter = ({ handleGetFilterDestination,toggleFilterOverlay,activeAm
               maximumValue={30000000}
               minimumValue={0}
               step={500000}
-              thumbStyle={styles.thumb}
-              trackStyle={styles.track}
+              thumbTintColor="#2E7D32"
               minimumTrackTintColor="#2E7D32"
               maximumTrackTintColor="#D3D3D3"
             />
@@ -161,11 +173,10 @@ const OverLayFilter = ({ handleGetFilterDestination,toggleFilterOverlay,activeAm
         numColumns={2}
         ListFooterComponent={
           <Button
-            title="Submit"
+            title="Apply"
             buttonStyle={styles.button}
             onPress={() =>
-              handleGetFilterDestination() &&
-              toggleFilterOverlay()
+              handleGetFilterDestination() && toggleFilterOverlay()
             }
           />
         }
@@ -179,7 +190,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
-
     backgroundColor: "#F5F5F5",
     width: "100%",
     position: "relative",

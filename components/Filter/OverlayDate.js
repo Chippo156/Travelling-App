@@ -27,15 +27,23 @@ function OverlayDate({
 }) {
   return (
     <View style={styles.overlayContent}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={toggleDateOverlay} // Navigate to Home screen
-      >
+      <TouchableOpacity style={styles.backButton} onPress={toggleDateOverlay}>
         <Icon name="arrow-back" size={24} color="blue" />
+        <View style={{flex:1}}>
+        <Text
+          style={{
+            fontSize: 20,
+            textAlign: "center",
+            fontWeight: "bold",
+            color: "rgb(0, 0, 255)",
+          }}
+        >
+          Lịch chọn ngày
+        </Text>
+      </View>
       </TouchableOpacity>
-      <View
-        style={styles.dateSelectionContainer}
-      >
+
+      <View style={styles.dateSelectionContainer}>
         <TouchableOpacity
           onPress={() => setSelectDay(true)}
           style={{ flex: 4 }}
@@ -44,7 +52,7 @@ function OverlayDate({
             style={[
               {
                 textAlign: "center",
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: "bold",
               },
               selectDay && { color: "blue" },
@@ -68,7 +76,7 @@ function OverlayDate({
             style={[
               {
                 textAlign: "center",
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: "bold",
               },
               !selectDay && { color: "blue" },
@@ -122,6 +130,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 10,
+    right: 0,
   },
   backButtonText: {
     marginLeft: 5,
