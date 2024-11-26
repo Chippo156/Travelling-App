@@ -52,6 +52,8 @@ public class ReviewServiceImpl implements ReviewService {
             Destination destination = destinationRepository.findById(request.getDestinationId()).orElseThrow(() -> new RuntimeException("Destination not found"));
             User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
             Review review = mapper.toReview(request);
+            review.setCreatedAt(LocalDateTime.now());
+            review.setUpdatedAt(LocalDateTime.now());
             review.setDestination(destination);
             review.setUser(user);
             repository.save(review);
