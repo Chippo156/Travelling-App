@@ -55,7 +55,7 @@ function Main() {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Filter">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Splash"
           component={Splash}

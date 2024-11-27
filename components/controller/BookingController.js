@@ -115,3 +115,24 @@ export let CancelBooking = async (id) => {
     return error;
   }
 };
+export let createReview = async (
+  title,
+  content,
+  rating,
+  destination_id,
+  user_id
+) => {
+  try {
+    const response = await axios.post("/reviews", {
+      title,
+      content,
+      rating,
+      destination_id,
+      user_id,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};

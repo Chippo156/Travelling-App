@@ -24,7 +24,6 @@ import { loadingTrue, loadingFalse } from "../Redux/userSlice";
 
 const BookingPage = ({ route, navigation }) => {
   const dispatch = useDispatch();
-
   const { bookid } = route.params;
   const [destination, setDestination] = useState({});
   const [room, setRoom] = useState({});
@@ -119,6 +118,7 @@ const BookingPage = ({ route, navigation }) => {
   const handleCancelBooking = async () => {
     // Your logic to handle booking cancellation
     try {
+      dispatch(loadingTrue());
       let res = await CancelBooking(bookid.id);
       if (res && res.code === 200) {
         Alert.alert("Booking cancelled successfully");
@@ -129,6 +129,7 @@ const BookingPage = ({ route, navigation }) => {
     } catch (error) {
       console.error(error);
     }
+    dispatch(loadingFalse());
   };
   const convertPaymentMethod = (method) => {
     switch (method) {

@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, ImageBackground, StyleSheet, Text, View } from "react-native";
+import {
+  TouchableOpacity,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 
 function Onboard({ navigation }) {
   const [index, setIndex] = useState(0);
-
 
   const handleGetStarted = () => {
     if (index === 2) {
@@ -16,19 +21,25 @@ function Onboard({ navigation }) {
 
   const contentData = [
     {
-      image: require("../../assets/carosel_1.png"),
+      image:
+        "https://res.cloudinary.com/dqnwxejgy/image/upload/v1732625790/gcopmvmr9xxsre20k562.jpg",
       text: "Life is brief, but the universe is vast.",
-      content: "At Tourista Adventures, we curate unique and immersive travel experiences to destinations around the globe.",
+      content:
+        "At Tourista Adventures, we curate unique and immersive travel experiences to destinations around the globe.",
     },
     {
-      image: require("../../assets/carosel_2.png"),
+      image:
+        "https://res.cloudinary.com/dqnwxejgy/image/upload/v1732625845/d75hzqed7z4018iuyy3f.jpg",
       text: "The world is waiting for you, go discover it.",
-      content: "Embark on an unforgettable journey by venturing outside of your comfort zone. The world is full of hidden gems just waiting to be discovered.",
+      content:
+        "Embark on an unforgettable journey by venturing outside of your comfort zone. The world is full of hidden gems just waiting to be discovered.",
     },
     {
-      image: require("../../assets/carosel_3.png"),
+      image:
+        "https://res.cloudinary.com/dqnwxejgy/image/upload/v1732625826/ydh57tv140t4cymyua3t.jpg",
       text: "People don’t take trips, trips take people",
-      content: "To get the best of your adventure you just need to leave and go where you like. we are waiting for you",
+      content:
+        "To get the best of your adventure you just need to leave and go where you like. we are waiting for you",
     },
   ];
 

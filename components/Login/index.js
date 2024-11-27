@@ -9,6 +9,7 @@ import {
   Platform,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
@@ -39,6 +40,7 @@ function Login({ navigation }) {
       await AsyncStorage.setItem("token", res.result.token);
       const token = await AsyncStorage.getItem("token");
       let res_token = await reloadUser(token);
+
       if (res_token && res_token.code === 200) {
         dispatch(
           login({
@@ -48,30 +50,32 @@ function Login({ navigation }) {
         );
         navigation.navigate("Home"); // Điều hướng sang trang Home sau khi đăng nhập
       } else {
-        alert("Đăng nhập thất bại");
+        Alert.alert("Đăng nhập thất bại");
       }
     } else {
-      alert("Đăng nhập thất bại");
+      Alert.alert("Đăng nhập thất bại");
     }
     setIsLoading(false);
   };
 
-  const login = async () => {
-    setIsLoading(true);
-    try {
-      let res = await loginUser(username, password);
-      if (res && res.code === 200) {
-        alert("Login success");
-        navigation.navigate("Home");
-      } else {
-        alert("Login fail");
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const login = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     let res = await loginUser(username, password);
+  //     console.log(res);
+
+  //     if (res && res.code === 1000) {
+  //       alert("Login success");
+  //       navigation.navigate("Home");
+  //     } else {
+  //       alert("Login fail");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <View style={styles.container}>

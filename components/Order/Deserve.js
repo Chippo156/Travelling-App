@@ -30,6 +30,7 @@ import { loadingTrue, loadingFalse } from "../Redux/userSlice";
 
 export default function Deserve({ route, navigation }) {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
 
   const destinationId = route.params.desId;
   const roomId = route.params.roomId;
@@ -143,7 +144,7 @@ export default function Deserve({ route, navigation }) {
     }
   };
   //Bookings API
-  const user_id = 1;
+  const user_id = user ? user.id : 1;
   const fetchBooking = async () => {
     const selectPaymentMethod = () => {
       if (selectedOptions.payAtProperty) {
@@ -234,13 +235,13 @@ export default function Deserve({ route, navigation }) {
               <Text style={{ fontWeight: "bold", color: "#fff" }}>
                 Check in:
               </Text>{" "}
-              {DateCheckIn}
+              {checkInDate.toLocaleDateString()}
             </Text>
             <Text style={{ color: "#fff" }}>
               <Text style={{ fontWeight: "bold", color: "#fff" }}>
                 Check out:
               </Text>{" "}
-              {DateCheckOut}
+              {checkOutDate.toLocaleDateString()}
             </Text>
           </View>
         </View>
@@ -487,43 +488,28 @@ export default function Deserve({ route, navigation }) {
             </Text>
           </View>
         </View>
-        <View>
-          <Text style={{ color: "#fff" }}>Guest Name:</Text>
-          <Text>
-            <Text style={{ color: "#fff", fontWeight: "bold" }}>
-              Vo Van Nghia Hiep
-            </Text>
-          </Text>
-        </View>
-        <View>
-          <Text style={{ color: "#fff" }}>Email:</Text>
-          <Text>
-            <Text style={{ color: "#fff", fontWeight: "bold" }}>
-              vovannghiahiep@gmail.com
-            </Text>
-          </Text>
-        </View>
-        <View style={{ gap: 10 }}>
-          <Text style={{ color: "#fff" }}>FirstName:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your first name"
-          ></TextInput>
-        </View>
-        <View style={{ gap: 10 }}>
-          <Text style={{ color: "#fff" }}>LastName:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your last name"
-          ></TextInput>
-        </View>
-        <View style={{ gap: 10 }}>
-          <Text style={{ color: "#fff" }}>Phone number:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your phone number"
-          ></TextInput>
-        </View>
+
+        {user?.id ? (
+          <View style={{ gap: 20 }}>
+            <View>
+              <Text style={{ color: "#fff" }}>Email:</Text>
+              <Text>
+                <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                  {user.email}
+                </Text>
+              </Text>
+            </View>
+
+            <View style={{ gap: 10 }}>
+              <Text style={{ color: "#fff" }}>Phone number:</Text>
+              <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                {user.phone}
+              </Text>
+            </View>
+          </View>
+        ) : (
+          <View></View>
+        )}
       </View>
       <View
         style={{
@@ -531,6 +517,7 @@ export default function Deserve({ route, navigation }) {
           borderRadius: 5,
           marginTop: 20,
           padding: 10,
+          borderColor: "#f5f5f5",
           gap: 20,
         }}
       >
@@ -579,13 +566,31 @@ export default function Deserve({ route, navigation }) {
           </Text>
         </View>
       </View>
-      <View style={{ marginVertical: 10 }}>
-        <TouchableOpacity style={styles.openButton} onPress={handleBooking}>
-          <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
-            Complete booking
-          </Text>
-        </TouchableOpacity>
-      </View>
+      {user?.id ? (
+        <View style={{ marginVertical: 10 }}>
+          <TouchableOpacity style={styles.openButton} onPress={handleBooking}>
+            <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
+              Complete booking
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#007BFF",
+              padding: 15,
+              borderRadius: 5,
+              alignItems: "center",
+            }}
+            onPress={() => navigation.push("Login")}
+          >
+            <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
+              Sign in to continue booking
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </ScrollView>
   );
 }

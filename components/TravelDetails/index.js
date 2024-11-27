@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   Image,
   Modal,
@@ -32,6 +33,8 @@ import { loadingTrue, loadingFalse } from "../Redux/userSlice";
 
 import OverlayDate from "../Filter/OverlayDate";
 import { useDispatch } from "react-redux";
+import AddReviewModal from "./AddReviewModal";
+import { createReview } from "../controller/BookingController";
 export default function TravelDetail({ route, navigation }) {
   const dispatch = useDispatch();
 
@@ -41,6 +44,7 @@ export default function TravelDetail({ route, navigation }) {
   const [rooms, setRooms] = useState([]);
   const [checked, setChecked] = useState("first"); // State for radio button
   const [checkedExtra, setCheckedExtra] = useState("first"); // State for radio button
+  const [modalVisibleReview, setModalVisibleReview] = useState(false);
 
   const [imagesDes, setImagesDes] = useState([]);
   const [roomImages, setRoomImages] = useState({});
@@ -271,6 +275,25 @@ export default function TravelDetail({ route, navigation }) {
       console.log(error);
     }
   };
+  const handleAddReview = async (review) => {
+    setReviews([...reviews, review]);
+    try {
+      let res = await createReview(
+        review.title,
+        review.content,
+        review.rating,
+        destination.destination_id,
+        1
+      );
+      if (res.code === 200) {
+        setModalVisibleReview(false);
+      } else {
+        Alert.alert("Error", "Create review failed");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchFilterRoom();
@@ -283,6 +306,7 @@ export default function TravelDetail({ route, navigation }) {
     text: "Default Text",
     color: "white",
   };
+
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
@@ -379,7 +403,42 @@ export default function TravelDetail({ route, navigation }) {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Reviews ({reviews.length})</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 30,
+              }}
+            >
+              <Text style={styles.modalTitle}>Reviews ({reviews.length})</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisibleReview(true);
+                }}
+                style={{
+                  padding: 10,
+                  borderRadius: 100,
+                  backgroundColor: "#fff",
+                  borderWidth: 1,
+                  width: 50,
+                  height: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{ color: "red", fontSize: 12, fontWeight: "bold" }}
+                >
+                  Add
+                </Text>
+              </TouchableOpacity>
+              <AddReviewModal
+                isVisible={modalVisibleReview}
+                onClose={() => setModalVisibleReview(false)}
+                onSubmit={handleAddReview}
+              />
+            </View>
             <ScrollView>
               {reviews.map((item, index) => (
                 <View key={index.toString()} style={styles.reviewCard}>

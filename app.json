@@ -4,11 +4,11 @@
     "slug": "TravelApp-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "https://res.cloudinary.com/dqnwxejgy/image/upload/v1732625784/jxfbmmdu9drsss8ftv4b.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "https://res.cloudinary.com/dqnwxejgy/image/upload/v1732625782/yiy4cpra1mtocarktyjz.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,15 +17,21 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "https://res.cloudinary.com/dqnwxejgy/image/upload/v1732625785/pn63px25qdqk46qn65gl.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.chippo156.TravelAppfrontend"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "https://res.cloudinary.com/dqnwxejgy/image/upload/v1732625783/l9ckoi8xouo3lcl2ysca.png"
     },
     "plugins": [
       "expo-asset"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "71761506-db44-481a-8d1a-8c2724c68041"
+      }
+    }
   }
 }
