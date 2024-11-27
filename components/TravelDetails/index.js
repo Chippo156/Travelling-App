@@ -35,6 +35,7 @@ import OverlayDate from "../Filter/OverlayDate";
 import { useDispatch } from "react-redux";
 import AddReviewModal from "./AddReviewModal";
 import { createReview } from "../controller/BookingController";
+
 export default function TravelDetail({ route, navigation }) {
   const dispatch = useDispatch();
 
