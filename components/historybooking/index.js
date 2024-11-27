@@ -85,16 +85,23 @@ const HistoryBooking = ({ navigation }) => {
 
         {/* Mô tả */}
         <Text style={styles.description}>
-          {user.first_name}, bạn không có chuyến đi sắp tới nào. Bạn định đi đâu tiếp theo?
+          {user.first_name}, bạn không có chuyến đi sắp tới nào. Bạn định đi đâu
+          tiếp theo?
         </Text>
 
         {/* Nút "Bắt đầu khám phá" */}
-        <TouchableOpacity style={styles.primaryButton} onPress={()=>navigation.navigate("Home")}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate("Home")}
+        >
           <Text style={styles.primaryButtonText}>Bắt đầu khám phá</Text>
         </TouchableOpacity>
 
         {/* Nút "Tìm đặt phòng của bạn" */}
-        <TouchableOpacity style={styles.secondaryButton} onPress={()=>navigation.navigate("Filter")}>
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() => navigation.navigate("Filter")}
+        >
           <Text style={styles.secondaryButtonText}>Tìm đặt phòng của bạn</Text>
         </TouchableOpacity>
       </View>
@@ -103,7 +110,17 @@ const HistoryBooking = ({ navigation }) => {
   if (!user) {
     return (
       <View style={styles.nullContainer}>
-        <Text style={{position:"absolute",top:30,left:16,fontSize:28,fontWeight:"bold"}}>Chuyến đi</Text>
+        <Text
+          style={{
+            position: "absolute",
+            top: 30,
+            left: 16,
+            fontSize: 28,
+            fontWeight: "bold",
+          }}
+        >
+          Chuyến đi
+        </Text>
         <Image
           source={{
             uri: "https://a.travel-assets.com/egds/illustrations/uds-default/unlock__large.svg",
@@ -111,11 +128,14 @@ const HistoryBooking = ({ navigation }) => {
           style={styles.image}
         />
 
-
-        <TouchableOpacity style={styles.primaryButton} onPress={()=>navigation.navigate("Login")}>
-          <Text style={styles.primaryButtonText}>Đăng nhập hoặc tạo tài khoản miễn phí</Text>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate("Login")}
+        >
+          <Text style={styles.primaryButtonText}>
+            Đăng nhập hoặc tạo tài khoản miễn phí
+          </Text>
         </TouchableOpacity>
-
       </View>
     );
   }
@@ -145,7 +165,7 @@ const HistoryBooking = ({ navigation }) => {
         style={styles.itemContainer}
         onPress={() => navigation.navigate("Booking Details", { bookid: item })}
       >
-        <View style={{ flexDirection: "row", width: "100%",gap:20 }}>
+        <View style={{ flexDirection: "row", width: "100%", gap: 20 }}>
           <Image
             source={{ uri: item.destination.image_url }}
             style={styles.image}
@@ -227,7 +247,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
     width: "100%",
-    gap:20
+    gap: 20,
   },
   image: {
     borderRadius: 8,

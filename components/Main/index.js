@@ -12,7 +12,6 @@ import Splash from "../Splash";
 import Onboard from "../Onboard";
 import ForgotPassword from "../ForgotPassword";
 import Register from "../Register";
-import Home from "../Home";
 import TravelDetail from "../TravelDetails";
 import { View } from "react-native";
 import FilterPage from "../Filter";
@@ -22,6 +21,7 @@ import HistoryBooking from "../historybooking";
 import ProfileScreen from "../User/Profile";
 import HelpAndFeedback from "../User/HelpAndFeedBack";
 import BookingPage from "../BookingPage.js";
+import Home from "../Home";
 
 const Stack = createStackNavigator();
 
@@ -79,7 +79,9 @@ function Main() {
                 style={{ flexDirection: "row", gap: 8, alignItems: "center" }}
               >
                 <Image
-                  source={require("../../assets/logo.png")} // Đường dẫn đến logo của bạn
+                  source={{
+                    uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1732625785/cufd5gq2eaaojkjgo8lx.png",
+                  }} // Đường dẫn đến logo của bạn
                   style={{ width: 50, height: 20 }} // Điều chỉnh kích thước logo theo ý muốn
                   resizeMode="contain"
                 />
