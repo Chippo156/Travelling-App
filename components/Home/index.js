@@ -12,6 +12,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { handleGetDestination } from "../controller/homeController";
 import Footer from "../Footer";
 import { getCountReview } from "../controller/DetailsController";
+import WebView from "react-native-webview";
 
 function Home({ navigation }) {
   const data = [
@@ -149,7 +150,7 @@ function Home({ navigation }) {
         }}
         onPress={() => handleCityDetail(item.value)}
       >
-        <Image source={item.uri} style={styles.image} />
+        <Image source={{ uri: item.uri }} style={styles.image} />
         <Text
           style={{
             paddingLeft: 12,
@@ -167,8 +168,8 @@ function Home({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={{ padding: 16 }}>
+    <ScrollView style={styles.container}>
+      <View style={{ padding: 16 }}>
         <Text style={styles.title}>Hello!</Text>
         <Text style={styles.title}>Explore stays in trending destinations</Text>
         <View>
@@ -199,9 +200,9 @@ function Home({ navigation }) {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-      </ScrollView>
+      </View>
       <Footer value={"home"} navigation={navigation} />
-    </View>
+    </ScrollView>
   );
 }
 

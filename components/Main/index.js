@@ -26,6 +26,15 @@ import Home from "../Home";
 const Stack = createStackNavigator();
 
 function Main() {
+  const linking = {
+    prefixes: ["myapp://"], // Schema của bạn
+    config: {
+      screens: {
+        Home: "home", // Màn hình Home sẽ mở khi app://home được gọi
+        Payment: "payment",
+      },
+    },
+  };
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.user.isLoading);
   const handleReloadUser = async () => {
@@ -54,7 +63,7 @@ function Main() {
     );
   }
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Splash"

@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "exp+travelapp-frontend",
     "name": "TravelApp-frontend",
     "slug": "TravelApp-frontend",
     "version": "1.0.0",
