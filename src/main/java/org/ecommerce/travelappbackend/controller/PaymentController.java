@@ -40,10 +40,10 @@ public class PaymentController {
             booking.setPaymentStatus("PAID");
             BookingRequest requestBooking = bookingMapper.toBookingRequest(booking);
             bookingService.updateBooking(bookingId, requestBooking);
-            response.sendRedirect("http://localhost:8081?paymentStatus=00");
+            response.sendRedirect("myapp://home?status=success");
             return ResponseEntity.ok(response.getStatus());
         }else{
-            response.sendRedirect("http://localhost:8081?paymentStatus=01");
+            response.sendRedirect("myapp://home?status=failure");
             return ResponseEntity.ok("Thanh toán thất bại");
         }
     }
