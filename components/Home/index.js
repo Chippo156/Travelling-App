@@ -68,6 +68,8 @@ function Home({ navigation }) {
     navigation.navigate("TravelDetail", { id });
   };
   const renderItem = ({ item }) => {
+    const imgUri = { uri: item.image_url };
+
     return (
       <TouchableOpacity
         style={{
@@ -80,7 +82,7 @@ function Home({ navigation }) {
         onPress={() => handleDetails(item.destination_id)}
       >
         <Image
-          source={{ uri: item.image_url }}
+          source={{ uri: item.image_url, cache: "force-cache" }}
           style={{ width: "100%", height: 135, borderRadius: 8 }}
         />
         <View style={{ width: "100%", padding: 12, display: "flex", gap: 10 }}>
@@ -168,7 +170,7 @@ function Home({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={{ padding: 16 }}>
         <Text style={styles.title}>Hello!</Text>
         <Text style={styles.title}>Explore stays in trending destinations</Text>
@@ -202,7 +204,7 @@ function Home({ navigation }) {
         </View>
       </View>
       <Footer value={"home"} navigation={navigation} />
-    </ScrollView>
+    </View>
   );
 }
 
