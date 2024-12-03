@@ -136,3 +136,12 @@ export let createReview = async (
     return error;
   }
 };
+export const getBookingCancel = async (id) => {
+  try {
+    const response = await axios.get(`/bookings/user/${id}/cancelled`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+}

@@ -10,6 +10,7 @@ import {
   Button,
 } from "react-native";
 import {
+  getBookingCancel,
   getDesitnationById,
   getListBookingById,
 } from "../controller/BookingController";
@@ -33,8 +34,13 @@ const HistoryBooking = ({ navigation }) => {
   }, [user]);
 
   useEffect(() => {
-    filterBookings();
-  }, [bookings, filter]);
+    if (filter === "Booked") {
+      handleGetBooking();
+    }
+    if (filter === "Cancelled") {
+      handleGetCancelledBooking();
+    }
+  }, [filter]);
 
   const handleGetDestination = async (id) => {
     try {
@@ -46,33 +52,56 @@ const HistoryBooking = ({ navigation }) => {
   };
 
   const handleGetBooking = async () => {
-    if (user && user.id) {
-      try {
-        let res = await getListBookingById(user.id);
-        if (res && res.code === 200) {
-          for (const booking of res.result) {
-            const destination = await handleGetDestination(
-              booking.destination_id
-            );
-            if (destination && destination.code === 200) {
-              booking.destination = destination.result;
-            }
-          }
-          setBookings(res.result);
+    setIsLoading(true); // Bắt đầu hiệu ứng loading
+    try {
+      if (user && user.id) {
+        const res = await getListBookingById(user.id);
+        if (res?.code === 200) {
+          const bookingsWithDestination = await Promise.all(
+            res.result.map(async (booking) => {
+              const destination = await handleGetDestination(
+                booking.destination_id
+              );
+              return {
+                ...booking,
+                destination: destination?.result || {},
+              };
+            })
+          );
+          setBookings(bookingsWithDestination);
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
       }
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+    } finally {
+      setIsLoading(false); // Kết thúc hiệu ứng loading
     }
   };
 
-  const filterBookings = () => {
-    if (filter === "Booked") {
-      setFilteredBookings(bookings.filter((booking) => booking.status === "Booked"));
-    } else {
-      setFilteredBookings(bookings.filter((booking) => booking.status === "Cancelled"));
+  const handleGetCancelledBooking = async () => {
+    setIsLoading(true);
+    try {
+      if (user && user.id) {
+        const res = await getBookingCancel(user.id);
+        if (res?.code === 200) {
+          const bookingsWithDestination = await Promise.all(
+            res.result.map(async (booking) => {
+              const destination = await handleGetDestination(
+                booking.destination_id
+              );
+              return {
+                ...booking,
+                destination: destination?.result || {},
+              };
+            })
+          );
+          setBookings(bookingsWithDestination);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching cancelled bookings:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -169,6 +198,11 @@ const HistoryBooking = ({ navigation }) => {
       item.payment_status === "success"
         ? styles.paymentStatusSuccess
         : styles.paymentStatusPending;
+    const bookingStatusStyle =
+      item.booking_status === "BOOKED"
+        ? styles.bookingStatusBooked
+        : styles.bookingStatusCancelled;
+
     return (
       <TouchableOpacity
         style={styles.itemContainer}
@@ -190,7 +224,10 @@ const HistoryBooking = ({ navigation }) => {
                 ? item.destination.location
                 : "Loading..."}
             </Text>
-            <Text style={[styles.paymentStatus, paymentStatusStyle]}>
+            <Text style={[styles.bookingStatus, bookingStatusStyle]}>
+              Booking Status: {item.booking_status}
+            </Text>
+            <Text style={paymentStatusStyle}>
               Payment Status: {item.payment_status}
             </Text>
             <Text style={styles.amount}>
@@ -218,7 +255,7 @@ const HistoryBooking = ({ navigation }) => {
         />
       </View>
       <FlatList
-        data={filteredBookings}
+        data={bookings}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
       />
@@ -315,6 +352,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#000",
     fontWeight: "bold",
+    marginTop: 8,
     marginBottom: 8,
   },
   title: {
@@ -369,6 +407,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginBottom: 16,
+  },
+  bookingStatus: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 8,
+    padding: 4,
+    borderRadius: 4,
+    textAlign: "center",
+    alignSelf: "flex-start",
+  },
+  bookingStatusBooked: {
+    backgroundColor: "#e0f7fa",
+    color: "#00796b",
+  },
+  bookingStatusCancelled: {
+    backgroundColor: "#ffebee",
+    color: "#d32f2f",
   },
 });
 
