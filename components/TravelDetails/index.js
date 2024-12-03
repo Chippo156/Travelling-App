@@ -86,6 +86,7 @@ export default function TravelDetail({ route, navigation }) {
     if (route.params && route.params.id) {
       let res = await getImagesDestination(route.params.id);
       setImagesDes(res);
+      console.log(res);
     } else {
       let res = await getImagesDestination(1);
       setImagesDes(res);
@@ -309,13 +310,15 @@ export default function TravelDetail({ route, navigation }) {
   };
 
   const renderItem = ({ item }) => {
+    const imgUri = { uri: item.image_url };
+
     return (
       <TouchableOpacity
         style={[styles.roomItem, { margin: 4 }]}
         onPress={() => handleNavigate(item.destination_id)}
       >
         <Image
-          source={{ uri: item.image_url }}
+          source={imgUri} 
           style={{ width: "100%", height: 135, borderRadius: 8 }}
         />
         <View style={{ width: "100%", padding: 12, display: "flex", gap: 10 }}>
