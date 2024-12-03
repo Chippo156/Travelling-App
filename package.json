@@ -22,6 +22,7 @@
     "expo": "^52.0.7",
     "expo-asset": "~11.0.1",
     "expo-dev-client": "^5.0.4",
+    "expo-dev-menu-interface": "^1.9.2",
     "expo-splash-screen": "~0.29.11",
     "expo-status-bar": "~2.0.0",
     "moment": "^2.30.1",

@@ -30,8 +30,7 @@ function Main() {
     prefixes: ["myapp://"], // Schema của bạn
     config: {
       screens: {
-        Home: "home", // Màn hình Home sẽ mở khi app://home được gọi
-        Payment: "payment",
+        Home: "Home", // Màn hình Home sẽ mở khi app://home được gọi
       },
     },
   };
