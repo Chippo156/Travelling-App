@@ -15,8 +15,11 @@ import {
 } from "../controller/BookingController";
 import { useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/Ionicons";
+
 const HistoryBooking = ({ navigation }) => {
   const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [filter, setFilter] = useState("Booked");
   const user = useSelector((state) => state.user.user);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,6 +31,10 @@ const HistoryBooking = ({ navigation }) => {
       setIsLoading(false);
     }
   }, [user]);
+
+  useEffect(() => {
+    filterBookings();
+  }, [bookings, filter]);
 
   const handleGetDestination = async (id) => {
     try {
@@ -61,6 +68,14 @@ const HistoryBooking = ({ navigation }) => {
     }
   };
 
+  const filterBookings = () => {
+    if (filter === "Booked") {
+      setFilteredBookings(bookings.filter((booking) => booking.status === "Booked"));
+    } else {
+      setFilteredBookings(bookings.filter((booking) => booking.status === "Cancelled"));
+    }
+  };
+
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -72,32 +87,23 @@ const HistoryBooking = ({ navigation }) => {
   if (user && bookings.length === 0) {
     return (
       <View style={styles.nullContainer}>
-        {/* Thay thế phần Image bằng SVG */}
         <Image
           source={{
             uri: "https://a.travel-assets.com/egds/illustrations/uds-default/baggage__large.svg",
           }}
           style={styles.image}
         />
-
-        {/* Tiêu đề */}
         <Text style={styles.title}>Chuyến đi</Text>
-
-        {/* Mô tả */}
         <Text style={styles.description}>
           {user.first_name}, bạn không có chuyến đi sắp tới nào. Bạn định đi đâu
           tiếp theo?
         </Text>
-
-        {/* Nút "Bắt đầu khám phá" */}
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => navigation.navigate("Home")}
         >
           <Text style={styles.primaryButtonText}>Bắt đầu khám phá</Text>
         </TouchableOpacity>
-
-        {/* Nút "Tìm đặt phòng của bạn" */}
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={() => navigation.navigate("Filter")}
@@ -107,6 +113,7 @@ const HistoryBooking = ({ navigation }) => {
       </View>
     );
   }
+
   if (!user) {
     return (
       <View style={styles.nullContainer}>
@@ -127,7 +134,6 @@ const HistoryBooking = ({ navigation }) => {
           }}
           style={styles.image}
         />
-
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => navigation.navigate("Login")}
@@ -139,6 +145,7 @@ const HistoryBooking = ({ navigation }) => {
       </View>
     );
   }
+
   const tinhSoNgay = (check_in_date, check_out_date) => {
     const date1 = new Date(check_in_date);
     const date2 = new Date(check_out_date);
@@ -149,12 +156,14 @@ const HistoryBooking = ({ navigation }) => {
     }
     return diffDays + " day - " + (diffDays - 1) + " night";
   };
+
   const formatCurrency = (amount) => {
     return amount.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
     });
   };
+
   const renderItem = ({ item }) => {
     const paymentStatusStyle =
       item.payment_status === "success"
@@ -196,8 +205,20 @@ const HistoryBooking = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Booking history</Text>
+      <View style={styles.filterContainer}>
+        <Button
+          title="Booked"
+          onPress={() => setFilter("Booked")}
+          color={filter === "Booked" ? "#007bff" : "#ccc"}
+        />
+        <Button
+          title="Cancelled"
+          onPress={() => setFilter("Cancelled")}
+          color={filter === "Cancelled" ? "#007bff" : "#ccc"}
+        />
+      </View>
       <FlatList
-        data={bookings}
+        data={filteredBookings}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
       />
@@ -343,6 +364,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     gap: 20,
+  },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 16,
   },
 });
 

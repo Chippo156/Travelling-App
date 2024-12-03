@@ -94,9 +94,7 @@ function FilterPage({ route, navigation }) {
       headerTitle: `${city || "Hồ Chí Minh"}, Việt Nam`, // Cập nhật header với tên thành phố
       headerRight: () => (
         <Image
-          source={{
-            uri: "https://res.cloudinary.com/dqnwxejgy/image/upload/v1732625785/cufd5gq2eaaojkjgo8lx.png",
-          }} // Đường dẫn đến logo của bạn
+          // source={require("../../assets/logo.png")} // Đường dẫn đến logo của bạn
           style={{ width: 100, height: 40 }} // Điều chỉnh kích thước logo theo ý muốn
           resizeMode="contain"
         />
@@ -159,6 +157,7 @@ function FilterPage({ route, navigation }) {
     getLastTwoDaysOfMonth();
   }, []);
   const renderItem = ({ item }) => {
+    console.log(item);
     return (
       <TouchableOpacity
         style={{
@@ -341,7 +340,7 @@ function FilterPage({ route, navigation }) {
           onPress={toggleDestinationOverlay} // Navigate to Home screen
         >
           <Icon name="arrow-back" size={24} color="blue" />
-          <Text style={{ fontSize: 24 }}>{city},Việt Nam</Text>
+          <Text style={{fontSize:24,}}>{city},Việt Nam</Text>
         </TouchableOpacity>
         <View style={styles.overlayContent}>
           <SearchBar
@@ -351,11 +350,7 @@ function FilterPage({ route, navigation }) {
             containerStyle={{ width: "100%" }}
           />
           {isLoading ? (
-            <ActivityIndicator
-              size="large"
-              color="#00bbf2"
-              style={{ paddingTop: 30 }}
-            />
+            <ActivityIndicator size="large" color="#00bbf2" style={{paddingTop:30}} />
           ) : (
             <View>
               <Text style={styles.searchTitle}>Danh sách tìm kiếm</Text>
@@ -495,7 +490,7 @@ function FilterPage({ route, navigation }) {
 const styles = StyleSheet.create({
   searchTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     paddingTop: 10,
     paddingBottom: 10,
   },
