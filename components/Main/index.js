@@ -63,7 +63,7 @@ function Main() {
   }
   return (
     <NavigationContainer linking={linking}>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="HistoryBooking">
         <Stack.Screen
           name="Splash"
           component={Splash}

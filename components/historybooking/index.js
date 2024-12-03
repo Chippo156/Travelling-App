@@ -10,13 +10,17 @@ import {
   Button,
 } from "react-native";
 import {
+  getBookingCancel,
   getDesitnationById,
   getListBookingById,
 } from "../controller/BookingController";
 import { useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/Ionicons";
+
 const HistoryBooking = ({ navigation }) => {
   const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [filter, setFilter] = useState("Booked");
   const user = useSelector((state) => state.user.user);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,6 +33,15 @@ const HistoryBooking = ({ navigation }) => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (filter === "Booked") {
+      handleGetBooking();
+    }
+    if (filter === "Cancelled") {
+      handleGetCancelledBooking();
+    }
+  }, [filter]);
+
   const handleGetDestination = async (id) => {
     try {
       let res = await getDesitnationById(id);
@@ -39,25 +52,56 @@ const HistoryBooking = ({ navigation }) => {
   };
 
   const handleGetBooking = async () => {
-    if (user && user.id) {
-      try {
-        let res = await getListBookingById(user.id);
-        if (res && res.code === 200) {
-          for (const booking of res.result) {
-            const destination = await handleGetDestination(
-              booking.destination_id
-            );
-            if (destination && destination.code === 200) {
-              booking.destination = destination.result;
-            }
-          }
-          setBookings(res.result);
+    setIsLoading(true); // Bắt đầu hiệu ứng loading
+    try {
+      if (user && user.id) {
+        const res = await getListBookingById(user.id);
+        if (res?.code === 200) {
+          const bookingsWithDestination = await Promise.all(
+            res.result.map(async (booking) => {
+              const destination = await handleGetDestination(
+                booking.destination_id
+              );
+              return {
+                ...booking,
+                destination: destination?.result || {},
+              };
+            })
+          );
+          setBookings(bookingsWithDestination);
         }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
       }
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+    } finally {
+      setIsLoading(false); // Kết thúc hiệu ứng loading
+    }
+  };
+
+  const handleGetCancelledBooking = async () => {
+    setIsLoading(true);
+    try {
+      if (user && user.id) {
+        const res = await getBookingCancel(user.id);
+        if (res?.code === 200) {
+          const bookingsWithDestination = await Promise.all(
+            res.result.map(async (booking) => {
+              const destination = await handleGetDestination(
+                booking.destination_id
+              );
+              return {
+                ...booking,
+                destination: destination?.result || {},
+              };
+            })
+          );
+          setBookings(bookingsWithDestination);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching cancelled bookings:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,32 +116,23 @@ const HistoryBooking = ({ navigation }) => {
   if (user && bookings.length === 0) {
     return (
       <View style={styles.nullContainer}>
-        {/* Thay thế phần Image bằng SVG */}
         <Image
           source={{
             uri: "https://a.travel-assets.com/egds/illustrations/uds-default/baggage__large.svg",
           }}
           style={styles.image}
         />
-
-        {/* Tiêu đề */}
         <Text style={styles.title}>Chuyến đi</Text>
-
-        {/* Mô tả */}
         <Text style={styles.description}>
           {user.first_name}, bạn không có chuyến đi sắp tới nào. Bạn định đi đâu
           tiếp theo?
         </Text>
-
-        {/* Nút "Bắt đầu khám phá" */}
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => navigation.navigate("Home")}
         >
           <Text style={styles.primaryButtonText}>Bắt đầu khám phá</Text>
         </TouchableOpacity>
-
-        {/* Nút "Tìm đặt phòng của bạn" */}
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={() => navigation.navigate("Filter")}
@@ -107,6 +142,7 @@ const HistoryBooking = ({ navigation }) => {
       </View>
     );
   }
+
   if (!user) {
     return (
       <View style={styles.nullContainer}>
@@ -127,7 +163,6 @@ const HistoryBooking = ({ navigation }) => {
           }}
           style={styles.image}
         />
-
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={() => navigation.navigate("Login")}
@@ -139,6 +174,7 @@ const HistoryBooking = ({ navigation }) => {
       </View>
     );
   }
+
   const tinhSoNgay = (check_in_date, check_out_date) => {
     const date1 = new Date(check_in_date);
     const date2 = new Date(check_out_date);
@@ -149,17 +185,24 @@ const HistoryBooking = ({ navigation }) => {
     }
     return diffDays + " day - " + (diffDays - 1) + " night";
   };
+
   const formatCurrency = (amount) => {
     return amount.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
     });
   };
+
   const renderItem = ({ item }) => {
     const paymentStatusStyle =
       item.payment_status === "success"
         ? styles.paymentStatusSuccess
         : styles.paymentStatusPending;
+    const bookingStatusStyle =
+      item.booking_status === "BOOKED"
+        ? styles.bookingStatusBooked
+        : styles.bookingStatusCancelled;
+
     return (
       <TouchableOpacity
         style={styles.itemContainer}
@@ -181,7 +224,10 @@ const HistoryBooking = ({ navigation }) => {
                 ? item.destination.location
                 : "Loading..."}
             </Text>
-            <Text style={[styles.paymentStatus, paymentStatusStyle]}>
+            <Text style={[styles.bookingStatus, bookingStatusStyle]}>
+              Booking Status: {item.booking_status}
+            </Text>
+            <Text style={paymentStatusStyle}>
               Payment Status: {item.payment_status}
             </Text>
             <Text style={styles.amount}>
@@ -196,6 +242,18 @@ const HistoryBooking = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Booking history</Text>
+      <View style={styles.filterContainer}>
+        <Button
+          title="Booked"
+          onPress={() => setFilter("Booked")}
+          color={filter === "Booked" ? "#007bff" : "#ccc"}
+        />
+        <Button
+          title="Cancelled"
+          onPress={() => setFilter("Cancelled")}
+          color={filter === "Cancelled" ? "#007bff" : "#ccc"}
+        />
+      </View>
       <FlatList
         data={bookings}
         renderItem={renderItem}
@@ -294,6 +352,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#000",
     fontWeight: "bold",
+    marginTop: 8,
     marginBottom: 8,
   },
   title: {
@@ -343,6 +402,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     gap: 20,
+  },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 16,
+  },
+  bookingStatus: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 8,
+    padding: 4,
+    borderRadius: 4,
+    textAlign: "center",
+    alignSelf: "flex-start",
+  },
+  bookingStatusBooked: {
+    backgroundColor: "#e0f7fa",
+    color: "#00796b",
+  },
+  bookingStatusCancelled: {
+    backgroundColor: "#ffebee",
+    color: "#d32f2f",
   },
 });
 
