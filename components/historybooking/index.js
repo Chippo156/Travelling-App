@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Button,
+  Alert,
 } from "react-native";
 import {
   getBookingCancel,
@@ -17,13 +18,24 @@ import {
 import { useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/Ionicons";
 import Footer from "../Footer";
+import { useRoute } from "@react-navigation/native";
 
-const HistoryBooking = ({ navigation }) => {
+const HistoryBooking = ({ route, navigation }) => {
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [filter, setFilter] = useState("Booked");
   const user = useSelector((state) => state.user.user);
   const [isLoading, setIsLoading] = useState(true);
+  const { paymentStatus } = route.params || "03";
+
+  useEffect(() => {
+    if (paymentStatus === "01") {
+      alert("Payment Success", "Your payment is successful");
+      route.params.paymentStatus = null;
+    } else if (paymentStatus === "02") {
+      alert("Payment Failed", "Your payment is failed");
+    }
+  }, [paymentStatus]);
 
   useEffect(() => {
     console.log("User state:", user);

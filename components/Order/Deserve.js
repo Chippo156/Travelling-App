@@ -170,7 +170,7 @@ export default function Deserve({ route, navigation }) {
         if (selectPaymentMethod() === "VNPAY") {
           let paymentRes = await handleVNPay(amount, "NCB", res.result.id);
         } else {
-          Alert.alert("Booking successfully!");
+          alert("Booking successfully!");
         }
       }
 

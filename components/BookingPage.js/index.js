@@ -121,10 +121,10 @@ const BookingPage = ({ route, navigation }) => {
       dispatch(loadingTrue());
       let res = await CancelBooking(bookid.id);
       if (res && res.code === 200) {
-        Alert.alert("Booking cancelled successfully");
-        navigation.navigate("HistoryBooking");
+        alert("Booking cancelled successfully");
+        navigation.navigate("/HistoryBooking");
       } else {
-        Alert.alert("Error cancelling booking");
+        alert("Error cancelling booking");
       }
     } catch (error) {
       console.error(error);
@@ -272,27 +272,17 @@ const BookingPage = ({ route, navigation }) => {
         style={canCancelBooking(bookid) ? styles.button : styles.buttonDisabled}
         onPress={() => {
           if (canCancelBooking(bookid)) {
-            // Thực hiện hành động hủy đặt phòng ở đây
-            Alert.alert(
-              "Confirm Cancellation",
-              "Are you sure you want to cancel this booking?",
-              [
-                {
-                  text: "No",
-                  onPress: () => console.log("Cancellation aborted"),
-                  style: "cancel",
-                },
-                {
-                  text: "Yes",
-                  onPress: () => handleCancelBooking(),
-                },
-              ],
-              { cancelable: false }
+            // Use a simple confirm flow with `window.confirm`
+            const userConfirmed = window.confirm(
+              "Are you sure you want to cancel this booking?"
             );
+            if (userConfirmed) {
+              handleCancelBooking();
+            } else {
+            }
           } else {
-            Alert.alert(
-              "Cannot cancel booking",
-              "The check-in date has already passed."
+            alert(
+              "The check-in date has already passed. Booking cannot be cancelled."
             );
           }
         }}
@@ -308,6 +298,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     gap: 12,
+    height: 700,
   },
   card: {
     backgroundColor: "#fff",

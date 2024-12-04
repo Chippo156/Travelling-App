@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { getFilterDestination } from "../controller/filterController";
 import { Rating } from "react-native-ratings";
@@ -94,14 +95,13 @@ const SearchPage = ({ navigation }) => {
           />
         </View>
       )}
-      <Footer value={"home"} navigation={navigation} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: "700px",
     padding: 16,
     backgroundColor: "#f0f0f0",
   },
