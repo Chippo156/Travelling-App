@@ -217,7 +217,8 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#191e3b",
     minHeight: "100vh",
-    height: 800,
+    paddingBottom: 80,
+    height: 700,
   },
   title: {
     fontSize: 18,
@@ -242,6 +243,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 80,
     width: "500px",
+    minHeight:350,
+    paddingBottom: 20,
   },
 });
 
