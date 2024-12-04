@@ -16,6 +16,7 @@ import {
 } from "../controller/BookingController";
 import { useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/Ionicons";
+import Footer from "../Footer";
 
 const HistoryBooking = ({ navigation }) => {
   const [bookings, setBookings] = useState([]);
@@ -259,6 +260,7 @@ const HistoryBooking = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
       />
+      <Footer value={"home"} navigation={navigation} />
     </View>
   );
 };
@@ -278,8 +280,8 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
   container: {
-    flex: 1,
     padding: 16,
+    height: 800,
     backgroundColor: "#191e3b",
   },
   header: {
