@@ -158,14 +158,14 @@ function Main() {
           />
         </Stack.Navigator>
       </NavigationContainer>
-      <TouchableOpacity style={styles.chatIcon} onPress={toggleChatbox}>
+      {/* <TouchableOpacity style={styles.chatIcon} onPress={toggleChatbox}>
         <Text style={styles.chatIconText}>💬</Text>
       </TouchableOpacity>
-      {isChatboxOpen && (
+      {isChatboxOpen && ( */}
         <View style={styles.chatboxContainer}>
           <Chatbox />
         </View>
-      )}
+      {/* )} */}
     </View>
   );
 }
@@ -197,9 +197,9 @@ const styles = StyleSheet.create({
     right: 20,
     width: 300,
     height: 400,
-    backgroundColor: "white",
+    // backgroundColor: "white",
     borderRadius: 10,
-    shadowColor: "#000",
+    // shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
