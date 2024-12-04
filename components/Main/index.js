@@ -22,6 +22,7 @@ import ProfileScreen from "../User/Profile";
 import HelpAndFeedback from "../User/HelpAndFeedBack";
 import BookingPage from "../BookingPage.js";
 import Home from "../Home";
+import SearchPage from "../Search";
 
 const Stack = createStackNavigator();
 
@@ -143,6 +144,11 @@ function Main() {
           options={{ headerShown: true }}
           name="Booking Details"
           component={BookingPage}
+        />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Search"
+          component={SearchPage}
         />
       </Stack.Navigator>
     </NavigationContainer>

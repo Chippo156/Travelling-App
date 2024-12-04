@@ -24,7 +24,7 @@ function Footer({ value, navigation }) {
           styles.footerButton,
           activeTab === "search" && styles.activeTab,
         ]}
-        onPress={() => handleTabChange("filter")}
+        onPress={() => handleTabChange("search")}
       >
         <Icon name="search" style={{ fontSize: 20 }} />
         <Text style={styles.footerText}>Tìm Kiếm</Text>
