@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import {
   getFilterDestination,
@@ -221,7 +222,7 @@ function FilterPage({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {isButtonVisible && (
         <TouchableOpacity
           style={styles.buttonContainer}
@@ -315,7 +316,11 @@ function FilterPage({ route, navigation }) {
       </View>
       {filteredDestinations.length === 0 && (
         <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          style={{
+            height: 700,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
           <Text style={{ fontSize: 20, color: "#fff" }}>
             Không có kết quả nào
@@ -340,7 +345,7 @@ function FilterPage({ route, navigation }) {
           onPress={toggleDestinationOverlay} // Navigate to Home screen
         >
           <Icon name="arrow-back" size={24} color="blue" />
-          <Text style={{fontSize:24,}}>{city},Việt Nam</Text>
+          <Text style={{ fontSize: 24 }}>{city},Việt Nam</Text>
         </TouchableOpacity>
         <View style={styles.overlayContent}>
           <SearchBar
@@ -350,7 +355,11 @@ function FilterPage({ route, navigation }) {
             containerStyle={{ width: "100%" }}
           />
           {isLoading ? (
-            <ActivityIndicator size="large" color="#00bbf2" style={{paddingTop:30}} />
+            <ActivityIndicator
+              size="large"
+              color="#00bbf2"
+              style={{ paddingTop: 30 }}
+            />
           ) : (
             <View>
               <Text style={styles.searchTitle}>Danh sách tìm kiếm</Text>
@@ -483,14 +492,14 @@ function FilterPage({ route, navigation }) {
           handleGetFilterDestination={handleGetFilterDestination}
         />
       </Overlay>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   searchTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     paddingTop: 10,
     paddingBottom: 10,
   },
@@ -500,9 +509,9 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   container: {
-    flex: 1,
     padding: 16,
     backgroundColor: "#191e3b",
+    height: 700,
   },
   destinationItem: {
     flexDirection: "row",

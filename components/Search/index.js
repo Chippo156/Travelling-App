@@ -7,11 +7,12 @@ import {
   ActivityIndicator,
   StyleSheet,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import { getFilterDestination } from "../controller/filterController";
 import { Rating } from "react-native-ratings";
 
-const SearchPage = () => {
+const SearchPage = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +40,10 @@ const SearchPage = () => {
       setResults([]);
     }
   }, [searchValue]);
+  const handleDetails = (id) => {
+    console.log(id);
+    navigation.navigate("TravelDetail", { id });
+  };
 
   return (
     <View style={styles.container}>
@@ -61,7 +66,10 @@ const SearchPage = () => {
             data={results}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <View style={styles.resultItem}>
+              <TouchableOpacity
+                style={styles.resultItem}
+                onPress={() => handleDetails(item.destination_id)}
+              >
                 <Image source={{ uri: item.image_url }} style={styles.image} />
                 <View style={styles.content}>
                   <Text style={styles.name}>{item.name}</Text>
@@ -78,7 +86,7 @@ const SearchPage = () => {
                     />
                   </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             )}
             ListEmptyComponent={
               <Text style={styles.noResultsText}>No results found</Text>
