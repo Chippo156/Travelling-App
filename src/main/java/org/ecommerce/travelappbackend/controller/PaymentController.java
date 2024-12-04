@@ -11,6 +11,7 @@ import org.ecommerce.travelappbackend.services.impl.PaymentService;
 import org.ecommerce.travelappbackend.services.service.BookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -40,10 +41,11 @@ public class PaymentController {
             booking.setPaymentStatus("PAID");
             BookingRequest requestBooking = bookingMapper.toBookingRequest(booking);
             bookingService.updateBooking(bookingId, requestBooking);
-            response.sendRedirect("myapp://home?status=success");
+
+            response.sendRedirect("http://localhost:8081/HistoryBooking");
             return ResponseEntity.ok(response.getStatus());
         }else{
-            response.sendRedirect("myapp://home?status=failure");
+            response.sendRedirect("http://localhost:8081/HistoryBooking");
             return ResponseEntity.ok("Thanh toán thất bại");
         }
     }
