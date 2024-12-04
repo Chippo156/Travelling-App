@@ -6,7 +6,7 @@ import { reloadUser } from "../controller/loginController";
 import { login, logout, loadingTrue, loadingFalse } from "../Redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import Login from "../Login";
 import Splash from "../Splash";
@@ -68,7 +68,7 @@ function Main() {
     );
   }
   return (
-    <View style={{ flex: 1,backgroundColor: "#191e3b", }}>
+    <View style={{ flex: 1, backgroundColor: "#191e3b" }}>
       <NavigationContainer linking={linking}>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
@@ -162,9 +162,9 @@ function Main() {
         <Text style={styles.chatIconText}>💬</Text>
       </TouchableOpacity>
       {isChatboxOpen && ( */}
-        <View style={styles.chatboxContainer}>
+      {/* <View style={styles.chatboxContainer}>
           <Chatbox />
-        </View>
+        </View> */}
       {/* )} */}
     </View>
   );

@@ -438,8 +438,7 @@ export default function TravelDetail({ route, navigation }) {
               renderItem={({ item }) => (
                 <View style={styles.reviewCard}>
                   <Text style={styles.rating}>
-                    {item.rating + 3}{" "}
-                    <Icon name="star" size={20} color="#FFD700" />
+                    {item.rating} <Icon name="star" size={20} color="#FFD700" />
                   </Text>
                   <Text style={styles.reviewerInfo}>
                     {item.username} - {item.created_at}

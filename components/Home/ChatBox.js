@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     right: 0,
-    width: 400,
-    height: 500,
+    width: 300,
+    height: 400,
     overflow: "hidden",
   },
   iframe: {

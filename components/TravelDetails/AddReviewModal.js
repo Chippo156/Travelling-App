@@ -16,7 +16,7 @@ const AddReviewModal = ({ isVisible, onClose, onSubmit }) => {
   const [title, setTitle] = useState("");
 
   const handleAddReview = () => {
-    if (rating && liked && content) {
+    if (rating && title && content) {
       onSubmit({ rating, title, content });
       setRating("");
       setLiked("");

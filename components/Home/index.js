@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 80,
     width: "500px",
-    minHeight:350,
+    minHeight: 350,
     paddingBottom: 20,
   },
 });
