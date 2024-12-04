@@ -36,16 +36,18 @@ public class PaymentController {
     public ResponseEntity<?> payCallBackHandle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String status = request.getParameter("vnp_ResponseCode");
         if (status.equals("00")) {
-            Long bookingId = Long.parseLong(request.getParameter("vnp_OrderInfo"));
+//            Long bookingId = Long.parseLong(request.getParameter("vnp_OrderInfo"));
+                        Long bookingId = 118L;
+
             Bookings booking = bookingService.getBooking(bookingId);
             booking.setPaymentStatus("PAID");
             BookingRequest requestBooking = bookingMapper.toBookingRequest(booking);
             bookingService.updateBooking(bookingId, requestBooking);
 
-            response.sendRedirect("http://localhost:8081/HistoryBooking");
+            response.sendRedirect("http://localhost:8081/HistoryBooking?paymentStatus=01");
             return ResponseEntity.ok(response.getStatus());
         }else{
-            response.sendRedirect("http://localhost:8081/HistoryBooking");
+            response.sendRedirect("http://localhost:8081/HistoryBooking?paymentStatus=02");
             return ResponseEntity.ok("Thanh toán thất bại");
         }
     }
