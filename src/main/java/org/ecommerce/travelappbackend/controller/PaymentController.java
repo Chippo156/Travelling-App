@@ -36,9 +36,7 @@ public class PaymentController {
     public ResponseEntity<?> payCallBackHandle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String status = request.getParameter("vnp_ResponseCode");
         if (status.equals("00")) {
-//            Long bookingId = Long.parseLong(request.getParameter("vnp_OrderInfo"));
-                        Long bookingId = 118L;
-
+            Long bookingId = Long.parseLong(request.getParameter("vnp_OrderInfo"));
             Bookings booking = bookingService.getBooking(bookingId);
             booking.setPaymentStatus("PAID");
             BookingRequest requestBooking = bookingMapper.toBookingRequest(booking);
