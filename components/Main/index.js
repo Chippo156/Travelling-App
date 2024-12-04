@@ -68,7 +68,7 @@ function Main() {
     );
   }
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1,backgroundColor: "#191e3b", }}>
       <NavigationContainer linking={linking}>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   chatboxContainer: {
     position: "absolute",
-    bottom: 100,
+    bottom: 150,
     right: 20,
     width: 300,
     height: 400,

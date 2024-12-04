@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#191e3b",
     minHeight: "100vh",
-    paddingBottom: 80,
+    paddingBottom: 200,
     height: 700,
   },
   title: {
@@ -238,6 +238,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 50,
     width: "500px",
+    minHeight:350,
+    paddingBottom: 20,
   },
 });
 
