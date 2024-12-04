@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import Chatbot from "../Home/ChatBox";
 
 function Footer({ value, navigation }) {
   const [activeTab, setActiveTab] = useState(value || "home");

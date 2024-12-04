@@ -13,6 +13,7 @@ import { handleGetDestination } from "../controller/homeController";
 import Footer from "../Footer";
 import { getCountReview } from "../controller/DetailsController";
 import WebView from "react-native-webview";
+import Chatbot from "./ChatBox";
 
 function Home({ navigation }) {
   const data = [
@@ -173,6 +174,7 @@ function Home({ navigation }) {
     <ScrollView style={styles.container}>
       <View style={{ padding: 16 }}>
         <Text style={styles.title}>Hello!</Text>
+
         <Text style={styles.title}>Explore stays in trending destinations</Text>
         <View>
           <FlatList
@@ -194,13 +196,15 @@ function Home({ navigation }) {
               </Text>
             </TouchableOpacity>
           </View>
-          <FlatList
-            data={dataLastWeekend}
-            renderItem={renderItem}
-            horizontal={true}
-            keyExtractor={(item, index) => index.toString()}
-            showsHorizontalScrollIndicator={false}
-          />
+          <View style={{ height: 300 }}>
+            <FlatList
+              data={dataLastWeekend}
+              renderItem={renderItem}
+              horizontal={true}
+              keyExtractor={(item, index) => index.toString()}
+              showsHorizontalScrollIndicator={false}
+            />
+          </View>
         </View>
       </View>
       <Footer value={"home"} navigation={navigation} />
@@ -210,10 +214,10 @@ function Home({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    position: "relative",
     backgroundColor: "#191e3b",
     minHeight: "100vh",
-    paddingBottom: 80,
-    height: 700,
+    height: 800,
   },
   title: {
     fontSize: 18,
@@ -236,7 +240,7 @@ const styles = StyleSheet.create({
   },
   containerr: {
     marginTop: 30,
-    marginBottom: 50,
+    marginBottom: 80,
     width: "500px",
   },
 });

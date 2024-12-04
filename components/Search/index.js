@@ -46,7 +46,7 @@ const SearchPage = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <TextInput
         style={styles.searchInput}
         placeholder="Search..."
@@ -94,7 +94,8 @@ const SearchPage = ({ navigation }) => {
           />
         </View>
       )}
-    </View>
+      <Footer value={"home"} navigation={navigation} />
+    </ScrollView>
   );
 };
 
