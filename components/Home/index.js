@@ -170,8 +170,8 @@ function Home({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{ padding: 16  }}>
+    <ScrollView style={styles.container}>
+      <View style={{ padding: 16 }}>
         <Text style={styles.title}>Hello!</Text>
         <Text style={styles.title}>Explore stays in trending destinations</Text>
         <View>
@@ -204,16 +204,16 @@ function Home({ navigation }) {
         </View>
       </View>
       <Footer value={"home"} navigation={navigation} />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#191e3b",
     minHeight: "100vh",
     paddingBottom: 80,
+    height: 700,
   },
   title: {
     fontSize: 18,
@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
   containerr: {
     marginTop: 30,
     marginBottom: 50,
+    width: "500px",
   },
 });
 

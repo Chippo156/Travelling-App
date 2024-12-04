@@ -595,9 +595,9 @@ export default function Deserve({ route, navigation }) {
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#191e3b",
     padding: 10,
+    height: 700,
   },
   openButton: {
     backgroundColor: "#007BFF",

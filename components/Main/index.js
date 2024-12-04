@@ -32,7 +32,7 @@ function Main() {
     prefixes: ["myapp://"], // Schema của bạn
     config: {
       screens: {
-        Home: "Home", // Màn hình Home sẽ mở khi app://home được gọi
+        HistoryBooking: "HistoryBooking", // Màn hình Home sẽ mở khi app://home được gọi
       },
     },
   };
