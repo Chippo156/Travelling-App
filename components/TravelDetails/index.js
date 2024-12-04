@@ -86,7 +86,6 @@ export default function TravelDetail({ route, navigation }) {
     if (route.params && route.params.id) {
       let res = await getImagesDestination(route.params.id);
       setImagesDes(res);
-      console.log(res);
     } else {
       let res = await getImagesDestination(1);
       setImagesDes(res);
@@ -311,14 +310,13 @@ export default function TravelDetail({ route, navigation }) {
 
   const renderItem = ({ item }) => {
     const imgUri = { uri: item.image_url };
-
     return (
       <TouchableOpacity
         style={[styles.roomItem, { margin: 4 }]}
         onPress={() => handleNavigate(item.destination_id)}
       >
         <Image
-          source={imgUri} 
+          source={imgUri}
           style={{ width: "100%", height: 135, borderRadius: 8 }}
         />
         <View style={{ width: "100%", padding: 12, display: "flex", gap: 10 }}>
@@ -363,20 +361,10 @@ export default function TravelDetail({ route, navigation }) {
       </TouchableOpacity>
     );
   };
-
-  return (
-    <ScrollView style={styles.container}>
-      <View>
-        <ImageSlider images={imagesDes} />
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 10,
-          alignItems: "center",
-          marginVertical: 20,
-        }}
-      >
+  const renderHeader = () => (
+    <View>
+      <ImageSlider images={imagesDes} />
+      <View style={styles.row}>
         <CustomText>Entire Home</CustomText>
         <CustomText style={styles.vipText}>VIP access</CustomText>
       </View>
@@ -399,6 +387,7 @@ export default function TravelDetail({ route, navigation }) {
           See all {reviews?.length} reviews
         </CustomText>
       </TouchableOpacity>
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -417,9 +406,7 @@ export default function TravelDetail({ route, navigation }) {
             >
               <Text style={styles.modalTitle}>Reviews ({reviews.length})</Text>
               <TouchableOpacity
-                onPress={() => {
-                  setModalVisibleReview(true);
-                }}
+                onPress={() => setModalVisibleReview(true)}
                 style={{
                   padding: 10,
                   borderRadius: 100,
@@ -443,9 +430,13 @@ export default function TravelDetail({ route, navigation }) {
                 onSubmit={handleAddReview}
               />
             </View>
-            <ScrollView>
-              {reviews.map((item, index) => (
-                <View key={index.toString()} style={styles.reviewCard}>
+
+            {/* Use FlatList Instead of ScrollView */}
+            <FlatList
+              data={reviews}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <View style={styles.reviewCard}>
                   <Text style={styles.rating}>
                     {item.rating + 3}{" "}
                     <Icon name="star" size={20} color="#FFD700" />
@@ -459,8 +450,10 @@ export default function TravelDetail({ route, navigation }) {
                     {item.content}
                   </CustomText>
                 </View>
-              ))}
-            </ScrollView>
+              )}
+              initialNumToRender={5} // Adjust based on expected list size
+              windowSize={10} // Tune for memory usage
+            />
 
             <TouchableOpacity
               style={styles.closeButton}
@@ -475,26 +468,21 @@ export default function TravelDetail({ route, navigation }) {
       <CustomText style={{ marginVertical: 10 }}>
         {destination?.description}
       </CustomText>
-      <View>
-        <FlatList
-          data={amenities}
-          renderItem={({ item }) => (
-            <View style={styles.amenityItem}>
-              <Icon name={item.amenityIcon} size={24} color="#333" />
-              <CustomText style={styles.amenityText}>
-                {item?.amenityName}
-              </CustomText>
-            </View>
-          )}
-          nestedScrollEnabled={true}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={2}
-        />
-      </View>
-      <View>
-        <CustomText style={styles.sectionTitle}>Explore the area</CustomText>
-        <CustomText>{destination?.location}</CustomText>
-      </View>
+      <FlatList
+        data={amenities}
+        renderItem={({ item }) => (
+          <View style={styles.amenityItem}>
+            <Icon name={item.amenityIcon} size={24} color="#333" />
+            <CustomText style={styles.amenityText}>
+              {item?.amenityName}
+            </CustomText>
+          </View>
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
+      />
+      <CustomText style={styles.sectionTitle}>Explore the area</CustomText>
+      <CustomText>{destination?.location}</CustomText>
       <CustomText style={styles.sectionTitle}>Choose your room</CustomText>
       <TouchableOpacity
         style={styles.buttonContainer1}
@@ -521,7 +509,6 @@ export default function TravelDetail({ route, navigation }) {
           </Text>
         </View>
       </TouchableOpacity>
-
       <Overlay
         isVisible={visibleDate}
         onBackdropPress={() => {}}
@@ -561,7 +548,7 @@ export default function TravelDetail({ route, navigation }) {
               <TouchableOpacity
                 style={{
                   padding: 6,
-                  borderRadius: "50%",
+                  borderRadius: 50, // '50%' is not valid in React Native, use a number for radius
                   borderColor: "gray",
                   borderStyle: "solid",
                   borderWidth: 1,
@@ -631,267 +618,271 @@ export default function TravelDetail({ route, navigation }) {
           </TouchableOpacity>
         </View>
       </Overlay>
-      <View style={{ marginVertical: 20 }}>
-        <FlatList
-          data={rooms}
-          nestedScrollEnabled={true}
-          renderItem={({ item }) => (
-            <View style={styles.roomItem}>
-              <View>
-                {/* Sử dụng ảnh từ roomImages */}
-                <ImageSlider images={roomImages[item.id] || []} />
-              </View>
-              <Text style={styles.roomType}>
-                {item.room_type + " " + item.description}
-              </Text>
-              <View
-                style={[
-                  styles.flexRow,
-                  {
-                    marginVertical: 10,
-                  },
-                ]}
-              >
-                <Svg
-                  // className="uitk-icon uitk-icon-small uitk-icon-positive-theme"
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlnsXlink="http://www.w3.org/1999/xlink"
-                  width={24}
-                  height={24}
-                  fill={"green"}
-                  clipRule="evenodd"
-                >
-                  <Path
-                    fillRule="evenodd"
-                    d="M6 3h7a6 6 0 0 1 0 12h-3v6H6V3zm4 8h3.2a2 2 0 0 0 2-2 2 2 0 0 0-2-2H10v4z"
-                    clipRule="evenodd"
-                  />
-                </Svg>
-
-                <Text style={{ color: "green", gap: 10 }}>
-                  Free self parking
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "gray",
-                  paddingBottom: 10,
+    </View>
+  );
+  const renderItemRoom = ({ item }) => (
+    <View style={{ marginVertical: 20 }}>
+      <FlatList
+        data={rooms}
+        nestedScrollEnabled={true}
+        renderItem={({ item }) => (
+          <View style={styles.roomItem}>
+            <View>
+              {/* Sử dụng ảnh từ roomImages */}
+              <ImageSlider images={roomImages[item.id] || []} />
+            </View>
+            <Text style={styles.roomType}>
+              {item.room_type + " " + item.description}
+            </Text>
+            <View
+              style={[
+                styles.flexRow,
+                {
                   marginVertical: 10,
-                }}
+                },
+              ]}
+            >
+              <Svg
+                // className="uitk-icon uitk-icon-small uitk-icon-positive-theme"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                width={24}
+                height={24}
+                fill={"green"}
+                clipRule="evenodd"
               >
-                <View style={{ gap: 10 }}>
-                  <View style={styles.flexRow}>
-                    <Svg
-                      // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                      width={24}
-                      height={24}
-                      clipRule="evenodd"
-                    >
-                      <Path
-                        fillRule="evenodd"
-                        d="m1 9 2 2a12.73 12.73 0 0 1 18 0l2-2A15.57 15.57 0 0 0 1 9zm8 8 3 3 3-3a4.24 4.24 0 0 0-6 0zm-2-2-2-2a9.91 9.91 0 0 1 14 0l-2 2a7.07 7.07 0 0 0-10 0z"
-                        clipRule="evenodd"
-                      ></Path>
-                    </Svg>
+                <Path
+                  fillRule="evenodd"
+                  d="M6 3h7a6 6 0 0 1 0 12h-3v6H6V3zm4 8h3.2a2 2 0 0 0 2-2 2 2 0 0 0-2-2H10v4z"
+                  clipRule="evenodd"
+                />
+              </Svg>
 
-                    <Text style={{ width: 80, flexWrap: "wrap" }}>
-                      {" "}
-                      {item.features}
-                    </Text>
-                  </View>
-                  <View style={styles.flexRow}>
-                    <Svg
-                      // class="uitk-icon uitk-icon-default-theme"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                      width={24}
-                      height={24}
+              <Text style={{ color: "green", gap: 10 }}>Free self parking</Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderBottomWidth: 1,
+                borderBottomColor: "gray",
+                paddingBottom: 10,
+                marginVertical: 10,
+              }}
+            >
+              <View style={{ gap: 10 }}>
+                <View style={styles.flexRow}>
+                  <Svg
+                    // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                    width={24}
+                    height={24}
+                    clipRule="evenodd"
+                  >
+                    <Path
+                      fillRule="evenodd"
+                      d="m1 9 2 2a12.73 12.73 0 0 1 18 0l2-2A15.57 15.57 0 0 0 1 9zm8 8 3 3 3-3a4.24 4.24 0 0 0-6 0zm-2-2-2-2a9.91 9.91 0 0 1 14 0l-2 2a7.07 7.07 0 0 0-10 0z"
                       clipRule="evenodd"
-                    >
-                      <Path d="M6 18h2l-3 3-3-3h2V6c0-1.1.9-2 2-2h12V2l3 3-3 3V6H6v12zm14-8v2h-2v-2h2zm0 8a2 2 0 0 1-2 2v-2h2zm0-4v2h-2v-2h2zm-4 4v2h-2v-2h2zm-4 0v2h-2v-2h2z"></Path>
-                    </Svg>
-                    <Text>{item.area} sq m</Text>
-                  </View>
-                </View>
-                <View style={{ gap: 10 }}>
-                  <View style={styles.flexRow}>
-                    <Svg
-                      // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                      width={24}
-                      height={24}
-                      clipRule="evenodd"
-                    >
-                      <Path
-                        fillRule="evenodd"
-                        d="M10.99 8A3 3 0 1 1 5 8a3 3 0 0 1 6 0zm8 0A3 3 0 1 1 13 8a3 3 0 0 1 6 0zM8 13c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm7.03.05c.35-.03.68-.05.97-.05 2.33 0 7 1.17 7 3.5V19h-6v-2.5c0-1.48-.81-2.61-1.97-3.45z"
-                        clipRule="evenodd"
-                      ></Path>
-                    </Svg>
-                    <Text>Sleeps {item.sleeps}</Text>
-                  </View>
-                  <View style={styles.flexRow}>
-                    <Svg
-                      // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                      width={24}
-                      height={24}
-                      clipRule="evenodd"
-                    >
-                      <Path
-                        fillRule="evenodd"
-                        d="M11 7h8a4 4 0 0 1 4 4v9h-2v-3H3v3H1V5h2v9h8V7zm-1 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
-                        clipRule="evenodd"
-                      ></Path>
-                    </Svg>
-                    <Text>{item.beds}</Text>
-                  </View>
-                </View>
-              </View>
-              <View>
-                <Text style={styles.titleRoom}>Cancellation policy</Text>
-                <Text>More details on all policy options</Text>
-              </View>
-              <RadioButton.Group
-                onValueChange={(value) => setChecked(value)}
-                value={checked}
-              >
-                <View style={styles.row}>
-                  <View style={styles.row}>
-                    <RadioButton value="first" />
-                    <Text>None-refundable</Text>
-                  </View>
-                  <View style={{ marginLeft: 40, marginRight: 10 }}>
-                    <Text>+ 0đ</Text>
-                  </View>
-                </View>
-                <View style={styles.row}>
-                  <View style={styles.row}>
-                    <RadioButton value="second" />
-                    <Text style={{ width: 150 }}>
-                      Fully refundable before {formatDateRefund(refundDate)}
-                    </Text>
-                  </View>
-                  <View style={{ marginLeft: 40, marginRight: 10 }}>
-                    <Text>{formatCurrency(item.price * 0.15)}</Text>
-                  </View>
-                </View>
-              </RadioButton.Group>
-              <View
-                style={{
-                  borderTopWidth: 1,
-                  borderTopColor: "gray",
-                  paddingTop: 10,
-                }}
-              >
-                <Text style={styles.titleRoom}>Extras</Text>
-              </View>
-              <RadioButton.Group
-                onValueChange={(value) => setCheckedExtra(value)}
-                value={checkedExtra}
-              >
-                <View style={styles.row}>
-                  <View style={styles.row}>
-                    <RadioButton value="first" />
-                    <Text>Breakfast buffet</Text>
-                  </View>
-                  <View style={{ marginLeft: 40, marginRight: 10 }}>
-                    <Text>+ 0đ</Text>
-                  </View>
-                </View>
-                <View style={styles.row}>
-                  <View style={styles.row}>
-                    <RadioButton value="second" />
-                    <Text>Half board</Text>
-                  </View>
-                  <View style={{ marginLeft: 40, marginRight: 10 }}>
-                    <Text>{formatCurrency(500000)}</Text>
-                  </View>
-                </View>
-              </RadioButton.Group>
-              <Text
-                style={[
-                  styles.titleRoom,
-                  {
-                    borderTopWidth: 1,
-                    borderTopColor: "gray",
-                    paddingTop: 10,
-                  },
-                ]}
-              >
-                Price details
-              </Text>
-              <View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text style={{ fontWeight: "bold", fontSize: 20 }}>
-                    {formatCurrency(item.price)}
+                    ></Path>
+                  </Svg>
+
+                  <Text style={{ width: 80, flexWrap: "wrap" }}>
+                    {" "}
+                    {item.features}
                   </Text>
-                  <View>
-                    {item.quantity < 1 ? (
-                      <Text style={{ color: "red" }}>Full room</Text>
-                    ) : (
-                      <>
-                        <Text style={{ color: "green" }}>
-                          {item.quantity} room left
-                        </Text>
-                        <TouchableOpacity
-                          style={{
-                            padding: 12,
-                            borderRadius: 20,
-                            backgroundColor: "blue",
-                            marginVertical: 10,
-                          }}
-                          onPress={() =>
-                            handleDeserve(destination.destination_id, item.id)
-                          }
-                        >
-                          <Text
-                            style={{
-                              fontWeight: "bold",
-                              fontSize: 14,
-                              color: "white",
-                            }}
-                          >
-                            Reserve {numberRoom} room
-                          </Text>
-                        </TouchableOpacity>
-                      </>
-                    )}
-                  </View>
                 </View>
-                <View>
-                  <Text></Text>
+                <View style={styles.flexRow}>
+                  <Svg
+                    // class="uitk-icon uitk-icon-default-theme"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                    width={24}
+                    height={24}
+                    clipRule="evenodd"
+                  >
+                    <Path d="M6 18h2l-3 3-3-3h2V6c0-1.1.9-2 2-2h12V2l3 3-3 3V6H6v12zm14-8v2h-2v-2h2zm0 8a2 2 0 0 1-2 2v-2h2zm0-4v2h-2v-2h2zm-4 4v2h-2v-2h2zm-4 0v2h-2v-2h2z"></Path>
+                  </Svg>
+                  <Text>{item.area} sq m</Text>
+                </View>
+              </View>
+              <View style={{ gap: 10 }}>
+                <View style={styles.flexRow}>
+                  <Svg
+                    // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                    width={24}
+                    height={24}
+                    clipRule="evenodd"
+                  >
+                    <Path
+                      fillRule="evenodd"
+                      d="M10.99 8A3 3 0 1 1 5 8a3 3 0 0 1 6 0zm8 0A3 3 0 1 1 13 8a3 3 0 0 1 6 0zM8 13c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm7.03.05c.35-.03.68-.05.97-.05 2.33 0 7 1.17 7 3.5V19h-6v-2.5c0-1.48-.81-2.61-1.97-3.45z"
+                      clipRule="evenodd"
+                    ></Path>
+                  </Svg>
+                  <Text>Sleeps {item.sleeps}</Text>
+                </View>
+                <View style={styles.flexRow}>
+                  <Svg
+                    // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                    width={24}
+                    height={24}
+                    clipRule="evenodd"
+                  >
+                    <Path
+                      fillRule="evenodd"
+                      d="M11 7h8a4 4 0 0 1 4 4v9h-2v-3H3v3H1V5h2v9h8V7zm-1 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
+                      clipRule="evenodd"
+                    ></Path>
+                  </Svg>
+                  <Text>{item.beds}</Text>
                 </View>
               </View>
             </View>
-          )}
-          numColumns={1}
-        />
-      </View>
+            <View>
+              <Text style={styles.titleRoom}>Cancellation policy</Text>
+              <Text>More details on all policy options</Text>
+            </View>
+            <RadioButton.Group
+              onValueChange={(value) => setChecked(value)}
+              value={checked}
+            >
+              <View style={styles.row}>
+                <View style={styles.row}>
+                  <RadioButton value="first" />
+                  <Text>None-refundable</Text>
+                </View>
+                <View style={{ marginLeft: 40, marginRight: 10 }}>
+                  <Text>+ 0đ</Text>
+                </View>
+              </View>
+              <View style={styles.row}>
+                <View style={styles.row}>
+                  <RadioButton value="second" />
+                  <Text style={{ width: 150 }}>
+                    Fully refundable before {formatDateRefund(refundDate)}
+                  </Text>
+                </View>
+                <View style={{ marginLeft: 40, marginRight: 10 }}>
+                  <Text>{formatCurrency(item.price * 0.15)}</Text>
+                </View>
+              </View>
+            </RadioButton.Group>
+            <View
+              style={{
+                borderTopWidth: 1,
+                borderTopColor: "gray",
+                paddingTop: 10,
+              }}
+            >
+              <Text style={styles.titleRoom}>Extras</Text>
+            </View>
+            <RadioButton.Group
+              onValueChange={(value) => setCheckedExtra(value)}
+              value={checkedExtra}
+            >
+              <View style={styles.row}>
+                <View style={styles.row}>
+                  <RadioButton value="first" />
+                  <Text>Breakfast buffet</Text>
+                </View>
+                <View style={{ marginLeft: 40, marginRight: 10 }}>
+                  <Text>+ 0đ</Text>
+                </View>
+              </View>
+              <View style={styles.row}>
+                <View style={styles.row}>
+                  <RadioButton value="second" />
+                  <Text>Half board</Text>
+                </View>
+                <View style={{ marginLeft: 40, marginRight: 10 }}>
+                  <Text>{formatCurrency(500000)}</Text>
+                </View>
+              </View>
+            </RadioButton.Group>
+            <Text
+              style={[
+                styles.titleRoom,
+                {
+                  borderTopWidth: 1,
+                  borderTopColor: "gray",
+                  paddingTop: 10,
+                },
+              ]}
+            >
+              Price details
+            </Text>
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+                  {formatCurrency(item.price)}
+                </Text>
+                <View>
+                  {item.quantity < 1 ? (
+                    <Text style={{ color: "red" }}>Full room</Text>
+                  ) : (
+                    <>
+                      <Text style={{ color: "green" }}>
+                        {item.quantity} room left
+                      </Text>
+                      <TouchableOpacity
+                        style={{
+                          padding: 12,
+                          borderRadius: 20,
+                          backgroundColor: "blue",
+                          marginVertical: 10,
+                        }}
+                        onPress={() =>
+                          handleDeserve(destination.destination_id, item.id)
+                        }
+                      >
+                        <Text
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: 14,
+                            color: "white",
+                          }}
+                        >
+                          Reserve {numberRoom} room
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </View>
+              </View>
+              <View>
+                <Text></Text>
+              </View>
+            </View>
+          </View>
+        )}
+        numColumns={1}
+      />
+    </View>
+  );
+  const renderFooter = () => (
+    <View>
       <Text>
         <CustomText style={styles.sectionTitle}>
           Explore other options
@@ -907,7 +898,561 @@ export default function TravelDetail({ route, navigation }) {
           showsHorizontalScrollIndicator={false}
         />
       </View>
-    </ScrollView>
+    </View>
+  );
+  return (
+    // <ScrollView style={styles.container}>
+    //   <View>
+    //     <ImageSlider images={imagesDes} />
+    //   </View>
+    //   <View
+    //     style={{
+    //       flexDirection: "row",
+    //       gap: 10,
+    //       alignItems: "center",
+    //       marginVertical: 20,
+    //     }}
+    //   >
+    //     <CustomText>Entire Home</CustomText>
+    //     <CustomText style={styles.vipText}>VIP access</CustomText>
+    //   </View>
+    //   <View>
+    //     <CustomText style={styles.title}>{destination?.name}</CustomText>
+    //     <StarRating rating={destination?.average_rating} />
+    //   </View>
+    //   <View style={styles.refundRow}>
+    //     <CustomText style={styles.refundText}>Fully refundable</CustomText>
+    //     <Text style={styles.refundText}>Reserve now, pay later</Text>
+    //   </View>
+    //   <View style={styles.ratingRow}>
+    //     <View style={styles.ratingBox}>
+    //       <Text style={styles.ratingNumber}>{destination?.average_rating}</Text>
+    //     </View>
+    //     <CustomText style={styles.excellentText}>Exceptional</CustomText>
+    //   </View>
+    //   <TouchableOpacity onPress={() => setModalVisible(true)}>
+    //     <CustomText style={styles.reviewsText}>
+    //       See all {reviews?.length} reviews
+    //     </CustomText>
+    //   </TouchableOpacity>
+    //   <Modal
+    //     animationType="slide"
+    //     transparent={true}
+    //     visible={modalVisible}
+    //     onRequestClose={() => setModalVisible(false)}
+    //   >
+    //     <View style={styles.modalContainer}>
+    //       <View style={styles.modalContent}>
+    //         <View
+    //           style={{
+    //             flexDirection: "row",
+    //             alignItems: "center",
+    //             justifyContent: "space-between",
+    //             gap: 30,
+    //           }}
+    //         >
+    //           <Text style={styles.modalTitle}>Reviews ({reviews.length})</Text>
+    //           <TouchableOpacity
+    //             onPress={() => {
+    //               setModalVisibleReview(true);
+    //             }}
+    //             style={{
+    //               padding: 10,
+    //               borderRadius: 100,
+    //               backgroundColor: "#fff",
+    //               borderWidth: 1,
+    //               width: 50,
+    //               height: 50,
+    //               justifyContent: "center",
+    //               alignItems: "center",
+    //             }}
+    //           >
+    //             <Text
+    //               style={{ color: "red", fontSize: 12, fontWeight: "bold" }}
+    //             >
+    //               Add
+    //             </Text>
+    //           </TouchableOpacity>
+    //           <AddReviewModal
+    //             isVisible={modalVisibleReview}
+    //             onClose={() => setModalVisibleReview(false)}
+    //             onSubmit={handleAddReview}
+    //           />
+    //         </View>
+    //         <ScrollView>
+    //           {reviews.map((item, index) => (
+    //             <View key={index.toString()} style={styles.reviewCard}>
+    //               <Text style={styles.rating}>
+    //                 {item.rating + 3}{" "}
+    //                 <Icon name="star" size={20} color="#FFD700" />
+    //               </Text>
+    //               <Text style={styles.reviewerInfo}>
+    //                 {item.username} - {item.created_at}
+    //               </Text>
+    //               <Text style={styles.liked}>Liked: {liked}</Text>
+    //               <Text style={styles.reviewTitle}>{item.title}</Text>
+    //               <CustomText style={styles.description}>
+    //                 {item.content}
+    //               </CustomText>
+    //             </View>
+    //           ))}
+    //         </ScrollView>
+
+    //         <TouchableOpacity
+    //           style={styles.closeButton}
+    //           onPress={() => setModalVisible(false)}
+    //         >
+    //           <Text style={styles.buttonText}>Close</Text>
+    //         </TouchableOpacity>
+    //       </View>
+    //     </View>
+    //   </Modal>
+    //   <CustomText style={styles.sectionTitle}>About this property</CustomText>
+    //   <CustomText style={{ marginVertical: 10 }}>
+    //     {destination?.description}
+    //   </CustomText>
+    //   <View>
+    //     <FlatList
+    //       data={amenities}
+    //       renderItem={({ item }) => (
+    //         <View style={styles.amenityItem}>
+    //           <Icon name={item.amenityIcon} size={24} color="#333" />
+    //           <CustomText style={styles.amenityText}>
+    //             {item?.amenityName}
+    //           </CustomText>
+    //         </View>
+    //       )}
+    //       nestedScrollEnabled={true}
+    //       keyExtractor={(item) => item.id.toString()}
+    //       numColumns={2}
+    //     />
+    //   </View>
+    //   <View>
+    //     <CustomText style={styles.sectionTitle}>Explore the area</CustomText>
+    //     <CustomText>{destination?.location}</CustomText>
+    //   </View>
+    //   <CustomText style={styles.sectionTitle}>Choose your room</CustomText>
+    //   <TouchableOpacity
+    //     style={styles.buttonContainer1}
+    //     onPress={toggleDateOverlay}
+    //   >
+    //     <Icon name="calendar" size={30} color="green" />
+    //     <View>
+    //       <Text>Ngày</Text>
+    //       <Text style={{ fontSize: 18 }}>
+    //         {getMonthDay(selectedSecondLastDay)} -{" "}
+    //         {getMonthDay(selectedLastDayOfMonth)}
+    //       </Text>
+    //     </View>
+    //   </TouchableOpacity>
+    //   <TouchableOpacity
+    //     style={styles.buttonContainer1}
+    //     onPress={toggleGuestOverlay}
+    //   >
+    //     <Icon name="person" size={30} color="orange" />
+    //     <View>
+    //       <Text>Guest</Text>
+    //       <Text style={{ fontSize: 20 }}>
+    //         {numberGuest} guest , {numberRoom} room
+    //       </Text>
+    //     </View>
+    //   </TouchableOpacity>
+
+    //   <Overlay
+    //     isVisible={visibleDate}
+    //     onBackdropPress={() => {}}
+    //     overlayStyle={styles.overlay}
+    //   >
+    //     <OverlayDate
+    //       toggleDateOverlay={toggleDateOverlay}
+    //       selectedSecondLastDay={selectedSecondLastDay}
+    //       selectedLastDayOfMonth={selectedLastDayOfMonth}
+    //       setSelectedSecondLastDay={setSelectedSecondLastDay}
+    //       setSelectedLastDayOfMonth={setSelectedLastDayOfMonth}
+    //       selectDay={selectDay}
+    //       setSelectDay={setSelectDay}
+    //       getDayOfWeek={getDayOfWeek}
+    //       getMonthDay={getMonthDay}
+    //     />
+    //   </Overlay>
+    //   <Overlay
+    //     isVisible={visibleGuest}
+    //     onBackdropPress={() => {}}
+    //     overlayStyle={styles.overlay}
+    //   >
+    //     <View style={styles.overlayContent}>
+    //       <Text style={{ fontSize: 30 }}>Filter</Text>
+    //       <View
+    //         style={{
+    //           flexDirection: "row",
+    //           alignItems: "center",
+    //           justifyContent: "space-between",
+    //           marginBottom: 10,
+    //         }}
+    //       >
+    //         <Text style={{ fontSize: 20 }}>Số Khách</Text>
+    //         <View
+    //           style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+    //         >
+    //           <TouchableOpacity
+    //             style={{
+    //               padding: 6,
+    //               borderRadius: "50%",
+    //               borderColor: "gray",
+    //               borderStyle: "solid",
+    //               borderWidth: 1,
+    //             }}
+    //             onPress={() => handleRemoveGuest()}
+    //           >
+    //             <Icon name="remove" size={20} />
+    //           </TouchableOpacity>
+    //           <Text style={{ fontSize: 20 }}>{numberGuest}</Text>
+    //           <TouchableOpacity
+    //             style={{
+    //               padding: 6,
+    //               borderRadius: "50%",
+    //               borderColor: "gray",
+    //               borderStyle: "solid",
+    //               borderWidth: 1,
+    //             }}
+    //             onPress={() => handleAddGuest()}
+    //           >
+    //             <Icon name="add" size={20} />
+    //           </TouchableOpacity>
+    //         </View>
+    //       </View>
+    //       <View
+    //         style={{
+    //           flexDirection: "row",
+    //           alignItems: "center",
+    //           justifyContent: "space-between",
+    //         }}
+    //       >
+    //         <Text style={{ fontSize: 20 }}>Số phòng</Text>
+    //         <View
+    //           style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+    //         >
+    //           <TouchableOpacity
+    //             style={{
+    //               padding: 6,
+    //               borderRadius: "50%",
+    //               borderColor: "gray",
+    //               borderStyle: "solid",
+    //               borderWidth: 1,
+    //             }}
+    //             onPress={() => handleRemoveRoom()}
+    //           >
+    //             <Icon name="remove" size={20} />
+    //           </TouchableOpacity>
+    //           <Text style={{ fontSize: 20 }}>{numberRoom}</Text>
+    //           <TouchableOpacity
+    //             style={{
+    //               padding: 6,
+    //               borderRadius: "50%",
+    //               borderColor: "gray",
+    //               borderStyle: "solid",
+    //               borderWidth: 1,
+    //             }}
+    //             onPress={() => handleAddRoom()}
+    //           >
+    //             <Icon name="add" size={20} />
+    //           </TouchableOpacity>
+    //         </View>
+    //       </View>
+    //       <TouchableOpacity
+    //         onPress={toggleGuestOverlay}
+    //         style={styles.closeButton}
+    //       >
+    //         <Text style={{ fontSize: 20, color: "#000" }}>Đóng</Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   </Overlay>
+    //   <View style={{ marginVertical: 20 }}>
+    //     <FlatList
+    //       data={rooms}
+    //       nestedScrollEnabled={true}
+    //       renderItem={({ item }) => (
+    //         <View style={styles.roomItem}>
+    //           <View>
+    //             {/* Sử dụng ảnh từ roomImages */}
+    //             <ImageSlider images={roomImages[item.id] || []} />
+    //           </View>
+    //           <Text style={styles.roomType}>
+    //             {item.room_type + " " + item.description}
+    //           </Text>
+    //           <View
+    //             style={[
+    //               styles.flexRow,
+    //               {
+    //                 marginVertical: 10,
+    //               },
+    //             ]}
+    //           >
+    //             <Svg
+    //               // className="uitk-icon uitk-icon-small uitk-icon-positive-theme"
+    //               aria-hidden="true"
+    //               viewBox="0 0 24 24"
+    //               xmlns="http://www.w3.org/2000/svg"
+    //               xmlnsXlink="http://www.w3.org/1999/xlink"
+    //               width={24}
+    //               height={24}
+    //               fill={"green"}
+    //               clipRule="evenodd"
+    //             >
+    //               <Path
+    //                 fillRule="evenodd"
+    //                 d="M6 3h7a6 6 0 0 1 0 12h-3v6H6V3zm4 8h3.2a2 2 0 0 0 2-2 2 2 0 0 0-2-2H10v4z"
+    //                 clipRule="evenodd"
+    //               />
+    //             </Svg>
+
+    //             <Text style={{ color: "green", gap: 10 }}>
+    //               Free self parking
+    //             </Text>
+    //           </View>
+    //           <View
+    //             style={{
+    //               flexDirection: "row",
+    //               justifyContent: "space-between",
+    //               alignItems: "center",
+    //               borderBottomWidth: 1,
+    //               borderBottomColor: "gray",
+    //               paddingBottom: 10,
+    //               marginVertical: 10,
+    //             }}
+    //           >
+    //             <View style={{ gap: 10 }}>
+    //               <View style={styles.flexRow}>
+    //                 <Svg
+    //                   // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+    //                   aria-hidden="true"
+    //                   viewBox="0 0 24 24"
+    //                   xmlns="http://www.w3.org/2000/svg"
+    //                   xmlnsXlink="http://www.w3.org/1999/xlink"
+    //                   width={24}
+    //                   height={24}
+    //                   clipRule="evenodd"
+    //                 >
+    //                   <Path
+    //                     fillRule="evenodd"
+    //                     d="m1 9 2 2a12.73 12.73 0 0 1 18 0l2-2A15.57 15.57 0 0 0 1 9zm8 8 3 3 3-3a4.24 4.24 0 0 0-6 0zm-2-2-2-2a9.91 9.91 0 0 1 14 0l-2 2a7.07 7.07 0 0 0-10 0z"
+    //                     clipRule="evenodd"
+    //                   ></Path>
+    //                 </Svg>
+
+    //                 <Text style={{ width: 80, flexWrap: "wrap" }}>
+    //                   {" "}
+    //                   {item.features}
+    //                 </Text>
+    //               </View>
+    //               <View style={styles.flexRow}>
+    //                 <Svg
+    //                   // class="uitk-icon uitk-icon-default-theme"
+    //                   aria-hidden="true"
+    //                   viewBox="0 0 24 24"
+    //                   xmlns="http://www.w3.org/2000/svg"
+    //                   xmlnsXlink="http://www.w3.org/1999/xlink"
+    //                   width={24}
+    //                   height={24}
+    //                   clipRule="evenodd"
+    //                 >
+    //                   <Path d="M6 18h2l-3 3-3-3h2V6c0-1.1.9-2 2-2h12V2l3 3-3 3V6H6v12zm14-8v2h-2v-2h2zm0 8a2 2 0 0 1-2 2v-2h2zm0-4v2h-2v-2h2zm-4 4v2h-2v-2h2zm-4 0v2h-2v-2h2z"></Path>
+    //                 </Svg>
+    //                 <Text>{item.area} sq m</Text>
+    //               </View>
+    //             </View>
+    //             <View style={{ gap: 10 }}>
+    //               <View style={styles.flexRow}>
+    //                 <Svg
+    //                   // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+    //                   aria-hidden="true"
+    //                   viewBox="0 0 24 24"
+    //                   xmlns="http://www.w3.org/2000/svg"
+    //                   xmlnsXlink="http://www.w3.org/1999/xlink"
+    //                   width={24}
+    //                   height={24}
+    //                   clipRule="evenodd"
+    //                 >
+    //                   <Path
+    //                     fillRule="evenodd"
+    //                     d="M10.99 8A3 3 0 1 1 5 8a3 3 0 0 1 6 0zm8 0A3 3 0 1 1 13 8a3 3 0 0 1 6 0zM8 13c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm7.03.05c.35-.03.68-.05.97-.05 2.33 0 7 1.17 7 3.5V19h-6v-2.5c0-1.48-.81-2.61-1.97-3.45z"
+    //                     clipRule="evenodd"
+    //                   ></Path>
+    //                 </Svg>
+    //                 <Text>Sleeps {item.sleeps}</Text>
+    //               </View>
+    //               <View style={styles.flexRow}>
+    //                 <Svg
+    //                   // class="uitk-icon uitk-icon-small uitk-icon-default-theme"
+    //                   aria-hidden="true"
+    //                   viewBox="0 0 24 24"
+    //                   xmlns="http://www.w3.org/2000/svg"
+    //                   xmlnsXlink="http://www.w3.org/1999/xlink"
+    //                   width={24}
+    //                   height={24}
+    //                   clipRule="evenodd"
+    //                 >
+    //                   <Path
+    //                     fillRule="evenodd"
+    //                     d="M11 7h8a4 4 0 0 1 4 4v9h-2v-3H3v3H1V5h2v9h8V7zm-1 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
+    //                     clipRule="evenodd"
+    //                   ></Path>
+    //                 </Svg>
+    //                 <Text>{item.beds}</Text>
+    //               </View>
+    //             </View>
+    //           </View>
+    //           <View>
+    //             <Text style={styles.titleRoom}>Cancellation policy</Text>
+    //             <Text>More details on all policy options</Text>
+    //           </View>
+    //           <RadioButton.Group
+    //             onValueChange={(value) => setChecked(value)}
+    //             value={checked}
+    //           >
+    //             <View style={styles.row}>
+    //               <View style={styles.row}>
+    //                 <RadioButton value="first" />
+    //                 <Text>None-refundable</Text>
+    //               </View>
+    //               <View style={{ marginLeft: 40, marginRight: 10 }}>
+    //                 <Text>+ 0đ</Text>
+    //               </View>
+    //             </View>
+    //             <View style={styles.row}>
+    //               <View style={styles.row}>
+    //                 <RadioButton value="second" />
+    //                 <Text style={{ width: 150 }}>
+    //                   Fully refundable before {formatDateRefund(refundDate)}
+    //                 </Text>
+    //               </View>
+    //               <View style={{ marginLeft: 40, marginRight: 10 }}>
+    //                 <Text>{formatCurrency(item.price * 0.15)}</Text>
+    //               </View>
+    //             </View>
+    //           </RadioButton.Group>
+    //           <View
+    //             style={{
+    //               borderTopWidth: 1,
+    //               borderTopColor: "gray",
+    //               paddingTop: 10,
+    //             }}
+    //           >
+    //             <Text style={styles.titleRoom}>Extras</Text>
+    //           </View>
+    //           <RadioButton.Group
+    //             onValueChange={(value) => setCheckedExtra(value)}
+    //             value={checkedExtra}
+    //           >
+    //             <View style={styles.row}>
+    //               <View style={styles.row}>
+    //                 <RadioButton value="first" />
+    //                 <Text>Breakfast buffet</Text>
+    //               </View>
+    //               <View style={{ marginLeft: 40, marginRight: 10 }}>
+    //                 <Text>+ 0đ</Text>
+    //               </View>
+    //             </View>
+    //             <View style={styles.row}>
+    //               <View style={styles.row}>
+    //                 <RadioButton value="second" />
+    //                 <Text>Half board</Text>
+    //               </View>
+    //               <View style={{ marginLeft: 40, marginRight: 10 }}>
+    //                 <Text>{formatCurrency(500000)}</Text>
+    //               </View>
+    //             </View>
+    //           </RadioButton.Group>
+    //           <Text
+    //             style={[
+    //               styles.titleRoom,
+    //               {
+    //                 borderTopWidth: 1,
+    //                 borderTopColor: "gray",
+    //                 paddingTop: 10,
+    //               },
+    //             ]}
+    //           >
+    //             Price details
+    //           </Text>
+    //           <View>
+    //             <View
+    //               style={{
+    //                 flexDirection: "row",
+    //                 alignItems: "center",
+    //                 justifyContent: "space-between",
+    //               }}
+    //             >
+    //               <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+    //                 {formatCurrency(item.price)}
+    //               </Text>
+    //               <View>
+    //                 {item.quantity < 1 ? (
+    //                   <Text style={{ color: "red" }}>Full room</Text>
+    //                 ) : (
+    //                   <>
+    //                     <Text style={{ color: "green" }}>
+    //                       {item.quantity} room left
+    //                     </Text>
+    //                     <TouchableOpacity
+    //                       style={{
+    //                         padding: 12,
+    //                         borderRadius: 20,
+    //                         backgroundColor: "blue",
+    //                         marginVertical: 10,
+    //                       }}
+    //                       onPress={() =>
+    //                         handleDeserve(destination.destination_id, item.id)
+    //                       }
+    //                     >
+    //                       <Text
+    //                         style={{
+    //                           fontWeight: "bold",
+    //                           fontSize: 14,
+    //                           color: "white",
+    //                         }}
+    //                       >
+    //                         Reserve {numberRoom} room
+    //                       </Text>
+    //                     </TouchableOpacity>
+    //                   </>
+    //                 )}
+    //               </View>
+    //             </View>
+    //             <View>
+    //               <Text></Text>
+    //             </View>
+    //           </View>
+    //         </View>
+    //       )}
+    //       numColumns={1}
+    //     />
+    //   </View>
+    //   <Text>
+    //     <CustomText style={styles.sectionTitle}>
+    //       Explore other options
+    //     </CustomText>
+    //   </Text>
+    //   <View style={{ marginTop: 10 }}>
+    //     <FlatList
+    //       data={destinations}
+    //       renderItem={renderItem}
+    //       nestedScrollEnabled={true} // Enable nested scrolling
+    //       horizontal={true}
+    //       keyExtractor={(item, index) => index.toString()}
+    //       showsHorizontalScrollIndicator={false}
+    //     />
+    //   </View>
+    // </ScrollView>
+    <FlatList
+      style={styles.container}
+      data={rooms}
+      ListHeaderComponent={renderHeader}
+      renderItem={renderItemRoom}
+      ListFooterComponent={renderFooter}
+      keyExtractor={(item) => item.id.toString()}
+      numColumns={1}
+    />
   );
 }
 

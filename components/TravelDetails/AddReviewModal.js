@@ -32,7 +32,7 @@ const AddReviewModal = ({ isVisible, onClose, onSubmit }) => {
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Add Review</Text>
-          <ScrollView>
+          <View>
             <Text style={styles.label}>Rating (1-5):</Text>
             <TextInput
               style={styles.input}
@@ -59,7 +59,7 @@ const AddReviewModal = ({ isVisible, onClose, onSubmit }) => {
               onChangeText={setContent}
               placeholder="Write your review..."
             />
-          </ScrollView>
+          </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               onPress={handleAddReview}

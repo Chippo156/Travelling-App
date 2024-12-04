@@ -80,7 +80,6 @@ export default function Deserve({ route, navigation }) {
     try {
       let res = await getRoomById(roomId);
       setRoom(res);
-      console.log(res);
     } catch (error) {
       console.error(error);
       return error;
@@ -195,12 +194,12 @@ export default function Deserve({ route, navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.flexRow}>
-        <Icon name="calendar" size={50} color="#FFD700"></Icon>
+        <Icon name="calendar" size={50} color="#FFD700" />
         <Text style={{ color: "#fff", fontSize: 11, width: 340 }}>
           <Text style={{ fontWeight: "bold" }}>
             Full refund before 6:00 p.m., {formatDate(refundDate)} (local time
             of property).
-          </Text>
+          </Text>{" "}
           You can change or cancel any of these reservations to receive the full
           refund if plans change. Because of duplication, flexibility is needed.
         </Text>
