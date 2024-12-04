@@ -20,7 +20,7 @@ public interface DestinationRepository extends JpaRepository<Destination, Long>{
     JOIN Room r ON d.id = r.destination.id 
     JOIN DestinationAmenity da ON da.destination.id = d.id 
     WHERE (:categoryId IS NULL OR d.category.id = :categoryId) 
-      AND (:averageRating IS NULL OR d.averageRating = :averageRating) 
+      AND (:averageRating IS NULL OR d.averageRating >= :averageRating) 
       AND (:price IS NULL OR r.price <= :price) 
       AND (:amenityIds IS NULL OR da.amenity.id IN :amenityIds) 
       AND (:location IS NULL OR LOWER(REPLACE(REPLACE(d.location, ' ', ''), '[^\\p{IsAlphabetic}\\p{IsDigit}]', '')) LIKE LOWER(CONCAT('%', :location, '%'))) 
